@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { AdvertiserRepository } from '../repositories/AdvertiserRepository'
+import { TagFileService } from '../services/TagFileService'
 
 export const AdvertiserController = {
   async list(req: Request, res: Response): Promise<void> {
@@ -19,8 +20,18 @@ export const AdvertiserController = {
 
   async create(req: Request, res: Response): Promise<void> {
     const { name, tag_name, tag_code } = req.body
-    const advertiser = await AdvertiserRepository.create({ name, tag_name, tag_code })
-    res.status(201).json(advertiser)
+    try {
+      const advertiser = await AdvertiserRepository.create({ name, tag_name, tag_code })
+      TagFileService.write({ name, tag_name, tag_code })
+      res.status(201).json(advertiser)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      if (msg.toLowerCase().includes('unique') || msg.toLowerCase().includes('constraint')) {
+        res.status(409).json({ error: 'Advertiser name already exists' })
+        return
+      }
+      throw err
+    }
   },
 
   async update(req: Request, res: Response): Promise<void> {
@@ -31,16 +42,23 @@ export const AdvertiserController = {
       res.status(404).json({ error: 'Advertiser not found' })
       return
     }
+    TagFileService.write({
+      name: advertiser.name,
+      tag_name: advertiser.tag_name,
+      tag_code: advertiser.tag_code,
+    })
     res.json(advertiser)
   },
 
   async delete(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
-    const deleted = await AdvertiserRepository.delete(id)
-    if (!deleted) {
+    const advertiser = await AdvertiserRepository.findById(id)
+    if (!advertiser) {
       res.status(404).json({ error: 'Advertiser not found' })
       return
     }
+    await AdvertiserRepository.delete(id)
+    TagFileService.delete(advertiser.name)
     res.json({ success: true })
   },
 }
