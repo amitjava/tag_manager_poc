@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
+import { validateCreate, hasErrors } from '../../lib/validate'
 
 export default function CreatePage() {
   const navigate = useNavigate()
@@ -11,11 +12,8 @@ export default function CreatePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const newErrors: Record<string, string> = {}
-    if (!form.name.trim()) newErrors.name = 'Advertiser name is required'
-    if (!form.tag_name.trim()) newErrors.tag_name = 'Tag name is required'
-    if (!form.tag_code.trim()) newErrors.tag_code = 'Tag code is required'
-    if (Object.keys(newErrors).length > 0) {
+    const newErrors = validateCreate(form)
+    if (hasErrors(newErrors)) {
       setErrors(newErrors)
       return
     }

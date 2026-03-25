@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
+import { validateUpdate, hasErrors } from '../../lib/validate'
 
 interface Advertiser {
   id: number
@@ -46,10 +47,8 @@ export default function EditPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const newErrors: Record<string, string> = {}
-    if (!form.tag_name.trim()) newErrors.tag_name = 'Tag name is required'
-    if (!form.tag_code.trim()) newErrors.tag_code = 'Tag code is required'
-    if (Object.keys(newErrors).length > 0) {
+    const newErrors = validateUpdate(form)
+    if (hasErrors(newErrors)) {
       setErrors(newErrors)
       return
     }
