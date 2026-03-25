@@ -1,0 +1,7 @@
+#!/bin/sh
+ROOT=$(git rev-parse --show-toplevel)
+
+npx lint-staged
+
+(cd "$ROOT/backend" && npx tsc --noEmit) || exit 1
+(cd "$ROOT/frontend" && npx tsc --noEmit) || exit 1
