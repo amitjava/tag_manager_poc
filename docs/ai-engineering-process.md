@@ -97,7 +97,7 @@ After 10 features, grill-me sessions are shorter because there's less unknown te
 
 **The rule:** Resolved items never stay in Section 7. Section 7 only ever contains things that are genuinely still open.
 
-> Full proposal and structure template: [platform-context-proposal.md](../../../platform-context-proposal.md)
+> Full proposal and structure template: [platform-context-proposal.md](./platform-context-proposal.md)
 
 ---
 
