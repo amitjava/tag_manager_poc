@@ -26,7 +26,9 @@ Phases 1–4 are front-loaded work that prevents rework in the loop.
 ## The Process Map
 
 ```
-PHASE 1   Idea          /grill-me  →  /ubiquitous-language
+PHASE 0   Platform Context   read PLATFORM_CONTEXT.md  (first feature: create it)
+             ↓
+PHASE 1   Idea          /grill-me (from unknowns)  →  /ubiquitous-language
 PHASE 2   Research      (manual — optional)
 PHASE 3   Prototype     /design-an-interface  →  /improve-codebase-architecture
 PHASE 4   PRD           /write-a-prd
@@ -37,8 +39,65 @@ PHASE 6   Execution     /setup-pre-commit  →  /git-guardrails-claude-code  →
              ↓
 PHASE 7   QA            /triage-issue  →  loop back to Phase 5
              ↓
+AFTER EACH FEATURE      update PLATFORM_CONTEXT.md
+             ↓
 MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-plan
 ```
+
+---
+
+## Phase 0: Platform Context
+
+**Goal:** Give the agent a complete picture of what already exists before it asks a single question.
+
+**Inputs:** An existing project with at least one shipped feature. _(On the very first feature of a new project, create the file with what you know and leave Section 7 long.)_
+
+**No skill required.** The agent reads a file. That's it.
+
+---
+
+### The Problem This Solves
+
+Every time you start a new feature, the agent starts cold. It asks "what database are you using?" — you've answered that. It asks "is there auth?" — already decided. It burns grill-me rounds on questions with known answers because there's no document that tells it what already exists.
+
+### What to Do
+
+Maintain a file called `PLATFORM_CONTEXT.md` at the repo root. Before any session — grill-me, PRD, architecture review — the agent reads it first.
+
+The file has 7 sections:
+
+| Section                 | Contents                                | Agent instruction                 |
+| ----------------------- | --------------------------------------- | --------------------------------- |
+| 1. Platform Overview    | What it is, who uses it, current status | Calibrate the domain              |
+| 2. Knowledge Sources    | Where PRDs, plans, and issues live      | Where to look for depth           |
+| 3. Current State        | Modules, API contract, DB schema, tests | Do not ask about any of this      |
+| 4. Infrastructure       | Hosting, DB, CI/CD                      | Constraints for any new proposal  |
+| 5. Settled Decisions    | Decisions that are closed               | Do not re-open these              |
+| 6. Open Backlog         | GitHub issues + unticket planned work   | Already known — do not re-surface |
+| 7. **Genuine Unknowns** | Things not yet decided                  | **Start grill-me here**           |
+
+Section 7 is the payoff. An agent that reads sections 1–6 knows exactly what's already answered. Section 7 is where grill-me begins — not from a blank slate.
+
+### The Compounding Return
+
+At the start of a project, Section 7 is long and Section 5 is short. Every grill-me session resolves unknowns — they move from Section 7 to Section 5. Every feature built populates Section 3. Every bug filed goes into Section 6.
+
+After 10 features, grill-me sessions are shorter because there's less unknown territory. The document gets smarter with every cycle. The longer the project runs, the less time is spent on re-discovery.
+
+### After Each Feature Ships — Update the File
+
+| Event                        | What to update                                     |
+| ---------------------------- | -------------------------------------------------- |
+| New feature built            | Add modules to Section 3                           |
+| Architectural decision made  | Add to Section 5                                   |
+| GitHub issue opened          | Add to Section 6                                   |
+| GitHub issue closed          | Remove from Section 6; move decisions to Section 5 |
+| Grill-me resolves an unknown | Move from Section 7 → Section 5                    |
+| Infrastructure changes       | Update Section 4                                   |
+
+**The rule:** Resolved items never stay in Section 7. Section 7 only ever contains things that are genuinely still open.
+
+> Full proposal and structure template: [platform-context-proposal.md](../../../platform-context-proposal.md)
 
 ---
 
@@ -46,7 +105,7 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 **Goal:** Stress-test the concept. Surface every assumption, edge case, and decision branch before writing anything down.
 
-**Inputs:** An idea. Nothing else.
+**Inputs:** An idea. `PLATFORM_CONTEXT.md` already read.
 
 **What goes wrong if you skip it:** The PRD will have gaps. Gaps become decisions made during execution — by agents, without you in the room. Those decisions will be wrong.
 
