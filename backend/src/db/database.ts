@@ -2,10 +2,15 @@ import { createClient, Client } from '@libsql/client'
 
 let client: Client
 
+function getDbUrl(): string {
+  if (process.env.NODE_ENV === 'test') return ':memory:'
+  if (process.env.VERCEL) return 'file:/tmp/tag-manager.db'
+  return 'file:tag-manager.db'
+}
+
 export function getDb(): Client {
   if (!client) {
-    const url = process.env.NODE_ENV === 'test' ? ':memory:' : 'file:tag-manager.db'
-    client = createClient({ url })
+    client = createClient({ url: getDbUrl() })
   }
   return client
 }

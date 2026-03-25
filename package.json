@@ -10,6 +10,11 @@
     "test": "cd backend && npm test; cd ../frontend && npm test",
     "prepare": "husky"
   },
+  "dependencies": {
+    "@libsql/client": "^0.17.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.3"
+  },
   "devDependencies": {
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",

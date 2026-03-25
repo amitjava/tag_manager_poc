@@ -19,7 +19,9 @@ export const TagFileService = {
   },
 
   getTagsDir(): string {
-    return process.env.TAGS_DIR ?? DEFAULT_TAGS_DIR
+    if (process.env.TAGS_DIR) return process.env.TAGS_DIR
+    if (process.env.VERCEL) return '/tmp/tags'
+    return DEFAULT_TAGS_DIR
   },
 
   write(input: TagFileInput, tagsDir?: string): void {
