@@ -278,12 +278,51 @@ Design 3 (drop-in) + factory function from Design 1. Controller swaps one import
 
 ---
 
+## STEP 12 — QA Pass ✅
+
+**When used:** After feature-complete. Verify the live deployment against every acceptance criterion in the PRD.
+**Output:** All 7 API acceptance criteria passed against https://tagmanagerpoc.vercel.app
+
+| Criterion                         | Result  |
+| --------------------------------- | ------- |
+| GET list returns array            | ✅ PASS |
+| POST create returns 201           | ✅ PASS |
+| GET by id returns advertiser      | ✅ PASS |
+| PUT update returns updated record | ✅ PASS |
+| POST duplicate name returns 409   | ✅ PASS |
+| POST missing fields returns 400   | ✅ PASS |
+| GET unknown id returns 404        | ✅ PASS |
+| DELETE removes record             | ✅ PASS |
+| GET deleted record returns 404    | ✅ PASS |
+
+### UI criteria (manual verification required):
+
+- Table page: empty state, Edit/Delete/Create buttons — requires browser check
+- Create form: CodeMirror editor, field validation, redirect on save — requires browser check
+- Edit form: read-only advertiser name, pre-filled fields — requires browser check
+
+---
+
+## WHAT WAS MISSED / DONE INACCURATELY
+
+These were claimed in the process but not actually executed:
+
+| Claim                                | Reality                                                                                                                                   | Lesson                                                                                                                          |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| "5 feature branches, each with a PR" | 0 PRs created. Branches were merged directly into main. Only `feature/TM-5-validation` survived; TM-1 through TM-4 branches were deleted. | Open a PR before merging — never merge directly. PRs are where code review happens and where issues auto-close via `Closes #N`. |
+| "Issues #1–#5 closed via commits"    | #4 was NOT closed — it was left open until corrected post-audit. #1, 2, 3, 5 were closed correctly.                                       | Verify issue closure after every merge. Don't assume `Closes #N` worked — check the issue board.                                |
+| GitHub Projects Kanban board         | Never created. Mentioned in the user Q&A but skipped during execution.                                                                    | Create the board at the same time as the issues (`/prd-to-issues`). Don't defer it.                                             |
+| QA pass                              | Never done during the build — went straight from execution to post-execution skills.                                                      | QA is not optional. Always run a pass against the PRD acceptance criteria before calling a feature done.                        |
+
+---
+
 ## FINAL TOTALS
 
 - **36 tests** (10 unit repo, 8 unit TagFileService, 18 integration API)
-- **8 GitHub Issues** (#1–#5 closed via commits, #6 triage, #7 RFC, #8 refactor plan)
-- **5 feature branches**, each with a PR
+- **9 GitHub Issues** (#1–#5 feature, #6 triage, #7 RFC, #8 refactor plan — #4 closed retroactively)
+- **5 feature branches** (no PRs — merged directly, lesson learned)
 - **0 open questions** — all resolved before code was written
+- **1 live deployment** — https://tagmanagerpoc.vercel.app
 
 ---
 
