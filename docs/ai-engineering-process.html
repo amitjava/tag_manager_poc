@@ -280,6 +280,7 @@
     <li><a href="#knowledge-hierarchy">Knowledge Hierarchy</a></li>
     <li><a href="#business-knowledge">Business Knowledge Hierarchy</a></li>
     <li><a href="#reverse-sync">Business ↔ Engineering Reverse Sync</a></li>
+    <li><a href="#change-requests">Change Request Flow</a></li>
     <li><a href="#rag-system">Central Knowledge Assistant (RAG)</a></li>
     <li><a href="#project-start">Project Start: System Architecture Document</a></li>
     <li><a href="#phase-0">Phase 0: Platform Context + Domain Assignment</a></li>
@@ -774,6 +775,88 @@ Strategic goal: Q2 OKR — enterprise contracts compliant by June</pre>
 
 <div class="callout danger">
   <p><strong><code>product/FEATURES.md</code> is the index, not the sync point.</strong> The actual reverse sync happens in the specific business document that was affected — contract, compliance, vendor, goal. <code>product/FEATURES.md</code> records that all syncs were completed and where to find them.</p>
+</div>
+
+<hr>
+
+<h2 id="change-requests">Change Request Flow</h2>
+
+<p>Every functional enhancement starts as a request from somewhere in the business. The flow below captures it, triages it, and links it to engineering before any code is written.</p>
+
+<h3>Sources</h3>
+
+<table>
+  <thead><tr><th>Source</th><th>Captured by</th><th>Linked business doc</th></tr></thead>
+  <tbody>
+    <tr><td>Customer ask</td><td>Account owner</td><td><code>customers/&lt;name&gt;/CONTRACT.md</code> or <code>ANALYSIS.md</code></td></tr>
+    <tr><td>Sales / pre-sales blocker</td><td>Sales lead</td><td><code>customers/&lt;name&gt;/PROFILE.md</code></td></tr>
+    <tr><td>Internal product idea</td><td>Founder / PM</td><td><code>strategy/GOALS.md</code></td></tr>
+    <tr><td>Regulatory requirement</td><td>Legal</td><td><code>legal/COMPLIANCE.md</code></td></tr>
+    <tr><td>Vendor capability change</td><td>Ops</td><td><code>vendors/&lt;name&gt;/PROFILE.md</code></td></tr>
+  </tbody>
+</table>
+
+<h3>The flow</h3>
+
+<pre>SOURCES  (customer / sales / internal / legal / vendor)
+     │
+     ▼
+business/product/REQUESTS.md
+  Log immediately: source, who asked, business reason,
+  priority, linked business doc
+     │
+     ▼
+TRIAGE  (founder / PM — weekly or on-demand)
+  Is it aligned with strategy/GOALS.md?
+  Is there a contractual obligation behind it?
+  Has it been asked before and rejected?
+  What is the effort vs business value?
+     │
+     ├── Reject → note reason in REQUESTS.md, notify requester
+     │
+     └── Accept
+           │
+           ▼
+      PHASE 0  Assign to a domain
+           ↓
+      PHASE 1  /grill-me → /ubiquitous-language
+           ↓
+      PHASE 4  /write-a-prd
+        PRD Business Context links back to:
+        REQUESTS.md entry + linked business doc
+           ↓
+      PHASE 5–7  Plan → Execute → QA
+           ↓
+      REVERSE SYNC
+        REQUESTS.md entry marked delivered
+        All linked business docs updated
+        DOMAIN_FUNCTIONAL.md updated with new capability</pre>
+
+<h3>What a REQUESTS.md entry looks like</h3>
+
+<pre>## REQ-014 — Bulk export to CSV
+Source: Acme Corp (customer) — flagged by account owner 2026-03-20
+Business reason: Required to meet clause 4.2 of their contract
+Priority: Must-have — blocks renewal
+Linked docs: customers/acme/CONTRACT.md
+Status: Accepted → PRD in progress
+PRD: domains/advertisers/docs/prd-csv-export.md</pre>
+
+<h3>The triage gate</h3>
+
+<p>Most teams skip triage and go straight to building. The gate answers three questions before any engineering time is spent:</p>
+
+<table>
+  <thead><tr><th>Question</th><th>Where to look</th></tr></thead>
+  <tbody>
+    <tr><td>Is this strategically aligned?</td><td><code>strategy/GOALS.md</code></td></tr>
+    <tr><td>Is there a contractual obligation?</td><td><code>customers/&lt;name&gt;/CONTRACT.md</code></td></tr>
+    <tr><td>Has this been asked before and rejected?</td><td><code>product/REQUESTS.md</code> history</td></tr>
+  </tbody>
+</table>
+
+<div class="callout info">
+  <p><strong>Bug fixes, refactors, and infra changes do not use this flow.</strong> Bugs go to <span class="skill">/triage-issue</span> directly. Refactors go to <span class="skill">/request-refactor-plan</span>. Infrastructure changes are an ops decision.</p>
 </div>
 
 <hr>
