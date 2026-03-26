@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { AdvertiserController } from '../controllers/AdvertiserController'
-import { validateAdvertiser, validateAdvertiserUpdate } from '../middleware/validation'
+import { AdvertiserController } from './AdvertiserController'
+import { validateAdvertiser, validateAdvertiserUpdate } from './validation'
 
 const router = Router()
 

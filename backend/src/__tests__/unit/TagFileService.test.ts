@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
-import { TagFileService } from '../../services/TagFileService'
+import { TagFileService } from '../../domains/advertisers/TagFileService'
 
 const TEST_DIR = path.join(process.cwd(), 'test-tags-tmp')
 

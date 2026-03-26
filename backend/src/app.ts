@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import advertisersRouter from './routes/advertisers'
+import advertisersRouter from './domains/advertisers/routes'
 
 const app = express()
 app.use(cors())
