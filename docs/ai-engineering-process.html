@@ -278,7 +278,9 @@
     <li><a href="#how-to-use">How to Use This Document</a></li>
     <li><a href="#process-map">The Process Map</a></li>
     <li><a href="#knowledge-hierarchy">Knowledge Hierarchy</a></li>
+    <li><a href="#business-knowledge">Business Knowledge Hierarchy</a></li>
     <li><a href="#reverse-sync">Business ↔ Engineering Reverse Sync</a></li>
+    <li><a href="#rag-system">Central Knowledge Assistant (RAG)</a></li>
     <li><a href="#project-start">Project Start: System Architecture Document</a></li>
     <li><a href="#phase-0">Phase 0: Platform Context + Domain Assignment</a></li>
     <li><a href="#phase-1">Phase 1: Idea</a></li>
@@ -557,6 +559,121 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 <hr>
 
+<h2 id="business-knowledge">Business Knowledge Hierarchy</h2>
+
+<p>Business knowledge lives in a separate tree from engineering docs. Same three-concern principle applies at every node: <strong>context</strong> (what it is), <strong>terms</strong> (obligations and commitments), <strong>analysis</strong> (decisions and rationale). Never mix them.</p>
+
+<pre>/business/
+│
+├── COMPANY_CONTEXT.md               ← what we do, mission, stage, key metrics
+│
+├── strategy/
+│   ├── GOALS.md                     ← OKRs / annual goals, owner, status
+│   ├── ROADMAP.md                   ← 12-month product + business direction
+│   └── DECISIONS.md                 ← major strategic decisions + rationale
+│
+├── market/
+│   ├── SEGMENTS.md                  ← market segments we target + sizing
+│   ├── ICP.md                       ← ideal customer profile, personas
+│   ├── COMPETITORS.md               ← competitive landscape, positioning
+│   └── POSITIONING.md               ← our differentiators, messaging pillars
+│
+├── customers/
+│   ├── SEGMENTS.md                  ← customer tiers (enterprise / SMB / etc.)
+│   └── &lt;customer-name&gt;/
+│       ├── PROFILE.md               ← who they are, relationship history,
+│       │                               key contacts, health status
+│       ├── CONTRACT.md              ← terms, SLA, pricing, renewal date,
+│       │                               exit clauses, obligations
+│       │                               + delivered-by links after each feature ship
+│       └── ANALYSIS.md              ← why they bought, expansion potential,
+│                                       risk flags, NPS history
+│
+├── vendors/
+│   ├── INDEX.md                     ← all vendors, category, spend, renewal dates
+│   └── &lt;vendor-name&gt;/
+│       ├── PROFILE.md               ← what they provide, contacts,
+│       │                               integration points, dependency level
+│       ├── CONTRACT.md              ← terms, pricing tiers, SLA, renewal date,
+│       │                               exit clauses, data processing terms
+│       └── EVALUATION.md            ← why chosen, alternatives rejected,
+│                                       what we'd do differently, review cadence
+│
+├── partners/
+│   └── &lt;partner-name&gt;/
+│       ├── PROFILE.md               ← relationship type, what we exchange
+│       ├── AGREEMENT.md             ← revenue share, referral terms, obligations
+│       └── ANALYSIS.md              ← performance, expansion potential
+│
+├── finance/
+│   ├── UNIT_ECONOMICS.md            ← CAC, LTV, payback period, margins
+│   ├── BUDGET.md                    ← current budget, burn rate, runway
+│   ├── PRICING.md                   ← pricing model, tiers, discount policy
+│   └── FUNDRAISING.md               ← round history, cap table summary,
+│                                       investor obligations
+│
+├── legal/
+│   ├── COMPLIANCE.md                ← regulations in scope (GDPR, SOC2, etc.),
+│   │                                   current status, gaps, deadlines
+│   ├── IP.md                        ← what we own, what we license,
+│   │                                   open source obligations
+│   ├── PRIVACY.md                   ← data retention policy, DPA status,
+│   │                                   user rights obligations
+│   └── templates/
+│       ├── NDA.md
+│       ├── MSA.md
+│       └── DPA.md
+│
+├── operations/
+│   ├── PROCESSES.md                 ← key recurring processes, owners, cadence
+│   ├── TOOLS.md                     ← software stack, licences, owners, costs
+│   └── INCIDENTS.md                 ← major incidents, root cause, resolution,
+│                                       what changed as a result
+│
+├── people/
+│   ├── ORG.md                       ← team structure, roles, reporting lines
+│   ├── HIRING.md                    ← open roles, criteria, process
+│   └── CULTURE.md                   ← values, working norms, decision rights
+│
+└── product/                         ← bridge between business and engineering
+    ├── PRINCIPLES.md                ← product philosophy, build vs buy policy,
+    │                                   quality bar, release policy
+    ├── FEATURES.md                  ← shipped features index: business driver
+    │                                   + PRD link + reverse sync status
+    └── REQUESTS.md                  ← inbound requests, source, priority, status</pre>
+
+<h3>Three concerns at every node</h3>
+
+<table>
+  <thead><tr><th>Concern</th><th>File</th><th>Answers</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Context</strong></td><td><code>PROFILE.md</code></td><td>Who/what is this, current state, key contacts</td></tr>
+    <tr><td><strong>Terms</strong></td><td><code>CONTRACT.md</code> / <code>AGREEMENT.md</code></td><td>What are we obligated to, by when, at what cost</td></tr>
+    <tr><td><strong>Analysis</strong></td><td><code>EVALUATION.md</code> / <code>ANALYSIS.md</code></td><td>Why we made this choice, what we learned, what to watch</td></tr>
+  </tbody>
+</table>
+
+<h3>Ownership and update cadence</h3>
+
+<table>
+  <thead><tr><th>Folder</th><th>Owner</th><th>Update cadence</th></tr></thead>
+  <tbody>
+    <tr><td><code>strategy/</code></td><td>CEO / co-founders</td><td>Quarterly</td></tr>
+    <tr><td><code>customers/</code></td><td>Account owner</td><td>After every significant interaction</td></tr>
+    <tr><td><code>vendors/</code></td><td>Ops / procurement</td><td>On renewal + after incidents</td></tr>
+    <tr><td><code>finance/</code></td><td>CFO / founder</td><td>Monthly</td></tr>
+    <tr><td><code>legal/</code></td><td>Legal / compliance</td><td>When regulations change or contracts signed</td></tr>
+    <tr><td><code>product/</code></td><td>Product lead</td><td>After every feature ship</td></tr>
+    <tr><td><code>people/</code></td><td>HR / founder</td><td>On org changes</td></tr>
+  </tbody>
+</table>
+
+<div class="callout info">
+  <p><strong>Keep this index access-controlled.</strong> Business docs contain pricing, contracts, and cap table data. Index <code>/business/</code> in a separate RAG pipeline from engineering docs, with tighter access permissions.</p>
+</div>
+
+<hr>
+
 <h2 id="reverse-sync">Business ↔ Engineering Reverse Sync</h2>
 
 <p>When engineering ships a feature, two knowledge bases must stay in sync: the engineering docs that describe <em>what was built</em>, and the business docs that describe <em>why it was asked for</em>. Without reverse sync, the link between obligation and implementation is permanently lost.</p>
@@ -655,6 +772,66 @@ Strategic goal: Q2 OKR — enterprise contracts compliant by June</pre>
 
 <div class="callout danger">
   <p><strong><code>product/FEATURES.md</code> is the index, not the sync point.</strong> The actual reverse sync happens in the specific business document that was affected — contract, compliance, vendor, goal. <code>product/FEATURES.md</code> records that all syncs were completed and where to find them.</p>
+</div>
+
+<hr>
+
+<h2 id="rag-system">Central Knowledge Assistant (RAG)</h2>
+
+<p>All knowledge files — engineering and business — are indexed into a retrieval system. Any team member can ask questions in plain language and get answers grounded in the actual docs.</p>
+
+<pre>
+ ┌─────────────────────────────────────────────────────────┐
+ │                    KNOWLEDGE SOURCES                    │
+ │                                                         │
+ │   /business/          engineering docs                  │
+ │   strategy            PLATFORM_CONTEXT.md               │
+ │   customers           DOMAIN_FUNCTIONAL.md              │
+ │   vendors             DOMAIN_ARCHITECTURE.md            │
+ │   legal               DOMAIN_DATA.md                    │
+ │   finance             contracts/                        │
+ │   product             PRDs                              │
+ └────────────┬──────────────────────┬────────────────────┘
+              │                      │
+              ▼                      ▼
+     Business index           Engineering index
+     (access-controlled)      (team-wide)
+              │                      │
+              └──────────┬───────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │   Question router   │  ← classifies incoming question
+              └─────────┬───────────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │  Retrieve top-k     │  ← semantic search across index
+              │  relevant chunks    │
+              └─────────┬───────────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │   Claude API        │  ← answers using retrieved context only
+              │   with context      │
+              └─────────┬───────────┘
+                        │
+                        ▼
+              Answer grounded in your actual docs
+</pre>
+
+<h3>Two indexes, one interface</h3>
+
+<table>
+  <thead><tr><th>Index</th><th>Sources</th><th>Who can query</th></tr></thead>
+  <tbody>
+    <tr><td>Engineering</td><td>All <code>/engineering</code> knowledge files, PRDs, contracts</td><td>Whole team + agents</td></tr>
+    <tr><td>Business</td><td>All <code>/business</code> docs — customers, vendors, legal, finance</td><td>Leadership + account owners only</td></tr>
+  </tbody>
+</table>
+
+<div class="callout info">
+  <p><strong>Docs must stay current for this to work.</strong> A RAG system answers from what is indexed. Stale docs produce confident wrong answers. The update cadences in the knowledge hierarchy are what keep the assistant trustworthy.</p>
 </div>
 
 <hr>
