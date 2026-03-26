@@ -278,6 +278,7 @@
     <li><a href="#how-to-use">How to Use This Document</a></li>
     <li><a href="#process-map">The Process Map</a></li>
     <li><a href="#knowledge-hierarchy">Knowledge Hierarchy</a></li>
+    <li><a href="#reverse-sync">Business ↔ Engineering Reverse Sync</a></li>
     <li><a href="#project-start">Project Start: System Architecture Document</a></li>
     <li><a href="#phase-0">Phase 0: Platform Context + Domain Assignment</a></li>
     <li><a href="#phase-1">Phase 1: Idea</a></li>
@@ -552,6 +553,108 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 <div class="callout info">
   <p><strong>The rule that keeps every file small:</strong> Each file answers exactly one question at exactly one level. Functional files describe behaviour. Architecture files describe structure. Data files describe storage. If a file starts answering a question from a different column or a different level, that content belongs elsewhere. A file that grows without bound is mixing concerns or answering questions at the wrong level.</p>
+</div>
+
+<hr>
+
+<h2 id="reverse-sync">Business ↔ Engineering Reverse Sync</h2>
+
+<p>When engineering ships a feature, two knowledge bases must stay in sync: the engineering docs that describe <em>what was built</em>, and the business docs that describe <em>why it was asked for</em>. Without reverse sync, the link between obligation and implementation is permanently lost.</p>
+
+<div class="callout info">
+  <p><strong>The rule:</strong> Every PRD has a <code>Business Context</code> section listing which business documents it touches. After ship, every listed document gets a reverse sync entry — one to three lines, a status, and a link back to the PRD.</p>
+</div>
+
+<h3>Where reverse sync happens</h3>
+
+<table>
+  <thead>
+    <tr><th>Business document</th><th>Triggered by</th><th>What is added</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>customers/&lt;name&gt;/CONTRACT.md</code></td>
+      <td>Feature fulfils a contractual clause</td>
+      <td>Clause marked delivered · date · PRD link</td>
+    </tr>
+    <tr>
+      <td><code>customers/&lt;name&gt;/ANALYSIS.md</code></td>
+      <td>Feature materially changes the customer relationship</td>
+      <td>Updated health status · expansion notes</td>
+    </tr>
+    <tr>
+      <td><code>vendors/&lt;name&gt;/PROFILE.md</code></td>
+      <td>Integration with vendor built or changed</td>
+      <td>Integration point documented · dependency level updated</td>
+    </tr>
+    <tr>
+      <td><code>vendors/&lt;name&gt;/CONTRACT.md</code></td>
+      <td>Engineering adopts a new vendor capability or API</td>
+      <td>Usage noted · new SLA dependency flagged</td>
+    </tr>
+    <tr>
+      <td><code>legal/COMPLIANCE.md</code></td>
+      <td>Feature closes a compliance gap</td>
+      <td>Requirement marked met · date · PRD link</td>
+    </tr>
+    <tr>
+      <td><code>legal/PRIVACY.md</code></td>
+      <td>Feature changes data collection or retention</td>
+      <td>New data type documented · retention rule noted</td>
+    </tr>
+    <tr>
+      <td><code>strategy/GOALS.md</code></td>
+      <td>Feature delivers against a strategic goal or OKR</td>
+      <td>Goal marked delivered or progressed · date</td>
+    </tr>
+    <tr>
+      <td><code>operations/TOOLS.md</code></td>
+      <td>New tool, library, or service introduced</td>
+      <td>Added to stack · licence · cost · owner</td>
+    </tr>
+    <tr>
+      <td><code>finance/PRICING.md</code></td>
+      <td>Feature enables a new pricing tier or billing event</td>
+      <td>Tier updated · what engineering capability unlocked it</td>
+    </tr>
+    <tr>
+      <td><code>product/FEATURES.md</code></td>
+      <td>Every shipped feature — no exceptions</td>
+      <td>Index entry: business driver · PRD link · all business docs updated</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>The flow</h3>
+
+<pre>Business ask (contract clause / OKR / vendor requirement)
+     ↓  drives
+PRD — Business Context section lists which business docs are affected
+     ↓  ships
+Engineering knowledge updated (DOMAIN_FUNCTIONAL, DOMAIN_DATA, etc.)
+     ↓  reverse sync
+Each listed business doc updated with delivered status + PRD link
+     ↓
+product/FEATURES.md — index entry confirming all syncs complete</pre>
+
+<h3>What a reverse sync entry looks like</h3>
+
+<p>In the business doc (e.g. <code>customers/acme/CONTRACT.md</code>):</p>
+
+<pre>## Clause 4.2 — Data Export
+Requirement: customer data exportable within 24h on request
+Status: delivered 2026-04-01
+Engineering reference: domains/advertisers/docs/prd-data-export.md</pre>
+
+<p>In the PRD (<code>prd-data-export.md</code>):</p>
+
+<pre>## Business Context
+Driven by: Acme Corp contract clause 4.2
+Business doc: /business/customers/acme/CONTRACT.md
+Strategic goal: Q2 OKR — enterprise contracts compliant by June</pre>
+
+<div class="callout danger">
+  <p><strong><code>product/FEATURES.md</code> is the index, not the sync point.</strong> The actual reverse sync happens in the specific business document that was affected — contract, compliance, vendor, goal. <code>product/FEATURES.md</code> records that all syncs were completed and where to find them.</p>
 </div>
 
 <hr>
