@@ -341,213 +341,159 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 <h2 id="knowledge-hierarchy">Knowledge Hierarchy</h2>
 
-<p>Every agent session starts by reading documents, not code. Three concerns are kept strictly separate at every level: <strong>functional</strong> (what it does), <strong>architecture</strong> (how it is built), and <strong>data</strong> (what it stores). Mixing them forces agents to read past irrelevant content to find what they need.</p>
+<p>Every agent session starts by reading documents, not code. Three concerns are kept strictly separate at every level: <strong>business</strong> (what it does for users), <strong>architecture</strong> (how it is built), and <strong>data</strong> (what it stores). Each file targets one audience. Mixing concerns or audiences forces agents and humans to read past irrelevant content to find what they need.</p>
 
 <p>The hierarchy has four levels. Each level has its own set of files. Nothing crosses levels.</p>
 
+<h3>Document health metadata</h3>
+
+<p>Every knowledge file carries a YAML frontmatter block. Agents treat documents without a verified date as unverified claims.</p>
+
+<pre>---
+status: active          # draft | active | deprecated | archived
+audience: business      # business | engineering | agents | all
+last-verified: 2026-03-26
+verified-by: amit
+confidence: high        # high | medium | low
+next-review: 2026-06-26
+---</pre>
+
 <h3>The full file structure</h3>
 
-<pre>/ (repo root)                                        ← [1] frontend and backend are siblings
-│                                                       at the repo root, not nested
-├── PLATFORM_CONTEXT.md                              ← platform functional + global decisions
-├── PLATFORM_DATA.md                                 ← DB engine, table ownership index,
-│                                                       migration strategy, caching, event bus
+<pre>/ (repo root)
+│
+├── PLATFORM_CONTEXT.md                    ← platform overview, capabilities, open unknowns
+├── PLATFORM_DATA.md                       ← DB engine, table ownership, migration strategy
+├── AGENT_CONTEXT.md                       ← platform-level agent entry point (start here)
 │
 ├── docs/
-│   ├── system-architecture.md                       ← platform architecture: domain map,
-│   │                                                   folder convention, seam index
-│   ├── glossary.md                                  ← shared language across domains
-│   ├── ai-engineering-process.md                    ← process guide (not product knowledge)
+│   ├── system-architecture.md             ← domain map, folder convention, seam index,
+│   │                                         technical standards, ADR log
+│   ├── glossary.md                        ← shared terms across domains
+│   ├── UNKNOWNS.md                        ← aggregated open questions, owner, due date
 │   │
-│   └── contracts/                                   ← one folder per cross-domain seam
-│       └── advertisers→domain2/
-│           ├── FUNCTIONAL.md                        ← business contract between domains
-│           ├── ARCHITECTURE.md                      ← technical integration contract
-│           └── DATA.md                              ← field-level data contract
+│   └── contracts/                         ← one folder per cross-domain seam
+│       └── domain1→domain2/
+│           ├── FUNCTIONAL.md              ← business contract: what and why
+│           ├── ARCHITECTURE.md            ← technical contract: how, versioning, rates
+│           └── DATA.md                    ← field-level contract: types, ownership
 │
-├── backend/src/
-│   └── domains/
-│       │
-│       ├── advertisers/                             ← [7] built domain
-│       │   ├── DOMAIN_FUNCTIONAL.md                 ← what advertisers does: entities,
-│       │   │                                           API contract, language, business rules
-│       │   ├── DOMAIN_ARCHITECTURE.md               ← how it is built: module map,
-│       │   │                                           data flow, design patterns, debt
-│       │   ├── DOMAIN_DATA.md                       ← DB tables, schema, indexes,
-│       │   │                                           migrations, test isolation
-│       │   ├── AdvertiserController.ts              ← [6] code files live here alongside docs
-│       │   ├── AdvertiserRepository.ts
-│       │   ├── TagFileService.ts
-│       │   ├── routes.ts
-│       │   ├── validation.ts
-│       │   └── docs/                                ← archived PRDs — never modified after ship
-│       │       ├── prd-tag-manager.md               ← feature PRD: stories + acceptance criteria
-│       │       └── prd-&lt;feature&gt;.md
-│       │
-│       └── domain2/                                 ← [7] stub domain — replace when built
-│           ├── DOMAIN_FUNCTIONAL.md
-│           ├── DOMAIN_ARCHITECTURE.md
-│           ├── DOMAIN_DATA.md
-│           ├── docs/                                ← [2] every domain needs a docs/ for PRDs
-│           │   └── prd-&lt;feature&gt;.md
-│           └── module2_1/                           ← [3] complex module — sits under domain,
-│               │                                       separate from domain-level docs above
-│               ├── MODULE_FUNCTIONAL.md             ← what this module does: interface,
-│               │                                       inputs/outputs, what it does NOT do
-│               ├── MODULE_ARCHITECTURE.md           ← how it works internally: data flow,
-│               │                                       design choices, known constraints
-│               └── MODULE_DATA.md                   ← [4] only created if module has its own
-│                                                       data concerns (cache, temp storage)
-│                                                       omit entirely if not needed
+├── backend/src/domains/
+│   │
+│   ├── domain1/                           ← built domain
+│   │   ├── docs/
+│   │   │   ├── AGENT_CONTEXT.md           ← domain agent entry point: read order,
+│   │   │   │                                 common tasks, risks, do-not-touch list
+│   │   │   ├── DOMAIN_BUSINESS.md         ← audience: business + PM
+│   │   │   │                                 use cases, user goals, business rules,
+│   │   │   │                                 domain language, what is out of scope
+│   │   │   ├── DOMAIN_API.md              ← audience: engineers + agents
+│   │   │   │                                 endpoints, request/response shapes,
+│   │   │   │                                 validation rules, error cases
+│   │   │   ├── DOMAIN_BACKEND_ARCHITECTURE.md  ← module map, data flow,
+│   │   │   │                                      patterns, debt, ADRs
+│   │   │   ├── DOMAIN_DATA.md             ← DB tables, schema, migrations, indexes.
+│   │   │   │                                 Backend owns this. Frontend has none.
+│   │   │   ├── openapi.yaml               ← machine-readable API spec (source of truth
+│   │   │   │                                 for DOMAIN_API.md — never contradict it)
+│   │   │   └── prd-&lt;feature&gt;.md          ← archived PRDs. status: draft→approved
+│   │   │                                     →executing→shipped→archived. Never deleted.
+│   │   │
+│   │   └── module1/                       ← complex backend module only
+│   │       └── docs/
+│   │           ├── MODULE_BACKEND_FUNCTIONAL.md    ← public interface, inputs/outputs,
+│   │           │                                      what it does NOT handle
+│   │           ├── MODULE_BACKEND_ARCHITECTURE.md  ← internal data flow, design choices,
+│   │           │                                      known constraints
+│   │           └── MODULE_BACKEND_DATA.md          ← OPTIONAL: only if module manages
+│   │                                                  its own cache, queue, temp storage
+│   └── domain2/                           ← stub domain — replace when built
+│       ├── docs/
+│       │   ├── AGENT_CONTEXT.md
+│       │   ├── DOMAIN_BUSINESS.md
+│       │   ├── DOMAIN_API.md
+│       │   ├── DOMAIN_BACKEND_ARCHITECTURE.md
+│       │   ├── DOMAIN_DATA.md
+│       │   ├── openapi.yaml
+│       │   └── prd-&lt;feature&gt;.md
+│       └── module2/
+│           └── docs/
+│               ├── MODULE_BACKEND_FUNCTIONAL.md
+│               ├── MODULE_BACKEND_ARCHITECTURE.md
+│               └── MODULE_BACKEND_DATA.md          ← OPTIONAL
 │
-└── frontend/src/
-    ├── domains/                                     ← mirrors backend domain structure
-    │   ├── advertisers/                             ← [7] built domain
-    │   │   ├── DOMAIN_FUNCTIONAL.md                 ← pages, routes, user-facing behaviour
-    │   │   ├── DOMAIN_ARCHITECTURE.md               ← component structure, state management,
-    │   │   │                                           API client patterns for this domain
-    │   │   │                                        ← [10] no DOMAIN_DATA.md — frontend does
-    │   │   │                                            not own DB tables; data lives in backend
-    │   │   ├── pages/
-    │   │   ├── components/                          ← domain-specific components
-    │   │   └── api.ts                               ← typed API client for this domain
-    │   └── domain2/                                 ← [7] stub domain — replace when built
-    │       ├── DOMAIN_FUNCTIONAL.md
-    │       ├── DOMAIN_ARCHITECTURE.md
-    │       │                                        ← [10] no DOMAIN_DATA.md — same reason
-    │       ├── pages/                               ← [5] consistent structure across domains
-    │       ├── components/
-    │       └── api.ts                               ← [8] every frontend domain needs an API client
-    ├── components/                                  ← shared UI components (not domain-specific)
-    └── lib/                                         ← shared utilities: routing, validation, etc.</pre>
+└── frontend/src/domains/
+    │
+    ├── domain1/                           ← built domain
+    │   ├── docs/
+    │   │   ├── AGENT_CONTEXT.md           ← frontend agent entry point
+    │   │   └── DOMAIN_FRONTEND_ARCHITECTURE.md  ← component map, state management,
+    │   │                                           API client patterns
+    │   │                                        ← no DOMAIN_BUSINESS.md: read from backend
+    │   │                                        ← no DOMAIN_API.md: read from backend
+    │   │                                        ← no DOMAIN_DATA.md: frontend owns no DB
+    │   └── module1/
+    │       └── docs/
+    │           ├── MODULE_FRONTEND_FUNCTIONAL.md    ← props/inputs, events emitted,
+    │           │                                       what it does NOT handle
+    │           └── MODULE_FRONTEND_ARCHITECTURE.md  ← component tree, state model,
+    │                                                   data flow, known limitations
+    │                                               ← no MODULE_FRONTEND_DATA.md unless
+    │                                                  module uses localStorage/IndexedDB
+    └── domain2/                           ← stub domain — replace when built
+        ├── docs/
+        │   ├── AGENT_CONTEXT.md
+        │   └── DOMAIN_FRONTEND_ARCHITECTURE.md
+        └── module2/
+            └── docs/
+                ├── MODULE_FRONTEND_FUNCTIONAL.md
+                └── MODULE_FRONTEND_ARCHITECTURE.md</pre>
 
-<h3>Level 1 — Platform</h3>
+<h3>What each file contains</h3>
 
-<p><strong><code>PLATFORM_CONTEXT.md</code></strong> — functional</p>
-<ul>
-  <li>What the platform does and who it serves — in business terms, not technical terms</li>
-  <li>What capabilities are live today vs planned</li>
-  <li>Settled business-level decisions: who the users are, what they can do, what is out of scope</li>
-  <li>Cross-domain seam index: which seams exist and links to each contract folder</li>
-  <li>Links to each domain's <code>DOMAIN_FUNCTIONAL.md</code></li>
-  <li>Open business questions that span the whole platform</li>
-</ul>
-
-<p><strong><code>PLATFORM_DATA.md</code></strong> — data</p>
-<ul>
-  <li>Database engine choice and why</li>
-  <li>Table-to-domain ownership index: one line per table, which domain owns it</li>
-  <li>Migration strategy: how migrations are run, named, and ordered</li>
-  <li>Backup and recovery policy</li>
-  <li>Caching strategy: what is cached, at what layer, how it is invalidated</li>
-  <li>Event bus schema registry (if any)</li>
-</ul>
-
-<p><strong><code>docs/system-architecture.md</code></strong> — architecture</p>
-<ul>
-  <li>Domain table: name, core entity, what it owns, what it does not own, owner</li>
-  <li>Folder structure convention for backend and frontend</li>
-  <li>Cross-domain seam table: from, to, contract type, link to contract folder</li>
-  <li>Platform-wide technical standards: API versioning policy, error response format, logging standard, auth mechanism</li>
-  <li>Platform-level architectural decision log</li>
-</ul>
-
-<p><strong><code>docs/glossary.md</code></strong> — shared language</p>
-<ul>
-  <li>Terms used across more than one domain with their canonical definitions</li>
-  <li>Each domain notes how it maps to the shared definition</li>
-  <li>Single-domain terms belong in that domain's <code>DOMAIN_FUNCTIONAL.md</code>, not here</li>
-</ul>
-
-<h3>Level 2 — Cross-domain (one folder per seam)</h3>
-
-<p>One folder per active seam at <code>docs/contracts/&lt;provider&gt;→&lt;consumer&gt;/</code>. Owned jointly by both domain teams.</p>
-
-<p><strong><code>FUNCTIONAL.md</code></strong> — what and why</p>
-<ul>
-  <li>What business capability the consumer domain needs from the provider</li>
-  <li>The business reason the dependency exists</li>
-  <li>Business rules that apply across the boundary</li>
-  <li>What happens to the user experience if the provider is unavailable</li>
-</ul>
-
-<p><strong><code>ARCHITECTURE.md</code></strong> — how it is built</p>
-<ul>
-  <li>Integration method: HTTP call, shared interface, or event</li>
-  <li>Full request/response shapes, status codes, and error cases</li>
-  <li>Versioning, breaking change protocol, deprecation policy, rate limits</li>
-</ul>
-
-<p><strong><code>DATA.md</code></strong> — what crosses the wire</p>
-<ul>
-  <li>Exact fields, types, required vs optional</li>
-  <li>What the consumer may store locally vs must always re-fetch</li>
-  <li>Ownership of each field: which domain is the source of truth</li>
-</ul>
-
-<div class="callout danger">
-  <p><strong>Created when a seam is established — before any code crosses it.</strong> Never deleted. Old versions marked deprecated with a sunset date. If domain B changes its contract, <code>ARCHITECTURE.md</code> is updated first, migration window documented, then code changes follow.</p>
-</div>
-
-<h3>Level 3 — Domain (one set per domain, backend and frontend)</h3>
-
-<p><strong><code>DOMAIN_FUNCTIONAL.md</code></strong> — what the domain does</p>
-<ul>
-  <li>Domain boundary: what it owns, what it does NOT own</li>
-  <li>Core entities in plain language — what they are, not how they are stored</li>
-  <li>What users can do in this domain: key actions and their outcomes</li>
-  <li>Business rules and constraints that govern this domain</li>
-  <li>Frontend: pages, routes, what the user sees and does</li>
-  <li>Ubiquitous language for this domain</li>
-  <li>Settled business decisions · open questions · links to PRDs</li>
-</ul>
-
-<p><strong><code>DOMAIN_ARCHITECTURE.md</code></strong> — how the domain is built</p>
-<ul>
-  <li>Module map: what each backend file does</li>
-  <li>Component map: what each frontend component does</li>
-  <li>Data flow: how a key operation moves through the stack end to end</li>
-  <li>Design patterns used and why</li>
-  <li>Internal technical decisions · known debt · open RFCs</li>
-</ul>
-
-<p><strong><code>DOMAIN_DATA.md</code></strong> — what the domain stores</p>
-<ul>
-  <li>DB tables owned by this domain: columns, types, constraints, indexes</li>
-  <li>Schema design rationale</li>
-  <li>Migration files: list with descriptions</li>
-  <li>Foreign keys: which are internal, which cross domain boundaries</li>
-  <li>Test data strategy: how tests reset and seed this domain's tables</li>
-</ul>
-
-<p><strong><code>docs/prd-&lt;feature&gt;.md</code></strong> — one per feature, lives next to the code</p>
-<ul>
-  <li>User stories and acceptance criteria — stay here only, never promoted after ship</li>
-  <li>What gets promoted after ship: new entities → <code>DOMAIN_FUNCTIONAL.md</code> · new schema → <code>DOMAIN_DATA.md</code> · new patterns → <code>DOMAIN_ARCHITECTURE.md</code></li>
-  <li>Archived after ship. Never deleted. Never modified after execution starts.</li>
-</ul>
-
-<h3>Level 4 — Module (complex modules only)</h3>
-
-<p><strong><code>MODULE_FUNCTIONAL.md</code></strong> — what this module does for its callers · public interface: inputs, outputs, events · what it explicitly does NOT handle</p>
-<p><strong><code>MODULE_ARCHITECTURE.md</code></strong> — how it works internally · data flow through the module · design choices and trade-offs · known limitations</p>
-<p><strong><code>MODULE_DATA.md</code></strong> <em>(only if the module has its own data concerns)</em> — cache schema, temp storage, in-memory state. Omit if the module has no independent data concerns.</p>
-<p>Skip all module files for simple modules. Add only when the interface or internals are not obvious from reading the file header.</p>
+<table>
+  <thead><tr><th>File</th><th>Audience</th><th>Contains</th></tr></thead>
+  <tbody>
+    <tr><td><code>PLATFORM_CONTEXT.md</code></td><td>All</td><td>What the platform does, who it serves, capabilities live vs planned, open unknowns</td></tr>
+    <tr><td><code>PLATFORM_DATA.md</code></td><td>Engineering</td><td>DB engine, table ownership index, migration strategy, caching, event bus</td></tr>
+    <tr><td><code>AGENT_CONTEXT.md</code> (platform)</td><td>Agents</td><td>Read order, domain map, common tasks, platform risks</td></tr>
+    <tr><td><code>system-architecture.md</code></td><td>Engineering</td><td>Domain table, folder convention, seam index, technical standards, ADR log</td></tr>
+    <tr><td><code>glossary.md</code></td><td>All</td><td>Terms shared across more than one domain</td></tr>
+    <tr><td><code>UNKNOWNS.md</code></td><td>All</td><td>Aggregated open questions from all levels, owner, due date</td></tr>
+    <tr><td><code>contracts/.../FUNCTIONAL.md</code></td><td>Both domain teams</td><td>Business reason for seam, rules that cross the boundary, impact if unavailable</td></tr>
+    <tr><td><code>contracts/.../ARCHITECTURE.md</code></td><td>Engineering</td><td>Integration method, request/response shapes, versioning, rate limits</td></tr>
+    <tr><td><code>contracts/.../DATA.md</code></td><td>Engineering</td><td>Fields, types, required vs optional, source of truth per field</td></tr>
+    <tr><td><code>AGENT_CONTEXT.md</code> (domain)</td><td>Agents</td><td>Read order for this domain, common tasks, risks, do-not-touch list</td></tr>
+    <tr><td><code>DOMAIN_BUSINESS.md</code></td><td>Business + PM</td><td>Use cases in plain language, user goals, business rules, domain glossary, out of scope</td></tr>
+    <tr><td><code>DOMAIN_API.md</code></td><td>Engineering + Agents</td><td>Endpoints, request/response shapes, validation rules, error cases</td></tr>
+    <tr><td><code>DOMAIN_BACKEND_ARCHITECTURE.md</code></td><td>Backend engineers</td><td>Module map, data flow, patterns, debt, ADRs</td></tr>
+    <tr><td><code>DOMAIN_DATA.md</code></td><td>Backend engineers</td><td>DB tables, schema, migrations, indexes, test data strategy</td></tr>
+    <tr><td><code>openapi.yaml</code></td><td>Agents + tooling</td><td>Machine-readable API spec — source of truth for DOMAIN_API.md</td></tr>
+    <tr><td><code>prd-&lt;feature&gt;.md</code></td><td>Engineering team</td><td>User stories, acceptance criteria, tracer bullet slices. Archived after ship.</td></tr>
+    <tr><td><code>DOMAIN_FRONTEND_ARCHITECTURE.md</code></td><td>Frontend engineers</td><td>Component map, state management, API client patterns</td></tr>
+    <tr><td><code>MODULE_BACKEND_FUNCTIONAL.md</code></td><td>Any engineer calling the module</td><td>Public interface, inputs/outputs, what it does NOT handle</td></tr>
+    <tr><td><code>MODULE_BACKEND_ARCHITECTURE.md</code></td><td>Backend engineers</td><td>Internal data flow, design choices, known constraints</td></tr>
+    <tr><td><code>MODULE_BACKEND_DATA.md</code></td><td>Backend engineers</td><td>OPTIONAL: cache schema, queue, temp storage — omit if not needed</td></tr>
+    <tr><td><code>MODULE_FRONTEND_FUNCTIONAL.md</code></td><td>Any engineer using the component</td><td>Props/inputs, events emitted, what it does NOT handle</td></tr>
+    <tr><td><code>MODULE_FRONTEND_ARCHITECTURE.md</code></td><td>Frontend engineers</td><td>Component tree, state model, data flow, known limitations</td></tr>
+  </tbody>
+</table>
 
 <h3>What an agent reads for each task</h3>
 
 <table>
   <thead><tr><th>Task</th><th>Files to read</th></tr></thead>
   <tbody>
-    <tr><td>Add a feature to a domain</td><td><code>PLATFORM_CONTEXT.md</code> + <code>DOMAIN_FUNCTIONAL.md</code> + <code>DOMAIN_ARCHITECTURE.md</code></td></tr>
-    <tr><td>Write a migration for a domain</td><td><code>DOMAIN_DATA.md</code> + <code>PLATFORM_DATA.md</code></td></tr>
-    <tr><td>Fix a bug in a domain</td><td><code>DOMAIN_FUNCTIONAL.md</code> + relevant <code>prd-&lt;feature&gt;.md</code></td></tr>
-    <tr><td>Build frontend for a domain</td><td><code>DOMAIN_FUNCTIONAL.md</code> + <code>DOMAIN_ARCHITECTURE.md</code> (frontend section)</td></tr>
-    <tr><td>Build a cross-domain feature</td><td>Both <code>DOMAIN_FUNCTIONAL.md</code> files + <code>contracts/&lt;seam&gt;/FUNCTIONAL.md</code> + <code>ARCHITECTURE.md</code></td></tr>
-    <tr><td>Add a new domain</td><td><code>PLATFORM_CONTEXT.md</code> + <code>system-architecture.md</code></td></tr>
-    <tr><td>Establish a new seam</td><td>Both <code>DOMAIN_FUNCTIONAL.md</code> files + <code>system-architecture.md</code> → write <code>contracts/&lt;seam&gt;/</code></td></tr>
-    <tr><td>Full architecture review</td><td><code>system-architecture.md</code> + all <code>DOMAIN_ARCHITECTURE.md</code> files</td></tr>
-    <tr><td>Work inside a complex module</td><td><code>MODULE_FUNCTIONAL.md</code> + <code>MODULE_ARCHITECTURE.md</code></td></tr>
+    <tr><td>Start any task in a domain</td><td><code>AGENT_CONTEXT.md</code> (domain) first — always</td></tr>
+    <tr><td>Understand a business requirement</td><td><code>DOMAIN_BUSINESS.md</code></td></tr>
+    <tr><td>Add or change an endpoint</td><td><code>DOMAIN_API.md</code> + <code>openapi.yaml</code> + <code>DOMAIN_BACKEND_ARCHITECTURE.md</code></td></tr>
+    <tr><td>Write a DB migration</td><td><code>DOMAIN_DATA.md</code> + <code>PLATFORM_DATA.md</code></td></tr>
+    <tr><td>Fix a bug in a domain</td><td><code>DOMAIN_BUSINESS.md</code> + <code>DOMAIN_API.md</code> + relevant <code>prd-&lt;feature&gt;.md</code></td></tr>
+    <tr><td>Build frontend for a domain</td><td><code>DOMAIN_BUSINESS.md</code> + <code>DOMAIN_API.md</code> + <code>DOMAIN_FRONTEND_ARCHITECTURE.md</code></td></tr>
+    <tr><td>Build a cross-domain feature</td><td>Both <code>DOMAIN_BUSINESS.md</code> files + <code>contracts/&lt;seam&gt;/FUNCTIONAL.md</code> + <code>ARCHITECTURE.md</code></td></tr>
+    <tr><td>Add a new domain</td><td><code>AGENT_CONTEXT.md</code> (platform) + <code>system-architecture.md</code></td></tr>
+    <tr><td>Full architecture review</td><td><code>system-architecture.md</code> + all <code>DOMAIN_BACKEND_ARCHITECTURE.md</code> files</td></tr>
+    <tr><td>Work inside a complex module</td><td><code>MODULE_BACKEND_FUNCTIONAL.md</code> + <code>MODULE_BACKEND_ARCHITECTURE.md</code></td></tr>
   </tbody>
 </table>
 
@@ -556,23 +502,31 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 <table>
   <thead><tr><th>File</th><th>Created</th><th>Updated</th></tr></thead>
   <tbody>
-    <tr><td><code>PLATFORM_CONTEXT.md</code></td><td>Project start</td><td>After every feature ships · global decisions change · seam added</td></tr>
+    <tr><td><code>PLATFORM_CONTEXT.md</code></td><td>Project start</td><td>After every feature ships · capabilities change · seam added</td></tr>
     <tr><td><code>PLATFORM_DATA.md</code></td><td>Project start</td><td>DB strategy changes · new table ownership · migration runner changes</td></tr>
-    <tr><td><code>system-architecture.md</code></td><td>Project start</td><td>New domain added · seam established or changed</td></tr>
-    <tr><td><code>glossary.md</code></td><td>First cross-domain shared term appears</td><td>Shared term added, changed, or moved to a domain</td></tr>
-    <tr><td><code>contracts/&lt;seam&gt;/</code></td><td>When seam is established — before any code crosses it</td><td>Contract changes · version deprecated</td></tr>
-    <tr><td><code>DOMAIN_FUNCTIONAL.md</code></td><td>When domain is first defined</td><td>Feature ships (new entities, API, rules promoted from PRD)</td></tr>
-    <tr><td><code>DOMAIN_ARCHITECTURE.md</code></td><td>When domain is first defined</td><td>Refactor changes module map · new pattern introduced · debt resolved</td></tr>
+    <tr><td><code>AGENT_CONTEXT.md</code> (platform)</td><td>Project start</td><td>New domain added · major risk surfaces · read order changes</td></tr>
+    <tr><td><code>system-architecture.md</code></td><td>Project start</td><td>Domain added · seam established or changed · ADR added</td></tr>
+    <tr><td><code>glossary.md</code></td><td>First shared term appears</td><td>Term added, changed, or moved to a domain</td></tr>
+    <tr><td><code>UNKNOWNS.md</code></td><td>Project start</td><td>Any time an open question is identified or resolved</td></tr>
+    <tr><td><code>contracts/&lt;seam&gt;/</code></td><td>Before any code crosses the seam</td><td>Contract changes · version deprecated</td></tr>
+    <tr><td><code>AGENT_CONTEXT.md</code> (domain)</td><td>When domain is first defined</td><td>New module added · risk surfaces · read order changes</td></tr>
+    <tr><td><code>DOMAIN_BUSINESS.md</code></td><td>When domain is first defined</td><td>Feature ships (new use cases, rules promoted from PRD)</td></tr>
+    <tr><td><code>DOMAIN_API.md</code></td><td>When domain is first defined</td><td>Endpoint added, changed, or deprecated</td></tr>
+    <tr><td><code>DOMAIN_BACKEND_ARCHITECTURE.md</code></td><td>When domain is first defined</td><td>Refactor · new pattern · debt resolved · ADR added</td></tr>
     <tr><td><code>DOMAIN_DATA.md</code></td><td>When domain is first defined</td><td>Schema changes · migration added · test strategy changes</td></tr>
-    <tr><td><code>prd-&lt;feature&gt;.md</code></td><td>Phase 4 via <span class="skill">/write-a-prd</span></td><td>Only if scope changes before execution starts. Archived after ship. Never deleted.</td></tr>
-    <tr><td><code>MODULE_FUNCTIONAL.md</code></td><td>When module interface is non-obvious</td><td>Public interface changes</td></tr>
-    <tr><td><code>MODULE_ARCHITECTURE.md</code></td><td>When module internals need documentation</td><td>Internal design changes</td></tr>
-    <tr><td><code>MODULE_DATA.md</code></td><td>When module has independent data concerns</td><td>Data structure changes</td></tr>
+    <tr><td><code>openapi.yaml</code></td><td>When first endpoint is defined</td><td>Any API change — must stay in sync with <code>DOMAIN_API.md</code></td></tr>
+    <tr><td><code>DOMAIN_FRONTEND_ARCHITECTURE.md</code></td><td>When frontend work begins</td><td>Component structure changes · state model changes</td></tr>
+    <tr><td><code>prd-&lt;feature&gt;.md</code></td><td>Phase 4 via <span class="skill">/write-a-prd</span></td><td>Only before execution starts. Status: draft→approved→executing→shipped→archived.</td></tr>
+    <tr><td><code>MODULE_BACKEND_FUNCTIONAL.md</code></td><td>When module interface is non-obvious</td><td>Public interface changes</td></tr>
+    <tr><td><code>MODULE_BACKEND_ARCHITECTURE.md</code></td><td>When module internals need documentation</td><td>Internal design changes</td></tr>
+    <tr><td><code>MODULE_BACKEND_DATA.md</code></td><td>When module manages its own data</td><td>Data structure changes</td></tr>
+    <tr><td><code>MODULE_FRONTEND_FUNCTIONAL.md</code></td><td>When component interface is non-obvious</td><td>Props or events change</td></tr>
+    <tr><td><code>MODULE_FRONTEND_ARCHITECTURE.md</code></td><td>When component internals need documentation</td><td>Internal structure changes</td></tr>
   </tbody>
 </table>
 
 <div class="callout info">
-  <p><strong>The rule that keeps every file small:</strong> Each file answers exactly one question at exactly one level. Functional files describe behaviour. Architecture files describe structure. Data files describe storage. If a file starts answering a question from a different column or a different level, that content belongs elsewhere. A file that grows without bound is mixing concerns or answering questions at the wrong level.</p>
+  <p><strong>The rule that keeps every file small:</strong> Each file answers one question for one audience at one level. If it starts answering a question from a different audience or a different level, that content belongs elsewhere. A file that grows without bound is mixing concerns.</p>
 </div>
 
 <hr>
