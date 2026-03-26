@@ -343,7 +343,7 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 <p>Every agent session starts by reading documents, not code. Three concerns are kept strictly separate at every level: <strong>functional</strong> (what it does), <strong>architecture</strong> (how it is built), and <strong>data</strong> (what it stores). Mixing them forces agents to read past irrelevant content to find what they need.</p>
 
-<p>The hierarchy has five levels. Each level has its own set of files. Nothing crosses levels.</p>
+<p>The hierarchy has four levels. Each level has its own set of files. Nothing crosses levels.</p>
 
 <h3>The full file structure</h3>
 
@@ -564,7 +564,7 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 <h2 id="business-knowledge">Business Knowledge Hierarchy</h2>
 
-<p>Business knowledge lives in a separate tree from engineering docs. Same three-concern principle applies at every node: <strong>context</strong> (what it is), <strong>terms</strong> (obligations and commitments), <strong>analysis</strong> (decisions and rationale). Never mix them.</p>
+<p>Business knowledge lives in a separate tree from engineering docs. The same separation-of-concerns principle applies, but with business-appropriate concern names: <strong>context</strong> (what it is), <strong>terms</strong> (obligations and commitments), <strong>analysis</strong> (decisions and rationale). Engineering uses functional / architecture / data. Business uses context / terms / analysis. Never mix them within a node.</p>
 
 <pre>/business/
 │
@@ -874,13 +874,14 @@ Accepted 2026-03-21. PRD: domains/advertisers/docs/prd-csv-export.md</pre>
  ┌─────────────────────────────────────────────────────────┐
  │                    KNOWLEDGE SOURCES                    │
  │                                                         │
- │   /business/          engineering docs                  │
- │   strategy            PLATFORM_CONTEXT.md               │
- │   customers           DOMAIN_FUNCTIONAL.md              │
- │   vendors             DOMAIN_ARCHITECTURE.md            │
- │   legal               DOMAIN_DATA.md                    │
- │   finance             contracts/                        │
- │   product             PRDs                              │
+ │   /business/               /engineering docs             │
+ │   strategy/GOALS.md        PLATFORM_CONTEXT.md          │
+ │   customers/<name>/        DOMAIN_FUNCTIONAL.md         │
+ │     PROFILE.md             DOMAIN_ARCHITECTURE.md       │
+ │     CONTRACT.md            DOMAIN_DATA.md               │
+ │     ANALYSIS.md            contracts/<seam>/            │
+ │   vendors/ · legal/        PRDs                         │
+ │   finance/ · product/                                   │
  └────────────┬──────────────────────┬────────────────────┘
               │                      │
               ▼                      ▼
