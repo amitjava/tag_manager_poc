@@ -409,62 +409,64 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 <p><strong><code>PLATFORM_CONTEXT.md</code></strong> — functional</p>
 <ul>
-  <li>What the platform is, who uses it, current status</li>
-  <li>Global settled decisions: auth model, error response format, API versioning policy, logging standard</li>
-  <li>Cross-domain seam index: table of all active seams, link to each contract folder</li>
-  <li>Links to all domain functional files</li>
-  <li>Genuine open unknowns at the platform level</li>
+  <li>What the platform does and who it serves — in business terms, not technical terms</li>
+  <li>What capabilities are live today vs planned</li>
+  <li>Settled business-level decisions: who the users are, what they can do, what is out of scope</li>
+  <li>Cross-domain seam index: which seams exist and links to each contract folder</li>
+  <li>Links to each domain's <code>DOMAIN_FUNCTIONAL.md</code></li>
+  <li>Open business questions that span the whole platform</li>
 </ul>
 
 <p><strong><code>PLATFORM_DATA.md</code></strong> — data</p>
 <ul>
-  <li>DB engine and client library decisions</li>
+  <li>Database engine choice and why</li>
   <li>Table-to-domain ownership index: one line per table, which domain owns it</li>
-  <li>Migration strategy: runner, naming convention, how migrations are ordered</li>
+  <li>Migration strategy: how migrations are run, named, and ordered</li>
   <li>Backup and recovery policy</li>
-  <li>Caching strategy (if any): what is cached, at what layer, invalidation approach</li>
+  <li>Caching strategy: what is cached, at what layer, how it is invalidated</li>
   <li>Event bus schema registry (if any)</li>
 </ul>
 
 <p><strong><code>docs/system-architecture.md</code></strong> — architecture</p>
 <ul>
   <li>Domain table: name, core entity, what it owns, what it does not own, owner</li>
-  <li>Folder structure convention: backend and frontend</li>
-  <li>Cross-domain seam table: from domain, to domain, contract type, link to contract folder</li>
+  <li>Folder structure convention for backend and frontend</li>
+  <li>Cross-domain seam table: from, to, contract type, link to contract folder</li>
+  <li>Platform-wide technical standards: API versioning policy, error response format, logging standard, auth mechanism</li>
   <li>Platform-level architectural decision log</li>
 </ul>
 
 <p><strong><code>docs/glossary.md</code></strong> — shared language</p>
 <ul>
-  <li>Terms that appear in more than one domain</li>
+  <li>Terms used across more than one domain with their canonical definitions</li>
   <li>Each domain notes how it maps to the shared definition</li>
-  <li>A term that lives in only one domain belongs in that domain's <code>DOMAIN_FUNCTIONAL.md</code>, not here</li>
+  <li>Single-domain terms belong in that domain's <code>DOMAIN_FUNCTIONAL.md</code>, not here</li>
 </ul>
 
 <h3>Level 2 — Cross-domain (one folder per seam)</h3>
 
 <p>One folder per active seam at <code>docs/contracts/&lt;provider&gt;→&lt;consumer&gt;/</code>. Owned jointly by both domain teams.</p>
 
-<p><strong><code>FUNCTIONAL.md</code></strong></p>
+<p><strong><code>FUNCTIONAL.md</code></strong> — what and why</p>
 <ul>
-  <li>What capability the consumer domain is using from the provider</li>
-  <li>The business reason for the dependency</li>
-  <li>Business rules that cross the boundary</li>
-  <li>What it means if the provider is unavailable</li>
+  <li>What business capability the consumer domain needs from the provider</li>
+  <li>The business reason the dependency exists</li>
+  <li>Business rules that apply across the boundary</li>
+  <li>What happens to the user experience if the provider is unavailable</li>
 </ul>
 
-<p><strong><code>ARCHITECTURE.md</code></strong></p>
+<p><strong><code>ARCHITECTURE.md</code></strong> — how it is built</p>
 <ul>
-  <li>How the integration is implemented: HTTP, interface, or event</li>
-  <li>Full endpoint or event schema: request/response shapes, status codes, error cases</li>
-  <li>Auth requirements, versioning, breaking change protocol, rate limits</li>
+  <li>Integration method: HTTP call, shared interface, or event</li>
+  <li>Full request/response shapes, status codes, and error cases</li>
+  <li>Versioning, breaking change protocol, deprecation policy, rate limits</li>
 </ul>
 
-<p><strong><code>DATA.md</code></strong></p>
+<p><strong><code>DATA.md</code></strong> — what crosses the wire</p>
 <ul>
-  <li>Exact fields passed across the boundary and their types</li>
-  <li>Required vs optional fields</li>
-  <li>What the consumer may store vs must re-fetch</li>
+  <li>Exact fields, types, required vs optional</li>
+  <li>What the consumer may store locally vs must always re-fetch</li>
+  <li>Ownership of each field: which domain is the source of truth</li>
 </ul>
 
 <div class="callout danger">
@@ -473,48 +475,48 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 <h3>Level 3 — Domain (one set per domain, backend and frontend)</h3>
 
-<p><strong><code>DOMAIN_FUNCTIONAL.md</code></strong></p>
+<p><strong><code>DOMAIN_FUNCTIONAL.md</code></strong> — what the domain does</p>
 <ul>
   <li>Domain boundary: what it owns, what it does NOT own</li>
-  <li>Core entities and their definitions (not schema — that is in DATA)</li>
+  <li>Core entities in plain language — what they are, not how they are stored</li>
+  <li>What users can do in this domain: key actions and their outcomes</li>
+  <li>Business rules and constraints that govern this domain</li>
+  <li>Frontend: pages, routes, what the user sees and does</li>
   <li>Ubiquitous language for this domain</li>
-  <li>API contract from a caller's perspective: what each endpoint means in business terms</li>
-  <li>Frontend: pages, routes, user-facing behaviour</li>
-  <li>Settled business decisions · open business questions · links to PRDs</li>
+  <li>Settled business decisions · open questions · links to PRDs</li>
 </ul>
 
-<p><strong><code>DOMAIN_ARCHITECTURE.md</code></strong></p>
+<p><strong><code>DOMAIN_ARCHITECTURE.md</code></strong> — how the domain is built</p>
 <ul>
-  <li>Module map: what each backend file is responsible for</li>
-  <li>Component map: what each frontend component is responsible for</li>
-  <li>Data flow: how each key operation moves through the stack</li>
+  <li>Module map: what each backend file does</li>
+  <li>Component map: what each frontend component does</li>
+  <li>Data flow: how a key operation moves through the stack end to end</li>
   <li>Design patterns used and why</li>
-  <li>Internal technical decisions · known architectural debt · open RFCs</li>
+  <li>Internal technical decisions · known debt · open RFCs</li>
 </ul>
 
-<p><strong><code>DOMAIN_DATA.md</code></strong></p>
+<p><strong><code>DOMAIN_DATA.md</code></strong> — what the domain stores</p>
 <ul>
   <li>DB tables owned by this domain: columns, types, constraints, indexes</li>
   <li>Schema design rationale</li>
-  <li>Migration files for this domain (list with descriptions)</li>
+  <li>Migration files: list with descriptions</li>
   <li>Foreign keys: which are internal, which cross domain boundaries</li>
-  <li>Test data strategy: how tests reset and seed this domain's data</li>
+  <li>Test data strategy: how tests reset and seed this domain's tables</li>
 </ul>
 
-<p><strong><code>docs/prd-&lt;feature&gt;.md</code></strong> — one per feature</p>
+<p><strong><code>docs/prd-&lt;feature&gt;.md</code></strong> — one per feature, lives next to the code</p>
 <ul>
-  <li>Full 12-section PRD: user stories, acceptance criteria, tracer bullet slices</li>
-  <li>Acceptance criteria stay here only — they do not get promoted to functional files after ship</li>
-  <li>What does get promoted after ship: new entities and API → <code>DOMAIN_FUNCTIONAL.md</code>, new schema → <code>DOMAIN_DATA.md</code>, new patterns → <code>DOMAIN_ARCHITECTURE.md</code></li>
-  <li>Archived after ship. Never deleted. Never updated after execution starts.</li>
+  <li>User stories and acceptance criteria — stay here only, never promoted after ship</li>
+  <li>What gets promoted after ship: new entities → <code>DOMAIN_FUNCTIONAL.md</code> · new schema → <code>DOMAIN_DATA.md</code> · new patterns → <code>DOMAIN_ARCHITECTURE.md</code></li>
+  <li>Archived after ship. Never deleted. Never modified after execution starts.</li>
 </ul>
 
 <h3>Level 4 — Module (complex modules only)</h3>
 
-<p><strong><code>MODULE_FUNCTIONAL.md</code></strong> — what this module does in one paragraph · public interface: methods, functions, or events callers use · what it does NOT do</p>
-<p><strong><code>MODULE_ARCHITECTURE.md</code></strong> — how it works internally: data flow through the module · design choices and why · known limitations and sharp edges</p>
-<p><strong><code>MODULE_DATA.md</code></strong> <em>(only when the module has its own data concerns)</em> — cache schema, temp storage, in-memory state structure. Omit entirely if the module has no independent data concerns.</p>
-<p>Skip all module files for simple modules. Add them only when the module is large enough that its interface and internals are not obvious from the file header.</p>
+<p><strong><code>MODULE_FUNCTIONAL.md</code></strong> — what this module does for its callers · public interface: inputs, outputs, events · what it explicitly does NOT handle</p>
+<p><strong><code>MODULE_ARCHITECTURE.md</code></strong> — how it works internally · data flow through the module · design choices and trade-offs · known limitations</p>
+<p><strong><code>MODULE_DATA.md</code></strong> <em>(only if the module has its own data concerns)</em> — cache schema, temp storage, in-memory state. Omit if the module has no independent data concerns.</p>
+<p>Skip all module files for simple modules. Add only when the interface or internals are not obvious from reading the file header.</p>
 
 <h3>What an agent reads for each task</h3>
 
