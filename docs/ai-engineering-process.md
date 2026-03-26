@@ -433,7 +433,11 @@ Example: `feature/TM-1-foundation`, `feature/TM-2-create`
 
 **Closing convention:** Include `Closes #N` in the PR description or commit message. This auto-closes the GitHub Issue on merge.
 
-**GitHub Projects:** Create a Kanban board with columns: Backlog → In Progress → In Review → Done. Move issues as they progress.
+**GitHub Projects:** Create a Kanban board with columns: Todo → In Progress → In Review → Done. Add all issues to it immediately — do not defer. Go to GitHub → Projects → New Project → Board view. If you skip this step during planning, it will not get done.
+
+> Tag Manager POC board: https://github.com/users/amitjava/projects/1
+
+> Lesson learned: the board was planned but not created during the build. It had to be set up retroactively after a post-build audit — by which point branches were gone and the value of the board as a real-time tracker was lost.
 
 ---
 

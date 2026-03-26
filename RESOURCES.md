@@ -16,10 +16,11 @@ All links, tools, and documents related to the Tag Manager POC and the AI engine
 
 ## GitHub
 
-| Resource         | Link                                               | What it is                                                                                           |
-| ---------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| **Repository**   | https://github.com/amitjava/tag_manager_poc        | Full source code — React frontend, Express backend, SQLite, 36 tests across 3 test suites.           |
-| **Issues Board** | https://github.com/amitjava/tag_manager_poc/issues | All 8 issues: 5 feature tickets (closed via PRs), 1 bug triage, 1 architecture RFC, 1 refactor plan. |
+| Resource         | Link                                               | What it is                                                                                   |
+| ---------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Repository**   | https://github.com/amitjava/tag_manager_poc        | Full source code — React frontend, Express backend, SQLite, 36 tests across 3 test suites.   |
+| **Issues Board** | https://github.com/amitjava/tag_manager_poc/issues | All 8 issues: 5 feature tickets (closed), 1 bug triage, 1 architecture RFC, 1 refactor plan. |
+| **Kanban Board** | https://github.com/users/amitjava/projects/1       | GitHub Projects board. Issues #1–5 in Done, #6–8 in Todo (bug, RFC, refactor).               |
 
 ### GitHub Issues
 
