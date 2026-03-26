@@ -781,66 +781,71 @@ Strategic goal: Q2 OKR — enterprise contracts compliant by June</pre>
 
 <h2 id="change-requests">Change Request Flow</h2>
 
-<p>Every functional enhancement starts as a request from somewhere in the business. The flow below captures it, triages it, and links it to engineering before any code is written.</p>
+<p>Every functional enhancement and bug is tracked as a GitHub Issue. GitHub Issues is the single intake point — no separate request log to maintain.</p>
 
-<h3>Sources</h3>
+<h3>Issue types</h3>
 
 <table>
-  <thead><tr><th>Source</th><th>Captured by</th><th>Linked business doc</th></tr></thead>
+  <thead><tr><th>Type</th><th>Label</th><th>Flow</th></tr></thead>
   <tbody>
-    <tr><td>Customer ask</td><td>Account owner</td><td><code>customers/&lt;name&gt;/CONTRACT.md</code> or <code>ANALYSIS.md</code></td></tr>
-    <tr><td>Sales / pre-sales blocker</td><td>Sales lead</td><td><code>customers/&lt;name&gt;/PROFILE.md</code></td></tr>
-    <tr><td>Internal product idea</td><td>Founder / PM</td><td><code>strategy/GOALS.md</code></td></tr>
-    <tr><td>Regulatory requirement</td><td>Legal</td><td><code>legal/COMPLIANCE.md</code></td></tr>
-    <tr><td>Vendor capability change</td><td>Ops</td><td><code>vendors/&lt;name&gt;/PROFILE.md</code></td></tr>
+    <tr><td>Feature request / enhancement</td><td><code>enhancement</code></td><td>Triage → Phase 0–7</td></tr>
+    <tr><td>Bug</td><td><code>bug</code></td><td><span class="skill">/triage-issue</span> → Phase 5–7</td></tr>
+    <tr><td>Refactor</td><td><code>refactor</code></td><td><span class="skill">/request-refactor-plan</span> → Phase 5–7</td></tr>
+    <tr><td>Compliance / legal requirement</td><td><code>compliance</code></td><td>Triage → Phase 0–7</td></tr>
   </tbody>
 </table>
 
-<h3>The flow</h3>
+<h3>The flow for enhancements</h3>
 
-<pre>SOURCES  (customer / sales / internal / legal / vendor)
+<pre>REQUEST SOURCES
+  Customer ask · sales blocker · internal idea · legal requirement · vendor change
      │
      ▼
-business/product/REQUESTS.md
-  Log immediately: source, who asked, business reason,
-  priority, linked business doc
+GitHub Issue created
+  Title: clear one-line description
+  Body:  source (who asked, when)
+         business reason
+         priority (must-have / nice-to-have)
+         linked business doc (customers/acme/CONTRACT.md etc.)
+  Label: enhancement
      │
      ▼
-TRIAGE  (founder / PM — weekly or on-demand)
-  Is it aligned with strategy/GOALS.md?
-  Is there a contractual obligation behind it?
-  Has it been asked before and rejected?
-  What is the effort vs business value?
+TRIAGE  (founder / PM — weekly)
+  Aligned with strategy/GOALS.md?
+  Contractual obligation behind it?
+  Asked before and rejected?
+  Effort vs business value?
      │
-     ├── Reject → note reason in REQUESTS.md, notify requester
+     ├── Reject → close issue with reason noted
      │
-     └── Accept
+     └── Accept → assign domain, add to GitHub Project board
            │
            ▼
-      PHASE 0  Assign to a domain
+      PHASE 0  Domain assigned (noted in issue)
            ↓
       PHASE 1  /grill-me → /ubiquitous-language
            ↓
       PHASE 4  /write-a-prd
-        PRD Business Context links back to:
-        REQUESTS.md entry + linked business doc
+        PRD links back to GitHub Issue number
+        PRD Business Context lists linked business docs
            ↓
       PHASE 5–7  Plan → Execute → QA
            ↓
-      REVERSE SYNC
-        REQUESTS.md entry marked delivered
-        All linked business docs updated
-        DOMAIN_FUNCTIONAL.md updated with new capability</pre>
+      Issue closed
+      REVERSE SYNC — linked business docs updated</pre>
 
-<h3>What a REQUESTS.md entry looks like</h3>
+<h3>What a GitHub Issue body looks like</h3>
 
-<pre>## REQ-014 — Bulk export to CSV
-Source: Acme Corp (customer) — flagged by account owner 2026-03-20
-Business reason: Required to meet clause 4.2 of their contract
-Priority: Must-have — blocks renewal
-Linked docs: customers/acme/CONTRACT.md
-Status: Accepted → PRD in progress
-PRD: domains/advertisers/docs/prd-csv-export.md</pre>
+<pre>## Bulk export to CSV
+
+**Source:** Acme Corp — flagged by account owner 2026-03-20
+**Business reason:** Required to meet clause 4.2 of their contract
+**Priority:** Must-have — blocks renewal
+**Linked business doc:** business/customers/acme/CONTRACT.md
+**Domain:** advertisers
+
+---
+Accepted 2026-03-21. PRD: domains/advertisers/docs/prd-csv-export.md</pre>
 
 <h3>The triage gate</h3>
 
@@ -851,12 +856,12 @@ PRD: domains/advertisers/docs/prd-csv-export.md</pre>
   <tbody>
     <tr><td>Is this strategically aligned?</td><td><code>strategy/GOALS.md</code></td></tr>
     <tr><td>Is there a contractual obligation?</td><td><code>customers/&lt;name&gt;/CONTRACT.md</code></td></tr>
-    <tr><td>Has this been asked before and rejected?</td><td><code>product/REQUESTS.md</code> history</td></tr>
+    <tr><td>Has this been asked before and rejected?</td><td>Closed GitHub Issues</td></tr>
   </tbody>
 </table>
 
 <div class="callout info">
-  <p><strong>Bug fixes, refactors, and infra changes do not use this flow.</strong> Bugs go to <span class="skill">/triage-issue</span> directly. Refactors go to <span class="skill">/request-refactor-plan</span>. Infrastructure changes are an ops decision.</p>
+  <p><strong>GitHub Issues is the source of truth for all work.</strong> The business docs record the obligation and the outcome. The issue tracks the work in between. The PRD is the design. All three are linked.</p>
 </div>
 
 <hr>
