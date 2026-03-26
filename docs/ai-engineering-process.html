@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Assisted Engineering Process</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #fff;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+
+  /* ── Typography ── */
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    color: #0f0f0f;
+  }
+  h2 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    margin-top: 56px;
+    margin-bottom: 16px;
+    color: #0f0f0f;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: #1a1a1a;
+  }
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+  }
+  p { margin-bottom: 14px; }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+  a { color: #0066cc; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Subtitle ── */
+  .subtitle {
+    font-size: 1.15rem;
+    color: #555;
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+
+  /* ── Blockquote / Meta ── */
+  blockquote {
+    border-left: 3px solid #ddd;
+    padding: 10px 18px;
+    margin: 20px 0;
+    color: #555;
+    font-size: 0.95rem;
+    background: #fafafa;
+    border-radius: 0 6px 6px 0;
+  }
+  blockquote p { margin-bottom: 4px; }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  /* ── Lists ── */
+  ul, ol {
+    padding-left: 24px;
+    margin-bottom: 14px;
+  }
+  li { margin-bottom: 5px; }
+  li p { margin-bottom: 0; }
+
+  /* ── Code ── */
+  code {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Monaco, monospace;
+    font-size: 0.85em;
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #c7254e;
+  }
+  pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px 24px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 18px 0;
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+    border-radius: 0;
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 0.92rem;
+  }
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid #e0e0e0;
+    color: #333;
+  }
+  td {
+    padding: 9px 14px;
+    border: 1px solid #e8e8e8;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  /* ── Horizontal rule ── */
+  hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 40px 0;
+  }
+
+  /* ── Phase header pill ── */
+  .phase-label {
+    display: inline-block;
+    background: #0f0f0f;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .phase-label.optional { background: #888; }
+  .phase-label.maintenance { background: #2563eb; }
+  .phase-label.project-start { background: #059669; }
+
+  /* ── Meta box ── */
+  .meta-box {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 32px;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* ── Callout ── */
+  .callout {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 12px 18px;
+    border-radius: 0 6px 6px 0;
+    margin: 18px 0;
+    font-size: 0.93rem;
+  }
+  .callout.info {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+  .callout.danger {
+    background: #fef2f2;
+    border-color: #ef4444;
+  }
+  .callout p { margin-bottom: 0; }
+
+  /* ── Section numbers ── */
+  .prd-section {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 18px 0;
+  }
+  .prd-section h4 { margin-top: 0; color: #0066cc; }
+
+  /* ── Skill tag ── */
+  .skill {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #1b5e20;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.82em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* ── Principle number ── */
+  .principle {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    align-items: flex-start;
+  }
+  .principle-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: #0f0f0f;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .principle-body strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1rem;
+  }
+  .principle-body p { margin-bottom: 0; font-size: 0.95rem; color: #333; }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 0.85rem;
+    color: #888;
+    line-height: 1.8;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 28px 0 40px;
+  }
+  .toc h3 { margin-top: 0; font-size: 0.95rem; color: #555; text-transform: uppercase; letter-spacing: 0.06em; }
+  .toc ol { margin-bottom: 0; }
+  .toc li { font-size: 0.9rem; margin-bottom: 3px; }
+</style>
+</head>
+<body>
+
+<h1>AI-Assisted Engineering Process</h1>
+<p class="subtitle">Idea → PRD → Execution → QA</p>
+
+<div class="meta-box">
+  Built from running 11 Claude Code skills end-to-end on a real feature.<br>
+  Source: Tag Manager POC — a full-stack CRUD app built to document this exact process.<br>
+  For: Mid-sized engineering teams using GitHub + Claude Code.
+</div>
+
+<div class="toc">
+  <h3>Contents</h3>
+  <ol>
+    <li><a href="#how-to-use">How to Use This Document</a></li>
+    <li><a href="#process-map">The Process Map</a></li>
+    <li><a href="#project-start">Project Start: System Architecture Document</a></li>
+    <li><a href="#phase-0">Phase 0: Platform Context + Domain Assignment</a></li>
+    <li><a href="#phase-1">Phase 1: Idea</a></li>
+    <li><a href="#phase-2">Phase 2: Research</a></li>
+    <li><a href="#phase-3">Phase 3: Prototype</a></li>
+    <li><a href="#phase-4">Phase 4: PRD</a></li>
+    <li><a href="#phase-5">Phase 5: Planning</a></li>
+    <li><a href="#phase-6">Phase 6: Execution</a></li>
+    <li><a href="#phase-7">Phase 7: QA</a></li>
+    <li><a href="#maintenance">Maintenance Cadence</a></li>
+    <li><a href="#when-to-skip">When to Skip Phases</a></li>
+    <li><a href="#principles">Key Principles</a></li>
+    <li><a href="#skills-reference">Skills Quick Reference</a></li>
+    <li><a href="#appendix">Appendix: Real Numbers</a></li>
+  </ol>
+</div>
+
+<hr>
+
+<h2 id="how-to-use">How to Use This Document</h2>
+
+<p>This is a prescriptive guide. Follow it in order. Each phase has:</p>
+<ul>
+  <li><strong>Goal</strong> — what you're trying to achieve</li>
+  <li><strong>Inputs</strong> — what must exist before you start</li>
+  <li><strong>Skills</strong> — which Claude Code skills to run</li>
+  <li><strong>Output</strong> — what you produce</li>
+  <li><strong>What goes wrong if you skip it</strong></li>
+</ul>
+<p>The phases are not waterfall — Phases 5–7 (Planning → Execution → QA) loop. Phases 1–4 are front-loaded work that prevents rework in the loop.</p>
+
+<hr>
+
+<h2 id="process-map">The Process Map</h2>
+
+<pre>PROJECT START (once)
+          System Architecture Document  ← domains, boundaries, ownership, language per domain
+
+PHASE 0   Platform Context   read PLATFORM_CONTEXT.md + domain assignment
+             ↓
+PHASE 1   Idea          /grill-me (from unknowns, within assigned domain)  →  /ubiquitous-language
+PHASE 2   Research      (manual — optional)
+PHASE 3   Prototype     /design-an-interface  →  /improve-codebase-architecture
+PHASE 4   PRD           /write-a-prd
+             ↓
+PHASE 5   Planning      /prd-to-plan  →  /prd-to-issues
+             ↓
+PHASE 6   Execution     /setup-pre-commit  →  /git-guardrails-claude-code  →  /tdd
+             ↓
+PHASE 7   QA            /triage-issue  →  loop back to Phase 5
+             ↓
+AFTER EACH FEATURE      update PLATFORM_CONTEXT.md
+             ↓
+MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-plan</pre>
+
+<hr>
+
+<h2 id="project-start">Project Start: System Architecture Document</h2>
+<span class="phase-label project-start">Once — Before Any Feature Work</span>
+
+<p>On a small project this is optional. On a project with multiple domains it is mandatory — without it, every agent session starts without knowing the territory.</p>
+
+<p>The System Architecture Document answers three questions:</p>
+
+<h3>1. What are the domains?</h3>
+<p>A domain is a bounded area of business responsibility with its own data, its own language, and ideally its own owner. Examples: <code>advertisers</code>, <code>campaigns</code>, <code>billing</code>, <code>analytics</code>, <code>users</code>.</p>
+<p>For each domain, record:</p>
+<ul>
+  <li>What it owns (data, operations)</li>
+  <li>What it does NOT own (explicit boundary)</li>
+  <li>Who owns it (team or person)</li>
+  <li>Its canonical language (terms that mean something specific inside this domain)</li>
+</ul>
+
+<h3>2. What is the folder structure convention?</h3>
+<p>For a multi-domain project, use domain-based folders — not layer-based. Layer-based (<code>controllers/</code>, <code>services/</code>, <code>repositories/</code>) breaks down once you have more than one domain.</p>
+
+<pre>backend/src/
+  domains/
+    advertisers/          ← domain 1
+      AdvertiserController.ts
+      AdvertiserRepository.ts
+      TagFileService.ts
+      routes.ts
+      validation.ts
+    campaigns/            ← domain 2
+      CampaignController.ts
+      CampaignRepository.ts
+      routes.ts
+    billing/              ← domain 3
+      ...
+  db/
+    database.ts           ← shared infrastructure (not a domain)
+  app.ts
+  index.ts</pre>
+
+<p>This structure means: to understand everything about <code>advertisers</code>, you look in one folder. You never need to cross into <code>campaigns/</code> to understand an advertiser operation.</p>
+
+<h3>3. Where are the cross-domain seams?</h3>
+<p>When domain A needs something from domain B, that interaction is a cross-domain seam. It needs an explicit contract — an interface, an API, or an event. The System Architecture Document records these seams so agents don't invent them.</p>
+
+<blockquote><p>Template: <a href="./system-architecture-template.md">docs/system-architecture-template.md</a></p></blockquote>
+
+<hr>
+
+<h2 id="phase-0">Phase 0: Platform Context + Domain Assignment</h2>
+<span class="phase-label">Before Every Feature</span>
+
+<p><strong>Goal:</strong> Give the agent a complete picture of what already exists, and tell it which domain the new feature belongs to before it asks a single question.</p>
+<p><strong>Inputs:</strong> An existing project with at least one shipped feature. <em>On the very first feature of a new project, create the file with what you know and leave Section 7 long.</em></p>
+<p><strong>No skill required.</strong> Two steps: read a file, then assign a domain.</p>
+
+<h3>The Problem This Solves</h3>
+<p>Every time you start a new feature, the agent starts cold. It asks "what database are you using?" — you've answered that. It asks "is there auth?" — already decided. It burns grill-me rounds on questions with known answers because there's no document that tells it what already exists.</p>
+
+<h3>What to Do</h3>
+<p>Maintain a file called <code>PLATFORM_CONTEXT.md</code> at the repo root. Before any session — grill-me, PRD, architecture review — the agent reads it first.</p>
+
+<table>
+  <thead>
+    <tr><th>Section</th><th>Contents</th><th>Agent instruction</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1. Platform Overview</td><td>What it is, who uses it, current status</td><td>Calibrate the domain</td></tr>
+    <tr><td>2. Knowledge Sources</td><td>Where PRDs, plans, and issues live</td><td>Where to look for depth</td></tr>
+    <tr><td>3. Current State</td><td>Modules, API contract, DB schema, tests</td><td>Do not ask about any of this</td></tr>
+    <tr><td>4. Infrastructure</td><td>Hosting, DB, CI/CD</td><td>Constraints for any new proposal</td></tr>
+    <tr><td>5. Settled Decisions</td><td>Decisions that are closed</td><td>Do not re-open these</td></tr>
+    <tr><td>6. Open Backlog</td><td>GitHub issues + unticketed planned work</td><td>Already known — do not re-surface</td></tr>
+    <tr><td><strong>7. Genuine Unknowns</strong></td><td>Things not yet decided</td><td><strong>Start grill-me here</strong></td></tr>
+  </tbody>
+</table>
+
+<p>Section 7 is the payoff. An agent that reads sections 1–6 knows exactly what's already answered. Section 7 is where grill-me begins — not from a blank slate.</p>
+
+<h3>The Compounding Return</h3>
+<p>At the start of a project, Section 7 is long and Section 5 is short. Every grill-me session resolves unknowns — they move from Section 7 to Section 5. Every feature built populates Section 3. Every bug filed goes into Section 6.</p>
+<p>After 10 features, grill-me sessions are shorter because there's less unknown territory. The document gets smarter with every cycle.</p>
+
+<h3>After Each Feature Ships — Update the File</h3>
+
+<table>
+  <thead>
+    <tr><th>Event</th><th>What to update</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>New feature built</td><td>Add modules to Section 3</td></tr>
+    <tr><td>Architectural decision made</td><td>Add to Section 5</td></tr>
+    <tr><td>GitHub issue opened</td><td>Add to Section 6</td></tr>
+    <tr><td>GitHub issue closed</td><td>Remove from Section 6; move decisions to Section 5</td></tr>
+    <tr><td>Grill-me resolves an unknown</td><td>Move from Section 7 → Section 5</td></tr>
+    <tr><td>Infrastructure changes</td><td>Update Section 4</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <p><strong>The rule:</strong> Resolved items never stay in Section 7. Section 7 only ever contains things that are genuinely still open.</p>
+</div>
+
+<h3>Domain Assignment</h3>
+<p>Before running <span class="skill">/grill-me</span>, the tech lead assigns the new feature to a domain.</p>
+<p>A <strong>domain</strong> is a bounded area of business responsibility with its own data, language, and owner. Domain assignment answers: "which folder does this feature live in, and which team owns it?"</p>
+<p><strong>How to do it:</strong></p>
+<ol>
+  <li>Read the System Architecture Document</li>
+  <li>Identify which domain owns the entities this feature touches</li>
+  <li>If the feature crosses two domains, identify the seam — which domain is the primary, and what is the cross-domain contract?</li>
+  <li>Record the assignment. Tell the agent: <em>"This feature belongs to the <code>advertisers</code> domain."</em></li>
+</ol>
+<p><strong>Why it matters:</strong> Without domain assignment, <span class="skill">/grill-me</span> may propose a module structure that duplicates what another domain already owns, or invent its own naming for shared concepts.</p>
+
+<hr>
+
+<h2 id="phase-1">Phase 1: Idea</h2>
+<span class="phase-label">Every Feature</span>
+
+<p><strong>Goal:</strong> Stress-test the concept. Surface every assumption, edge case, and decision branch before writing anything down.</p>
+<p><strong>Inputs:</strong> An idea. <code>PLATFORM_CONTEXT.md</code> already read.</p>
+
+<div class="callout danger">
+  <p><strong>What goes wrong if you skip it:</strong> The PRD will have gaps. Gaps become decisions made during execution — by agents, without you in the room. Those decisions will be wrong.</p>
+</div>
+
+<h3>Step 1 — <span class="skill">/grill-me</span></h3>
+<p>Run this before anything else. Before the PRD. Before any design sketches. Before architecture conversations.</p>
+<p>What it does: Claude interviews you with 15–50 questions across multiple rounds, covering every edge case and decision branch until full shared understanding is established.</p>
+<p><strong>Scope:</strong> Grill-me operates within the assigned domain. Questions about entities, operations, and language should stay within the domain boundary. Cross-domain interactions are noted but scoped to the seam, not explored in depth.</p>
+<p><strong>What you're trying to resolve:</strong></p>
+<ul>
+  <li>What is the entity? What are its fields?</li>
+  <li>Who can do what? What roles exist?</li>
+  <li>What happens at each boundary? (create, edit, delete, error states)</li>
+  <li>What's the data shape? (DB, API, file system, UI)</li>
+  <li>What is explicitly NOT in scope?</li>
+  <li>What happens when two operations conflict?</li>
+</ul>
+<p><strong>Practical signal you're done:</strong> You can answer any "what happens when X?" question without thinking. There are no open tabs in your head.</p>
+<blockquote>
+  <p><strong>Real example:</strong> "I want a tag manager" → 17 questions across 4 rounds resolved: one tag per advertiser (not multiple), SQLite as source of truth, JS files as output artifacts, CodeMirror editor (not plain textarea), advertiser name read-only on edit, no auth. Every one of these was a decision that could have gone multiple ways and would have required backtracking if left open.</p>
+</blockquote>
+
+<h3>Step 2 — <span class="skill">/ubiquitous-language</span></h3>
+<p>Run this immediately after <span class="skill">/grill-me</span>, before writing the PRD.</p>
+<p>What it does: Extracts a DDD-style glossary from the decisions made in grill-me. Flags terms that could be interpreted multiple ways. Proposes canonical names. Saves to <code>UBIQUITOUS_LANGUAGE.md</code>.</p>
+
+<div class="callout">
+  <p><strong>Why it matters:</strong> If you call it a "tag" in the DB schema, a "script" in the API response, and a "pixel" in the UI label, agents will produce code that looks correct in isolation but has mismatched field names across the stack. This is a bug that is invisible until integration.</p>
+</div>
+
+<p><strong>Rule:</strong> Run once per domain. Re-run whenever a new concept is introduced.</p>
+
+<hr>
+
+<h2 id="phase-2">Phase 2: Research <em>(Optional)</em></h2>
+<span class="phase-label optional">Optional</span>
+
+<p><strong>Goal:</strong> Cache external knowledge in the repo so agents can reference it during execution.</p>
+<p><strong>When to use:</strong> When your feature integrates a third-party API, unfamiliar library, or external service.</p>
+<p><strong>How to do it (no dedicated skill):</strong></p>
+<ol>
+  <li>Read the relevant API docs or library documentation manually</li>
+  <li>Extract only what's relevant to your feature: endpoints, auth patterns, rate limits, constraints</li>
+  <li>Save to <code>docs/research.md</code> in the repo</li>
+</ol>
+<div class="callout danger">
+  <p><strong>Critical rule:</strong> Mark the file with a creation date. Delete it or mark it stale after the feature ships. Outdated research actively misleads agents — they will confidently use an old API contract.</p>
+</div>
+<p><strong>When to skip:</strong> Pure internal features with no new external dependencies.</p>
+
+<hr>
+
+<h2 id="phase-3">Phase 3: Prototype <em>(Optional)</em></h2>
+<span class="phase-label optional">Optional</span>
+
+<p><strong>Goal:</strong> Test design approaches before committing. Covers API shape, module boundaries, and architectural fit with existing code.</p>
+<p><strong>When to use:</strong> When the right approach is genuinely unclear — new UI pattern, unfamiliar architecture, or when multiple viable designs exist and the wrong choice will be painful to undo.</p>
+
+<h3><span class="skill">/design-an-interface</span></h3>
+<p>What it does: Spawns 3+ parallel sub-agents, each producing a radically different interface design for the same module. Then compares them and recommends.</p>
+<p><strong>How it works:</strong> Three agents produce designs constrained as: (1) minimize — fewest entry points, (2) maximize — most flexible, (3) optimize for the common caller. The comparison surfaces trade-offs you wouldn't have seen from one design alone.</p>
+
+<h3><span class="skill">/improve-codebase-architecture</span> (first pass)</h3>
+<p>What it does: Explores the codebase like an AI navigating it cold. Finds shallow modules, tight coupling, and seams that will get worse if you add to them. Files findings as RFC GitHub issues.</p>
+<p><strong>Run this before prototyping if your feature will touch existing code.</strong> Prevents compounding existing debt.</p>
+<blockquote>
+  <p><strong>Deep module principle (John Ousterhout):</strong> A well-designed module has a small interface hiding a large implementation. The opposite — a large interface hiding trivial implementation — is a shallow module. Shallow modules require callers to understand the internals. Deep modules are testable at the boundary.</p>
+</blockquote>
+
+<hr>
+
+<h2 id="phase-4">Phase 4: PRD</h2>
+<span class="phase-label">Every Feature</span>
+
+<p><strong>Goal:</strong> A single written document of user-visible behaviour. Not implementation decisions — what the user sees and does.</p>
+<p><strong>Inputs:</strong> Completed grill-me, completed ubiquitous language.</p>
+
+<div class="callout danger">
+  <p><strong>What goes wrong if you skip it:</strong> Agents make implementation decisions without a reference. "Should edit be optimistic or confirm-on-save?" is an implementation decision that should have been in the PRD — if it's not, the agent picks one and you find out during QA.</p>
+</div>
+
+<h3>Step 3 — <span class="skill">/write-a-prd</span></h3>
+<p>What it does: Conducts a structured interview, explores the codebase, and produces a PRD as a file in the repo. The PRD references the ubiquitous language from Phase 1 and becomes the single source of truth for all downstream steps.</p>
+
+<h3>The PRD Template (12 Sections)</h3>
+<p>Every section has a purpose. Do not skip sections.</p>
+
+<div class="prd-section">
+  <h4>§1 — Feature Overview</h4>
+  <p>2–3 sentences. Plain English. What does this feature do, for whom, and why now?</p>
+  <blockquote><p><em>Yes: "Operations teams need to manage JavaScript tags per advertiser. Today they do this manually via a shared folder. This feature provides a web UI for creating, editing, and deleting tags without touching the file system directly."</em></p></blockquote>
+</div>
+
+<div class="prd-section">
+  <h4>§2 — Problem Statement</h4>
+  <p>The pain, from the user's perspective. One paragraph. No solution language.</p>
+</div>
+
+<div class="prd-section">
+  <h4>§3 — Solution</h4>
+  <p>What you're building, from the user's perspective. Still no implementation detail.</p>
+</div>
+
+<div class="prd-section">
+  <h4>§4 — Ubiquitous Language</h4>
+  <p>Copy the canonical terms from Phase 1. Every term that appears in the DB schema, API, or UI must appear here first.</p>
+</div>
+
+<div class="prd-section">
+  <h4>§5 — User Stories</h4>
+  <p>Format: "As a [role], I want [capability], so that [outcome]." Write one story per user-visible action. Include happy path, error path, and boundary stories. Aim for 10–20.</p>
+</div>
+
+<div class="prd-section">
+  <h4>§6 — Acceptance Criteria</h4>
+  <p>A pass/fail checklist. Each criterion is unambiguous — a QA engineer can verify it with no interpretation.</p>
+  <blockquote>
+    <p><strong>Good:</strong> "When the user submits Create with an empty Advertiser Name, a red validation message appears below the field and the form does not submit."<br>
+    <strong>Bad:</strong> "Validation should work correctly."</p>
+  </blockquote>
+  <p><strong>This section is what QA uses.</strong> Write it to that standard.</p>
+</div>
+
+<div class="prd-section">
+  <h4>§7 — Implementation Decisions</h4>
+  <p>The one place in the PRD where you go below user-visible behaviour. Cover: domain declaration, modules, DB schema, API contract, file/storage format.</p>
+  <pre>POST /api/advertisers
+Body: { name: string, tag_name: string, tag_code: string }
+201: { id, name, tag_name, tag_code, created_at }
+400: { error: "field is required" }
+409: { error: "Advertiser name already exists" }</pre>
+</div>
+
+<div class="prd-section">
+  <h4>§8 — Testing Decisions</h4>
+  <p>What to test, how, and what a good test looks like for this feature. Specify unit tests, integration tests, and what's not worth testing.</p>
+</div>
+
+<div class="prd-section">
+  <h4>§9 — Tracer Bullet Slices</h4>
+  <p>Break the feature into 3–7 ordered vertical slices. Each slice touches DB + API + UI together and is demo-able end-to-end when complete.</p>
+  <pre>Slice 1: Foundation — DB table + GET /advertisers + empty table page
+Slice 2: Create — POST /advertisers + TagFileService.write() + Create form
+Slice 3: Edit — PUT /advertisers/:id + TagFileService.write() + Edit page
+Slice 4: Delete — DELETE /advertisers/:id + TagFileService.delete() + Delete button
+Slice 5: Validation — all error states hardened front-to-back</pre>
+</div>
+
+<div class="prd-section">
+  <h4>§10 — Out of Scope</h4>
+  <p>Explicit list of things NOT being built. Agents will add features that "seem obvious" unless you explicitly exclude them. This section is as important as In Scope.</p>
+</div>
+
+<div class="prd-section">
+  <h4>§11 — Open Questions</h4>
+  <p>The goal is for this section to be <strong>empty</strong> when the PRD is approved. If it's not empty, don't start execution — resolve the questions first. If you ran <span class="skill">/grill-me</span> properly, this section will be empty.</p>
+</div>
+
+<div class="prd-section">
+  <h4>§12 — Further Notes</h4>
+  <p>POC context, technical constraints, deployment environment, team conventions, anything that doesn't fit above.</p>
+</div>
+
+<hr>
+
+<h2 id="phase-5">Phase 5: Planning</h2>
+<span class="phase-label">Every Feature</span>
+
+<p><strong>Goal:</strong> Turn the PRD into ordered, executable tasks in GitHub. Connect work items back to the PRD.</p>
+<p><strong>Inputs:</strong> Approved PRD.</p>
+
+<h3>Step 4 — <span class="skill">/prd-to-plan</span></h3>
+<p>Takes the PRD's Tracer Bullet Slices and produces a detailed implementation plan saved to <code>plans/&lt;feature&gt;.md</code>. Each phase includes which user stories it covers, what to build, and acceptance criteria to verify when done.</p>
+<p><strong>Why the architectural decisions header matters:</strong> Phase 5 shouldn't need to re-decide what SQLite client to use. Decisions made once in the header flow down to all phases.</p>
+
+<h3>Step 5 — <span class="skill">/prd-to-issues</span></h3>
+<p>Creates one GitHub Issue per tracer bullet slice. Each issue has:</p>
+<ul>
+  <li>Title with a <code>[FEATURE-N]</code> prefix (enables consistent branch naming)</li>
+  <li>User stories covered (links execution back to the PRD)</li>
+  <li>Acceptance criteria as checkboxes</li>
+  <li>Dependencies noted ("Depends on #1")</li>
+</ul>
+<p><strong>Branch naming:</strong> <code>feature/FEATURE-N-short-description</code><br>
+<strong>Closing convention:</strong> Include <code>Closes #N</code> in the PR description. This auto-closes the GitHub Issue on merge.</p>
+
+<div class="callout">
+  <p><strong>GitHub Projects:</strong> Create a Kanban board (Todo → In Progress → In Review → Done) immediately — do not defer. If you skip this step during planning, it will not get done.</p>
+</div>
+
+<hr>
+
+<h2 id="phase-6">Phase 6: Execution</h2>
+<span class="phase-label">Every Feature</span>
+
+<p><strong>Goal:</strong> Build each slice. One branch per issue. Pre-commit gates quality. TDD keeps agents on track.</p>
+
+<h3>Step 6 — <span class="skill">/setup-pre-commit</span> <em>(one-time per repo)</em></h3>
+<p>Installs Husky with three gates that run on every <code>git commit</code>:</p>
+<ol>
+  <li><code>lint-staged</code> — runs Prettier on staged files</li>
+  <li>TypeScript typecheck — <code>tsc --noEmit</code> on backend and frontend</li>
+  <li>Test runner — Vitest on affected files</li>
+</ol>
+<div class="callout">
+  <p><strong>Critical note:</strong> The pre-commit hook runs in a subshell. Use absolute paths with <code>$ROOT</code> — do NOT chain <code>cd</code> commands. If one fails, the shell state shifts silently.</p>
+</div>
+<pre>ROOT=$(git rev-parse --show-toplevel)
+(cd "$ROOT/backend" && npx tsc --noEmit) || exit 1
+(cd "$ROOT/frontend" && npx tsc --noEmit) || exit 1</pre>
+
+<h3>Step 7 — <span class="skill">/git-guardrails-claude-code</span> <em>(one-time, global)</em></h3>
+<p>Installs a global hook in <code>~/.claude/settings.json</code> that blocks Claude from running <code>git push</code>, <code>git reset --hard</code>, <code>git clean -f</code>, and <code>git branch -D</code>.</p>
+<p><strong>Correct workflow:</strong> Agent writes code → agent commits → you review → you push manually.</p>
+
+<h3>Step 8 — <span class="skill">/tdd</span></h3>
+<p>Run this for every feature slice and every bug fix. No exceptions.</p>
+
+<table>
+  <thead><tr><th>Step</th><th>What you do</th><th>State</th></tr></thead>
+  <tbody>
+    <tr><td><strong>RED</strong></td><td>Write a failing test that specifies the behaviour</td><td>Tests fail</td></tr>
+    <tr><td><strong>GREEN</strong></td><td>Write the minimum code to make it pass</td><td>Tests pass</td></tr>
+    <tr><td><strong>REFACTOR</strong></td><td>Clean up — extract, rename, simplify. Tests stay green.</td><td>Tests pass</td></tr>
+    <tr><td><strong>COMMIT</strong></td><td>Pre-commit hook runs all gates. Fix before committing if anything fails.</td><td>Gates pass</td></tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>Why TDD matters in agent-driven development:</strong> TDD is the single highest-leverage practice when working with agents. Tests define what "done" means before a line of implementation is written. Agents that have a failing test to satisfy produce better code than agents working from a description alone.</p>
+</blockquote>
+
+<h3>The Execution Loop (per slice)</h3>
+<pre>1. Check out branch:  git checkout -b feature/TM-N-name
+2. Run /tdd:          Write failing tests → implement → green → refactor
+3. Typecheck:         tsc --noEmit passes
+4. Commit:            git commit -m "feat: [TM-N] ..." (Closes #N in PR)
+5. Push:              You push manually — git push origin feature/TM-N-name
+6. PR:                gh pr create — title, description, links to issue
+7. Merge:             Review → merge → issue auto-closes</pre>
+
+<hr>
+
+<h2 id="phase-7">Phase 7: QA</h2>
+<span class="phase-label">Every Feature</span>
+
+<p><strong>Goal:</strong> Verify implementation against acceptance criteria. Find what's wrong. Create tickets for it. Loop.</p>
+<p><strong>How to verify:</strong> Go through the Acceptance Criteria in the PRD line by line. For each criterion: pass or fail.</p>
+
+<h3><span class="skill">/triage-issue</span></h3>
+<p>Takes a bug description, explores the codebase to find root cause, creates a GitHub Issue with a TDD-based fix plan.</p>
+<p><strong>The rule:</strong> Never patch without triaging. Patching without understanding the root cause means the same bug manifests differently two weeks later.</p>
+<p><strong>What the issue must contain:</strong></p>
+<ul>
+  <li>Root cause (not just symptoms)</li>
+  <li>Which layer owns the bug (DB constraint? Service? Controller? UI?)</li>
+  <li>A failing test that would have caught it</li>
+  <li>Fix approach</li>
+</ul>
+
+<h3>The QA Loop</h3>
+<pre>QA pass → fails acceptance criteria
+  → /triage-issue → GitHub issue created
+  → Phase 5: issue triaged into correct sprint
+  → Phase 6: implemented with TDD
+  → Phase 7: QA pass again
+  → repeat until all acceptance criteria pass</pre>
+
+<div class="callout info">
+  <p>This loop is not failure — it is the process working correctly.</p>
+</div>
+
+<hr>
+
+<h2 id="maintenance">Maintenance Cadence</h2>
+<span class="phase-label maintenance">Recurring</span>
+
+<p>These are not triggered by a feature — they run on a schedule.</p>
+
+<h3><span class="skill">/improve-codebase-architecture</span> — weekly / after every 3–5 features</h3>
+<p>Explores the codebase fresh — the way an AI would see it on first contact. Finds shallow modules, tight coupling, and seams that have accumulated. Files RFC GitHub issues.</p>
+<p><strong>Why it can't be skipped:</strong> Technical debt compounds faster with agents than with humans. Agents don't notice the smell. If the codebase has a controller doing DB + file + error classification all inline, the agent will add the next feature on top of that pattern. After 5 features, you have 5 controllers with the same problem.</p>
+<p><strong>Output:</strong> RFC GitHub issue with the current problem, 3 competing interface designs, a recommendation with reasoning, and acceptance criteria for the refactor.</p>
+
+<h3><span class="skill">/request-refactor-plan</span> — when a module becomes painful</h3>
+<p>User interview → scope definition → tiny-commit plan → filed as GitHub issue.</p>
+<p><strong>The tiny-commit principle (Martin Fowler):</strong> Make each refactoring step as small as possible so the program is always working. Never strand the codebase in a half-refactored state.</p>
+
+<table>
+  <thead><tr><th>Commit</th><th>Change</th><th>State after</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Add typed domain errors (additive)</td><td>Green</td></tr>
+    <tr><td>2</td><td>Add interface (additive)</td><td>Green</td></tr>
+    <tr><td>3</td><td>Add new module stub + tests</td><td><strong>Red</strong></td></tr>
+    <tr><td>4</td><td>Implement new module</td><td>Green</td></tr>
+    <tr><td>5</td><td>Refactor callers to use new module</td><td>Green (all existing tests pass)</td></tr>
+    <tr><td>6</td><td>Delete dead code</td><td>Green</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="when-to-skip">When to Skip Phases</h2>
+
+<table>
+  <thead><tr><th>Phase</th><th>Skip when</th><th>Never skip when</th></tr></thead>
+  <tbody>
+    <tr><td>Phase 2 — Research</td><td>Feature uses only internal systems or known libraries</td><td>Integrating a new external API</td></tr>
+    <tr><td>Phase 3 — Prototype</td><td>Right approach is obvious or cheap to fix if wrong</td><td>Multiple viable designs exist and the wrong one is painful to undo</td></tr>
+    <tr><td>Phase 3 <span class="skill">/design-an-interface</span></td><td>No new module boundary being introduced</td><td>—</td></tr>
+    <tr><td>Phase 3 <span class="skill">/improve-codebase-architecture</span></td><td>Greenfield feature, no existing code touched</td><td>Feature touches an existing module</td></tr>
+    <tr><td>Phases 5–7 loop</td><td>Never</td><td>Always runs, even for small features</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="principles">Key Principles</h2>
+<p>These are laws derived from actually running this process, not from theory.</p>
+
+<div class="principle">
+  <div class="principle-num">1</div>
+  <div class="principle-body">
+    <strong>Context quality determines how long you can go AFK.</strong>
+    <p>Research + PRD + tickets + tests = you can hand off a slice and come back to working code. Missing one of these = the agent improvises = you supervise every step.</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">2</div>
+  <div class="principle-body">
+    <strong>Grill yourself before writing anything down.</strong>
+    <p>The PRD is not where you discover open questions. Grill-me is. If you write a PRD and then discover open questions during execution, you skipped Phase 1.</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">3</div>
+  <div class="principle-body">
+    <strong>Lock terminology before writing the PRD.</strong>
+    <p>"Tag" in the DB, "script" in the API, "pixel" in the UI = a bug that's invisible until integration. Ubiquitous language is not a nice-to-have — it's a build-time type error prevention system.</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">4</div>
+  <div class="principle-body">
+    <strong>Vertical slices, not horizontal layers.</strong>
+    <p>Each slice touches DB + API + UI together. A horizontal layer is never demo-able on its own. It gives you false confidence that things work until the integration day.</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">5</div>
+  <div class="principle-body">
+    <strong>TDD is the single highest-leverage practice.</strong>
+    <p>Not tests after the fact — tests first. A failing test tells the agent exactly what done means. It constrains the solution space. It catches the 10% case the happy-path description missed.</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">6</div>
+  <div class="principle-body">
+    <strong>Out of Scope is as important as In Scope.</strong>
+    <p>Agents add features that "seem obvious." A scope section that says "no authentication" is explicit. Without it, an agent might add a login page because the PRD mentioned "users."</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">7</div>
+  <div class="principle-body">
+    <strong>Pre-commit gates prevent compound errors.</strong>
+    <p>A type error committed in Slice 1 might only surface as a runtime crash in Slice 3. Pre-commit typecheck catches it at the source. The cost at commit time is 30 seconds. At QA time it's an hour.</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">8</div>
+  <div class="principle-body">
+    <strong>Check dependency compatibility before writing code.</strong>
+    <p>Node v25 + <code>better-sqlite3</code> = no prebuilt binaries, native compilation fails. 10 minutes checking compatibility up front saves hours of iterating through build errors.</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">9</div>
+  <div class="principle-body">
+    <strong>Architecture health doesn't maintain itself.</strong>
+    <p>Run <span class="skill">/improve-codebase-architecture</span> on a cadence. Not because something is obviously wrong — because it will be, and you won't notice until you're 5 features deep in a pattern that makes everything harder.</p>
+  </div>
+</div>
+
+<div class="principle">
+  <div class="principle-num">10</div>
+  <div class="principle-body">
+    <strong>Root cause before patching.</strong>
+    <p>A patch without a root cause is a time-delayed version of the same bug. Every bug fix starts with a failing test that reproduces the bug. The fix makes the test pass.</p>
+  </div>
+</div>
+
+<hr>
+
+<h2 id="skills-reference">Skills Quick Reference</h2>
+
+<table>
+  <thead>
+    <tr><th>Skill</th><th>Phase</th><th>When</th><th>What it produces</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="skill">/grill-me</span></td><td>1 — Idea</td><td>First. Before everything.</td><td>Resolved assumptions, zero open questions</td></tr>
+    <tr><td><span class="skill">/ubiquitous-language</span></td><td>1 — Idea</td><td>After grill-me, before PRD</td><td><code>UBIQUITOUS_LANGUAGE.md</code> — canonical terms</td></tr>
+    <tr><td><span class="skill">/design-an-interface</span></td><td>3 — Prototype</td><td>When module shape is unclear</td><td>3 competing interface designs + recommendation</td></tr>
+    <tr><td><span class="skill">/improve-codebase-architecture</span></td><td>3 + ongoing</td><td>Before touching existing code; weekly</td><td>RFC GitHub issues for architectural improvements</td></tr>
+    <tr><td><span class="skill">/write-a-prd</span></td><td>4 — PRD</td><td>After grill-me + ubiquitous-language</td><td>PRD file (12 sections)</td></tr>
+    <tr><td><span class="skill">/prd-to-plan</span></td><td>5 — Planning</td><td>After PRD is approved</td><td><code>plans/&lt;feature&gt;.md</code> — phased tracer bullet plan</td></tr>
+    <tr><td><span class="skill">/prd-to-issues</span></td><td>5 — Planning</td><td>After plan is approved</td><td>GitHub Issues with dependencies + acceptance criteria</td></tr>
+    <tr><td><span class="skill">/setup-pre-commit</span></td><td>6 — Execution</td><td>Once per repo, before first commit</td><td>Husky hook: lint → typecheck → test</td></tr>
+    <tr><td><span class="skill">/git-guardrails-claude-code</span></td><td>6 — Execution</td><td>Once globally</td><td><code>~/.claude/settings.json</code> — blocks destructive git ops</td></tr>
+    <tr><td><span class="skill">/tdd</span></td><td>6 — Execution</td><td>Every feature, every bug fix</td><td>Code + tests, red → green → refactor</td></tr>
+    <tr><td><span class="skill">/triage-issue</span></td><td>7 — QA</td><td>On bug discovery</td><td>GitHub Issue with root cause + TDD fix plan</td></tr>
+    <tr><td><span class="skill">/request-refactor-plan</span></td><td>Maintenance</td><td>When a module is painful</td><td>GitHub Issue with 6-commit refactor plan</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="appendix">Appendix: Real Numbers from the Tag Manager Build</h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Features built</td><td>5 tracer bullet slices</td></tr>
+    <tr><td>Tests written</td><td>36 (10 unit repo, 8 unit service, 18 integration)</td></tr>
+    <tr><td>GitHub Issues</td><td>8 (#1–5 feature, #6 triage, #7 RFC, #8 refactor)</td></tr>
+    <tr><td>Open questions at PRD time</td><td><strong>0</strong></td></tr>
+    <tr><td>Blockers during execution</td><td>4 (all resolved in Phase 1 by checking compatibility first)</td></tr>
+    <tr><td>Phases that completed earlier than expected</td><td>2 (architecture was right so they were structural, not new features)</td></tr>
+    <tr><td>Pre-commit hook failures caught before commit</td><td>4 type errors</td></tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>The zero open questions at PRD time is the most important number. It came directly from <span class="skill">/grill-me</span> and <span class="skill">/ubiquitous-language</span> running before the PRD was written.</p>
+</blockquote>
+
+<footer>
+  Built during: Tag Manager POC, March 2026<br>
+  Skills source: <a href="https://github.com/mattpocock/skills">mattpocock/skills</a><br>
+  Process source: <a href="https://aihero.dev">aihero.dev</a> (7-phase AI development model)<br>
+  Real Q&A log: <a href="./grill-me-qa-log.md">grill-me-qa-log.md</a> ·
+  PRD example: <a href="./tag-manager-prd.md">tag-manager-prd.md</a> ·
+  Plan example: <a href="./plans/tag-manager.md">plans/tag-manager.md</a>
+</footer>
+
+</body>
+</html>
