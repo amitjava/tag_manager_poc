@@ -136,6 +136,11 @@ These terms are canonical across the database, API, and UI. Do not substitute sy
 | PUT    | `/api/advertisers/:id` | Update tag; regenerate tag file    |
 | DELETE | `/api/advertisers/:id` | Delete record + delete tag file    |
 
+### Domain
+
+**Domain:** `advertisers`
+All modules for this feature live under `backend/src/domains/advertisers/`. No cross-domain dependencies in the initial build.
+
 ### Modules
 
 - **AdvertiserRepository** — all SQLite read/write operations. Single interface, tested in isolation.

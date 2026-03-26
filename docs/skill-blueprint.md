@@ -7,10 +7,11 @@
 
 ---
 
-## The 7 Phases of AI Development (aihero.dev)
+## The Development Phases
 
 ```
-Phase 1: Idea        → define and stress-test the concept
+Phase 0: Platform Context + Domain Assignment  ← pre-read before every feature
+Phase 1: Idea        → define and stress-test the concept (within assigned domain)
 Phase 2: Research    → gather external knowledge agents can reference (optional)
 Phase 3: Prototype   → test design approaches before committing (optional)
 Phase 4: PRD         → document user-visible behaviour, not implementation
@@ -21,6 +22,43 @@ Phase 7: QA          → verify, loop back to Phase 5-7 until production-ready
 
 > "This process scales from massive projects to narrow, focused tasks."
 > Key rule: Phases 5-7 loop. QA creates new tickets; execution runs again.
+
+---
+
+## Phase 0: Platform Context + Domain Assignment
+
+**Goal:** Prevent the agent from starting cold. Give it the current platform state and the domain scope before it asks a single question.
+
+**No dedicated skill.** Two manual steps:
+
+### Step 1 — Read `PLATFORM_CONTEXT.md`
+
+The agent reads `PLATFORM_CONTEXT.md` at the repo root. This file has 7 sections (8 for multi-domain projects):
+
+1. Platform Overview — what it is, who uses it
+2. Knowledge Sources — where PRDs, plans, and issues live
+3. Current State — what modules exist, API contract, DB schema
+4. Infrastructure — hosting, DB, CI/CD
+5. Settled Decisions — closed decisions; do not re-open
+6. Open Backlog — GitHub issues and planned work
+7. Genuine Unknowns — where grill-me starts
+8. Domain Map _(multi-domain)_ — domain boundaries, folder structure, cross-domain seams
+
+**Tag Manager example:** Before asking about the tag manager, the agent reads this file and knows: SQLite via @libsql/client, no auth, one tag per advertiser, slug collision bug already triaged in #6, slug uniqueness cross-check is an open unknown.
+
+### Step 2 — Domain Assignment
+
+Before running `/grill-me`, the tech lead assigns the new feature to a domain.
+
+**Questions to answer:**
+
+- Which domain owns the entities this feature touches?
+- Does the feature cross a domain boundary? If so, which domain is primary?
+- What folder does this code go in?
+
+**Tell the agent explicitly:** "This feature belongs to the `advertisers` domain." Without this, agents guess — and guesses create coupling.
+
+> Proposal and full structure: [platform-context-proposal.md](./platform-context-proposal.md)
 
 ---
 
@@ -215,7 +253,11 @@ These skills run on a cadence, not triggered by a specific phase:
 ## The Full Enterprise Blueprint (Quick Reference)
 
 ```
-PHASE 1 — IDEA
+PHASE 0 — PLATFORM CONTEXT + DOMAIN ASSIGNMENT  (before every feature)
+  read PLATFORM_CONTEXT.md     ← what exists, what's decided, what's unknown
+  domain assignment            ← which domain owns this feature?
+
+PHASE 1 — IDEA  (within assigned domain)
   /grill-me                    ← stress-test the concept first
   /ubiquitous-language         ← lock down terminology
 
@@ -228,19 +270,25 @@ PHASE 3 — PROTOTYPE (optional)
 
 PHASE 4 — PRD
   /write-a-prd                 ← user-visible behaviour as GitHub issue
+  (declare domain in Section 7 Implementation Decisions)
 
 PHASE 5 — KANBAN
   /prd-to-plan                 ← tracer-bullet vertical slices → plans/*.md
   /prd-to-issues               ← GitHub tickets with dependency mapping
+  create GitHub Projects board ← do not defer
 
 PHASE 6 — EXECUTION
   /setup-pre-commit            ← once per repo (Prettier + typecheck + tests)
   /git-guardrails-claude-code  ← once globally (block destructive git ops)
   /tdd                         ← every feature, every bug fix, no exceptions
+  (all new files go in backend/src/domains/<domain-name>/)
 
 PHASE 7 — QA
   /triage-issue                ← root-cause before patching any bug
   → loop back to Phase 5-7 until production-ready
+
+AFTER EACH FEATURE
+  update PLATFORM_CONTEXT.md  ← new modules to Section 3, decisions to Section 5
 
 MAINTENANCE (recurring)
   /improve-codebase-architecture ← weekly / after every 3-5 features

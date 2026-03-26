@@ -303,6 +303,39 @@ Design 3 (drop-in) + factory function from Design 1. Controller swaps one import
 
 ---
 
+## STEP 13 — Domain-Based Folder Refactor ✅
+
+**When used:** Post-feature-complete. When the codebase grew beyond a single domain and the layer-based structure (`controllers/`, `services/`, `repositories/`) started mixing files from different concerns.
+**Why:** Layer-based folders break when you have more than one domain. All "controllers" in one folder means `AdvertiserController` and any future `CampaignController` live side-by-side with no clear ownership. Domain-based folders group by what a module owns, not what it is.
+
+### What was refactored:
+
+| Old path (layer-based)                     | New path (domain-based)                           |
+| ------------------------------------------ | ------------------------------------------------- |
+| `src/controllers/AdvertiserController.ts`  | `src/domains/advertisers/AdvertiserController.ts` |
+| `src/repositories/AdvertiserRepository.ts` | `src/domains/advertisers/AdvertiserRepository.ts` |
+| `src/services/TagFileService.ts`           | `src/domains/advertisers/TagFileService.ts`       |
+| `src/routes/advertisers.ts`                | `src/domains/advertisers/routes.ts`               |
+| `src/middleware/validation.ts`             | `src/domains/advertisers/validation.ts`           |
+
+Two stub domains added to demonstrate multi-domain architecture:
+
+```
+src/domains/domain2/module2_1/Module2_1.ts   ← stub
+src/domains/domain2/module2_2/Module2_2.ts   ← stub
+```
+
+### All tests still pass: 36/36 ✅
+
+### Key principles learned:
+
+> Layer-based folders (`controllers/`, `services/`) are the wrong default for any project that will grow beyond one domain. They force cross-domain files into shared folders, making domain boundaries invisible to agents.
+> Domain-based folders make the answer to "where does this code go?" automatic. `advertisers` code goes in `domains/advertisers/`. No discussion needed.
+> The folder structure decision should be made once at project start by the architect and recorded in the System Architecture Document. Retrofitting it mid-project (as we did here) is more work than starting with it.
+> Single-domain projects can use layer-based folders. The moment you add a second domain, switch to domain-based.
+
+---
+
 ## WHAT WAS MISSED / DONE INACCURATELY
 
 These were claimed in the process but not actually executed:

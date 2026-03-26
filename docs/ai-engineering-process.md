@@ -26,9 +26,12 @@ Phases 1–4 are front-loaded work that prevents rework in the loop.
 ## The Process Map
 
 ```
-PHASE 0   Platform Context   read PLATFORM_CONTEXT.md  (first feature: create it)
+PROJECT START (once)
+          System Architecture Document  ← domains, boundaries, ownership, language per domain
+
+PHASE 0   Platform Context   read PLATFORM_CONTEXT.md + domain assignment
              ↓
-PHASE 1   Idea          /grill-me (from unknowns)  →  /ubiquitous-language
+PHASE 1   Idea          /grill-me (from unknowns, within assigned domain)  →  /ubiquitous-language
 PHASE 2   Research      (manual — optional)
 PHASE 3   Prototype     /design-an-interface  →  /improve-codebase-architecture
 PHASE 4   PRD           /write-a-prd
@@ -46,13 +49,67 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 ---
 
-## Phase 0: Platform Context
+## Project Start: System Architecture Document
 
-**Goal:** Give the agent a complete picture of what already exists before it asks a single question.
+**Done once. Before any feature work. Before Phase 0.**
+
+On a small project this is optional. On a project with multiple domains it is mandatory — without it, every agent session starts without knowing the territory.
+
+The System Architecture Document answers three questions:
+
+**1. What are the domains?**
+
+A domain is a bounded area of business responsibility with its own data, its own language, and ideally its own owner. Examples: `advertisers`, `campaigns`, `billing`, `analytics`, `users`.
+
+For each domain, record:
+
+- What it owns (data, operations)
+- What it does NOT own (explicit boundary)
+- Who owns it (team or person)
+- Its canonical language (terms that mean something specific inside this domain)
+
+**2. What is the folder structure convention?**
+
+For a multi-domain project, use domain-based folders — not layer-based. Layer-based (`controllers/`, `services/`, `repositories/`) breaks down once you have more than one domain.
+
+```
+backend/src/
+  domains/
+    advertisers/          ← domain 1
+      AdvertiserController.ts
+      AdvertiserRepository.ts
+      TagFileService.ts
+      routes.ts
+      validation.ts
+    campaigns/            ← domain 2
+      CampaignController.ts
+      CampaignRepository.ts
+      routes.ts
+    billing/              ← domain 3
+      ...
+  db/
+    database.ts           ← shared infrastructure (not a domain)
+  app.ts
+  index.ts
+```
+
+This structure means: to understand everything about `advertisers`, you look in one folder. You never need to cross into `campaigns/` to understand an advertiser operation.
+
+**3. Where are the cross-domain seams?**
+
+When domain A needs something from domain B, that interaction is a cross-domain seam. It needs an explicit contract — an interface, an API, or an event. The System Architecture Document records these seams so agents don't invent them.
+
+> Template: [docs/system-architecture-template.md](./system-architecture-template.md)
+
+---
+
+## Phase 0: Platform Context + Domain Assignment
+
+**Goal:** Give the agent a complete picture of what already exists, and tell it which domain the new feature belongs to before it asks a single question.
 
 **Inputs:** An existing project with at least one shipped feature. _(On the very first feature of a new project, create the file with what you know and leave Section 7 long.)_
 
-**No skill required.** The agent reads a file. That's it.
+**No skill required.** Two steps: read a file, then assign a domain.
 
 ---
 
@@ -101,6 +158,25 @@ After 10 features, grill-me sessions are shorter because there's less unknown te
 
 ---
 
+### Domain Assignment (within Phase 0)
+
+Before running `/grill-me`, the tech lead assigns the new feature to a domain.
+
+A **domain** is a bounded area of business responsibility with its own data, language, and owner. Examples: `advertisers`, `campaigns`, `billing`, `users`. Domain assignment answers: "which folder does this feature live in, and which team owns it?"
+
+**How to do it:**
+
+1. Read the System Architecture Document (see Project Start section above)
+2. Identify which domain owns the entities this feature touches
+3. If the feature crosses two domains, identify the seam — which domain is the primary, and what is the cross-domain contract?
+4. Record the assignment. Tell the agent: "This feature belongs to the `advertisers` domain."
+
+**Why it matters:** Without domain assignment, `/grill-me` may propose a module structure that duplicates what another domain already owns, or invent its own naming for shared concepts. Domain assignment before grill-me means the agent scopes its questions to the right territory.
+
+**For the tag manager:** The feature belongs to the `advertisers` domain. All modules live under `backend/src/domains/advertisers/`. There are no cross-domain seams in the initial build.
+
+---
+
 ## Phase 1: Idea
 
 **Goal:** Stress-test the concept. Surface every assumption, edge case, and decision branch before writing anything down.
@@ -118,6 +194,8 @@ Run this before anything else. Before the PRD. Before any design sketches. Befor
 What it does: Claude interviews you with 15–50 questions across multiple rounds, covering every edge case and decision branch until full shared understanding is established.
 
 **How to run it:** Start a Claude Code session and type `/grill-me`. Answer each round of questions. Don't rush. The quality of the answers you give here determines the quality of everything downstream.
+
+**Scope:** Grill-me operates within the assigned domain. Questions about entities, operations, and language should stay within the domain boundary. Cross-domain interactions are noted but scoped to the seam, not explored in depth.
 
 **What you're trying to resolve:**
 

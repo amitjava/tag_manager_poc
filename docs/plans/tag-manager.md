@@ -9,6 +9,8 @@
 
 Durable decisions that apply across all phases. Do not deviate from these without updating this file.
 
+- **Domain**: `advertisers` — all backend modules live under `backend/src/domains/advertisers/`
+- **Folder structure**: Domain-based (not layer-based). Each domain is a self-contained folder with its own controller, repository, service, routes, and validation.
 - **Routes**: `GET /api/advertisers`, `POST /api/advertisers`, `GET /api/advertisers/:id`, `PUT /api/advertisers/:id`, `DELETE /api/advertisers/:id`
 - **Schema**: Single table `advertisers` — `id`, `name` (unique), `tag_name`, `tag_code`, `created_at`, `updated_at`
 - **Key models**: Advertiser (id, name, tagName, tagCode)
@@ -16,7 +18,7 @@ Durable decisions that apply across all phases. Do not deviate from these withou
 - **Tag file format**: IIFE wrapping user tag code, with comment header
 - **Frontend routing**: Table (`/`) → Create (`/create`) → Edit (`/edit/:id`)
 - **Code editor**: CodeMirror (JS syntax highlighting)
-- **Database**: SQLite via better-sqlite3, local file
+- **Database**: SQLite via @libsql/client (switched from better-sqlite3 — Node v25 incompatibility), local file
 - **No auth**: All routes are open for POC
 
 ---

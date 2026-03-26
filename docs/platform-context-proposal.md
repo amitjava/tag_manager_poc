@@ -144,6 +144,45 @@ These are the real grill-me questions.
 
 ---
 
+### Section 8: Domain Map
+
+_(For multi-domain projects. Omit on single-domain projects.)_
+
+A one-table summary of the domain boundaries. Each row is a domain — what it owns, what it explicitly does not own, and the cross-domain seams.
+
+| Domain      | Owns                                         | Does NOT own                  | Cross-domain seams                       |
+| ----------- | -------------------------------------------- | ----------------------------- | ---------------------------------------- |
+| advertisers | Advertiser records, tag files, tag code      | Campaigns, billing, user auth | None (initial build)                     |
+| domain2     | (stub — to be defined when feature is built) | Advertiser records            | Reads advertiser ID from advertisers API |
+
+> Agents use this to answer: "Which folder does this code go in? Which team owns this entity? Is this operation mine or does it cross a boundary?" Without this map, agents guess — and guesses create coupling.
+
+**Folder convention (domain-based):**
+
+```
+backend/src/
+  domains/
+    advertisers/          ← domain 1
+      AdvertiserController.ts
+      AdvertiserRepository.ts
+      TagFileService.ts
+      routes.ts
+      validation.ts
+    domain2/              ← domain 2
+      module2_1/
+        Module2_1.ts
+      module2_2/
+        Module2_2.ts
+  db/
+    database.ts           ← shared infrastructure (not a domain)
+  app.ts
+  index.ts
+```
+
+**Maintenance:** Update this section when a new domain is added or a cross-domain seam is established.
+
+---
+
 ## Maintenance Rules
 
 The document is only useful if it stays current. These are the rules:
