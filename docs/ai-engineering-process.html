@@ -347,8 +347,8 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 <h3>The full file structure</h3>
 
-<pre>/ (repo root)
-│
+<pre>/ (repo root)                                        ← [1] frontend and backend are siblings
+│                                                       at the repo root, not nested
 ├── PLATFORM_CONTEXT.md                              ← platform functional + global decisions
 ├── PLATFORM_DATA.md                                 ← DB engine, table ownership index,
 │                                                       migration strategy, caching, event bus
@@ -365,44 +365,59 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 │           ├── ARCHITECTURE.md                      ← technical integration contract
 │           └── DATA.md                              ← field-level data contract
 │
-├── backend/src/domains/
-│   │
-│   ├── advertisers/
-│   │   ├── DOMAIN_FUNCTIONAL.md                     ← what advertisers does: entities,
-│   │   │                                               API contract, language, business rules
-│   │   ├── DOMAIN_ARCHITECTURE.md                   ← how it is built: module map,
-│   │   │                                               data flow, design patterns, debt
-│   │   ├── DOMAIN_DATA.md                           ← DB tables, schema, indexes,
-│   │   │                                               migrations, test isolation
-│   │   └── docs/
-│   │       ├── prd-tag-manager.md                   ← feature PRD: stories + acceptance criteria
-│   │       └── prd-&lt;feature&gt;.md
-│   │
-│   └── domain2/
-│       ├── DOMAIN_FUNCTIONAL.md
-│       ├── DOMAIN_ARCHITECTURE.md
-│       ├── DOMAIN_DATA.md
-│       └── module2_1/
-│           ├── MODULE_FUNCTIONAL.md                 ← what this module does: interface,
-│           │                                           inputs/outputs, what it does NOT do
-│           ├── MODULE_ARCHITECTURE.md               ← how it works internally: data flow,
-│           │                                           design choices, known constraints
-│           └── MODULE_DATA.md                       ← only if module has its own data
-│                                                       concerns (cache, temp storage, etc.)
+├── backend/src/
+│   └── domains/
+│       │
+│       ├── advertisers/                             ← [7] built domain
+│       │   ├── DOMAIN_FUNCTIONAL.md                 ← what advertisers does: entities,
+│       │   │                                           API contract, language, business rules
+│       │   ├── DOMAIN_ARCHITECTURE.md               ← how it is built: module map,
+│       │   │                                           data flow, design patterns, debt
+│       │   ├── DOMAIN_DATA.md                       ← DB tables, schema, indexes,
+│       │   │                                           migrations, test isolation
+│       │   ├── AdvertiserController.ts              ← [6] code files live here alongside docs
+│       │   ├── AdvertiserRepository.ts
+│       │   ├── TagFileService.ts
+│       │   ├── routes.ts
+│       │   ├── validation.ts
+│       │   └── docs/                                ← archived PRDs — never modified after ship
+│       │       ├── prd-tag-manager.md               ← feature PRD: stories + acceptance criteria
+│       │       └── prd-&lt;feature&gt;.md
+│       │
+│       └── domain2/                                 ← [7] stub domain — replace when built
+│           ├── DOMAIN_FUNCTIONAL.md
+│           ├── DOMAIN_ARCHITECTURE.md
+│           ├── DOMAIN_DATA.md
+│           ├── docs/                                ← [2] every domain needs a docs/ for PRDs
+│           │   └── prd-&lt;feature&gt;.md
+│           └── module2_1/                           ← [3] complex module — sits under domain,
+│               │                                       separate from domain-level docs above
+│               ├── MODULE_FUNCTIONAL.md             ← what this module does: interface,
+│               │                                       inputs/outputs, what it does NOT do
+│               ├── MODULE_ARCHITECTURE.md           ← how it works internally: data flow,
+│               │                                       design choices, known constraints
+│               └── MODULE_DATA.md                   ← [4] only created if module has its own
+│                                                       data concerns (cache, temp storage)
+│                                                       omit entirely if not needed
 │
 └── frontend/src/
     ├── domains/                                     ← mirrors backend domain structure
-    │   ├── advertisers/
+    │   ├── advertisers/                             ← [7] built domain
     │   │   ├── DOMAIN_FUNCTIONAL.md                 ← pages, routes, user-facing behaviour
-    │   │   │                                           for this domain's frontend
     │   │   ├── DOMAIN_ARCHITECTURE.md               ← component structure, state management,
     │   │   │                                           API client patterns for this domain
+    │   │   │                                        ← [10] no DOMAIN_DATA.md — frontend does
+    │   │   │                                            not own DB tables; data lives in backend
     │   │   ├── pages/
     │   │   ├── components/                          ← domain-specific components
     │   │   └── api.ts                               ← typed API client for this domain
-    │   └── domain2/
+    │   └── domain2/                                 ← [7] stub domain — replace when built
     │       ├── DOMAIN_FUNCTIONAL.md
-    │       └── DOMAIN_ARCHITECTURE.md
+    │       ├── DOMAIN_ARCHITECTURE.md
+    │       │                                        ← [10] no DOMAIN_DATA.md — same reason
+    │       ├── pages/                               ← [5] consistent structure across domains
+    │       ├── components/
+    │       └── api.ts                               ← [8] every frontend domain needs an API client
     ├── components/                                  ← shared UI components (not domain-specific)
     └── lib/                                         ← shared utilities: routing, validation, etc.</pre>
 
