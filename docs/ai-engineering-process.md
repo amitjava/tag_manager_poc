@@ -49,6 +49,179 @@ MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-p
 
 ---
 
+## Knowledge Hierarchy
+
+Every agent session starts by reading documents, not code. The documents are organised into five levels. Each level answers a specific class of question. Nothing crosses levels — if content is at the wrong level, the files grow without bound and agents get confused about what applies where.
+
+```
+/ (repo root)
+│
+├── PLATFORM_CONTEXT.md                         ← Level 1: platform
+│
+├── docs/
+│   ├── system-architecture.md                  ← Level 2: architecture
+│   ├── glossary.md                             ← Level 2: shared language across domains
+│   ├── ai-engineering-process.md               ← process guide (not knowledge about the product)
+│   │
+│   └── contracts/                              ← Level 3: cross-domain
+│       └── advertisers→domain2.md              ← one file per seam, owned jointly
+│
+└── backend/src/domains/
+    │
+    ├── advertisers/
+    │   ├── DOMAIN_CONTEXT.md                   ← Level 4: domain
+    │   └── docs/
+    │       ├── prd-tag-manager.md              ← Level 4: feature
+    │       └── prd-<next-feature>.md
+    │
+    └── domain2/
+        ├── DOMAIN_CONTEXT.md                   ← Level 4: domain
+        └── module2_1/
+            └── MODULE_CONTEXT.md               ← Level 5: module (complex modules only)
+```
+
+---
+
+### Level 1 — `PLATFORM_CONTEXT.md` (one file, repo root)
+
+Answers: what is this platform, who uses it, what infrastructure runs it, what global decisions are closed, what is genuinely unknown across the whole project.
+
+**Contains:**
+
+- Platform overview (2–3 sentences)
+- Infrastructure: hosting, DB, CI/CD, deployment model
+- Global settled decisions: error response format standard, auth model, API versioning policy, logging standard
+- Cross-domain seam index: a table listing all active seams with a link to each contract document
+- Links to domain context files
+- Genuine unknowns: open questions that have not been resolved at any level
+
+**Does NOT contain:** domain-specific API contracts, domain entities, per-feature decisions. Those live lower.
+
+---
+
+### Level 2 — Architecture documents (`docs/`)
+
+**`system-architecture.md`**
+
+Answers: what are the domains, what does each own, what is the folder structure convention, where are the boundaries.
+
+**Contains:**
+
+- Domain table: name, core entity, what it owns, what it does not own, owner
+- Folder structure convention with example
+- Cross-domain seam table: from, to, what is needed, contract type (HTTP / interface / event)
+- Per-domain ubiquitous language summary (or link to domain glossary)
+- Decision log: architectural decisions made at the platform level
+
+**`glossary.md`**
+
+Answers: what do shared terms mean across domain boundaries.
+
+A term that appears in two domains belongs here, not in either domain's context file. Example: "User" might mean different things to `billing` and `advertisers` — the shared definition of `User` as an authenticated principal lives in the glossary, and each domain notes how it maps to that shared definition.
+
+---
+
+### Level 3 — Cross-domain contract documents (`docs/contracts/`)
+
+One file per active seam. Named `<provider>→<consumer>.md`. Owned jointly by both domain teams.
+
+Answers: exactly what can domain A ask of domain B, and what can it expect back.
+
+**Contains:**
+
+- Endpoint or event schema being consumed
+- Full request/response contract (or event schema)
+- Error cases and what they mean to the consumer
+- Versioning: current version, deprecated versions and their sunset date
+- Breaking change protocol: how changes are communicated, migration window
+- Auth: how the consumer authenticates (if required)
+- Rate limits (if any)
+
+**This is the document that prevents breaking changes from being silent.** If domain B changes its API, the contract document is updated first. The consumer domain's tests verify the contract. If the contract changes in a breaking way, the migration window is documented here before any code changes.
+
+Created when a seam is first established. Updated whenever the contract changes. Never deleted — old versions are marked deprecated with a sunset date.
+
+---
+
+### Level 4 — Domain documents (per domain)
+
+**`DOMAIN_CONTEXT.md`** (one per domain, at the domain root)
+
+Answers: what does this domain own, what is its full API contract, what is its internal structure, what language does it use, what decisions are settled.
+
+**Contains:**
+
+- Domain boundary: owns / does not own
+- Entities: name, description, DB schema
+- Full API contract: all endpoints, request bodies, response shapes, status codes
+- Module map: one line per file explaining what it does
+- Ubiquitous language: canonical terms for this domain (terms shared across domains link to `glossary.md`)
+- Settled decisions: decisions specific to this domain
+- Open unknowns: questions not yet resolved within this domain
+- Links to PRDs
+
+**`docs/prd-<feature>.md`** (one per feature, inside the domain's docs/ folder)
+
+PRDs live next to the code they describe, not in a central docs folder. When an engineer opens the `advertisers/` folder, the PRDs for that domain are right there.
+
+**Contains:** the full 12-section PRD (see Phase 4).
+
+Created in Phase 4 before any code is written. Never updated after execution starts — it is a record of what was agreed. Archived after the feature ships.
+
+---
+
+### Level 5 — Module documents (complex modules only)
+
+**`MODULE_CONTEXT.md`** (optional, inside the module folder)
+
+Answers: what does this specific module do, what is its public interface, what are its known limitations.
+
+**Contains:**
+
+- What this module does (one paragraph)
+- Public interface: the methods/functions/events callers use
+- What it does NOT do (explicit boundary)
+- Known limitations or edge cases
+- Test coverage summary
+
+Skip entirely for simple modules. A 50-line `validation.ts` does not need a context file. Add one when a module is large enough that its interface is not obvious from the file header alone.
+
+---
+
+### What an agent reads for each task
+
+| Task                              | Documents to read                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Add a feature to a domain         | `PLATFORM_CONTEXT.md` + that domain's `DOMAIN_CONTEXT.md`                                              |
+| Fix a bug in a domain             | That domain's `DOMAIN_CONTEXT.md` + relevant PRD                                                       |
+| Build a cross-domain feature      | `PLATFORM_CONTEXT.md` + both `DOMAIN_CONTEXT.md` files + `docs/contracts/<seam>.md`                    |
+| Add a new domain                  | `PLATFORM_CONTEXT.md` + `docs/system-architecture.md`                                                  |
+| Establish a new cross-domain seam | Both `DOMAIN_CONTEXT.md` files + `docs/system-architecture.md` → then write `docs/contracts/<seam>.md` |
+| Architecture review               | `PLATFORM_CONTEXT.md` + `docs/system-architecture.md` + all `DOMAIN_CONTEXT.md` files                  |
+| Work inside a complex module      | That module's `MODULE_CONTEXT.md`                                                                      |
+
+---
+
+### When each document is created and updated
+
+| Document                 | Created                                                            | Updated                                                                            |
+| ------------------------ | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `PLATFORM_CONTEXT.md`    | Project start                                                      | After every feature ships · when infrastructure changes · when a seam is added     |
+| `system-architecture.md` | Project start                                                      | When a domain is added · when a seam is established or changes                     |
+| `glossary.md`            | When the first cross-domain shared term appears                    | When a shared term is added, changed, or moved to a domain                         |
+| `contracts/<seam>.md`    | When a seam is first established (before any code that crosses it) | When the contract changes · when a version is deprecated                           |
+| `DOMAIN_CONTEXT.md`      | When the domain is first defined                                   | When a feature ships · when a refactor changes the API or module map               |
+| `prd-<feature>.md`       | Phase 4 via `/write-a-prd`                                         | Only if scope changes before execution starts. Archived after ship. Never deleted. |
+| `MODULE_CONTEXT.md`      | When a module grows too complex for its interface to be obvious    | When the module's public interface changes                                         |
+
+---
+
+### The rule that keeps each file small
+
+Each file only answers questions at its level. If it starts answering a question that belongs one level down, extract it. If it's answering a question that belongs one level up, move it. A file that grows without bound is answering questions at the wrong level.
+
+---
+
 ## Project Start: System Architecture Document
 
 **Done once. Before any feature work. Before Phase 0.**
