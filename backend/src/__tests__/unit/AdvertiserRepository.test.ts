@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { AdvertiserRepository } from '../../repositories/AdvertiserRepository'
+import { AdvertiserRepository } from '../../domains/advertisers/AdvertiserRepository'
 import { resetDb, runMigrations } from '../../db/database'
 
 beforeEach(async () => {

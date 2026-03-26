@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { AdvertiserRepository } from '../repositories/AdvertiserRepository'
-import { TagFileService } from '../services/TagFileService'
+import { AdvertiserRepository } from './AdvertiserRepository'
+import { TagFileService } from './TagFileService'
 
 export const AdvertiserController = {
   async list(req: Request, res: Response): Promise<void> {
