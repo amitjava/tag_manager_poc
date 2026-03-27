@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Engineering Process — Experiment Summary</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+  h2 { font-size: 1.3rem; font-weight: 700; margin-top: 48px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #f0f0f0; }
+  h3 { font-size: 1rem; font-weight: 600; margin-top: 28px; margin-bottom: 10px; color: #333; }
+  p { margin-bottom: 12px; }
+  .subtitle { font-size: 1.1rem; color: #555; margin-bottom: 32px; }
+
+  /* stat cards */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .stat {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .stat-number { font-size: 2.2rem; font-weight: 700; color: #0066cc; line-height: 1; margin-bottom: 6px; }
+  .stat-label { font-size: 0.8rem; color: #666; line-height: 1.3; }
+
+  /* pipeline */
+  .pipeline {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 24px 28px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.9;
+    margin: 20px 0;
+    color: #1a1a1a;
+  }
+  .pipeline .new { color: #0066cc; font-weight: 600; }
+  .pipeline .arrow { color: #999; }
+
+  /* tables */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+  th { background: #f0f0f0; text-align: left; padding: 10px 12px; font-weight: 600; }
+  td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  /* skill pill */
+  .skill {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #1a56db;
+    font-family: 'SF Mono', monospace;
+    font-size: 0.8rem;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .skill-new {
+    display: inline-block;
+    background: #d4edda;
+    color: #1a6630;
+    font-family: 'SF Mono', monospace;
+    font-size: 0.8rem;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* domain cards */
+  .domains {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .domain-card {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .domain-card h3 { margin-top: 0; font-size: 0.95rem; color: #0066cc; }
+  .domain-card p { font-size: 0.85rem; color: #555; margin-bottom: 8px; }
+  .domain-stat { font-size: 0.8rem; color: #666; }
+  .domain-stat strong { color: #1a1a1a; }
+
+  /* callout */
+  .callout {
+    border-left: 3px solid #0066cc;
+    background: #f0f6ff;
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+  .callout p { margin-bottom: 0; font-size: 0.95rem; }
+
+  .callout-warn {
+    border-left: 3px solid #e67e00;
+    background: #fff8f0;
+  }
+
+  /* quality layers */
+  .layers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .layer {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .layer-num { font-size: 0.75rem; font-weight: 700; color: #0066cc; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .layer-name { font-weight: 600; margin-bottom: 6px; font-size: 0.95rem; }
+  .layer-desc { font-size: 0.85rem; color: #555; }
+
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid #f0f0f0; font-size: 0.85rem; color: #888; }
+  hr { border: none; border-top: 1px solid #f0f0f0; margin: 40px 0; }
+</style>
+</head>
+<body>
+
+<h1>AI Engineering Process — Experiment Summary</h1>
+<p class="subtitle">What we built, what we learned, and what's now in the pipeline</p>
+
+<blockquote style="border-left:3px solid #ddd;padding:10px 18px;color:#555;font-size:0.95rem;background:#fafafa;border-radius:0 6px 6px 0;margin-bottom:32px;">
+  <strong>The question:</strong> Can an AI-assisted engineering process produce not just working code, but a maintained knowledge layer — domain docs, business rules, API contracts, seam contracts — automatically, without extra human effort?<br><br>
+  <strong>The answer:</strong> Yes. But it required 6 new skills and a quality architecture that didn't exist when we started.
+</blockquote>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-number">61</div>
+    <div class="stat-label">Tests passing<br>across 9 suites</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">9</div>
+    <div class="stat-label">Active business rules<br>in structured YAML</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">17</div>
+    <div class="stat-label">Claude Code skills<br>in the library</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">31</div>
+    <div class="stat-label">Knowledge docs<br>auto-generated</div>
+  </div>
+</div>
+
+<hr>
+
+<h2>What We Set Out to Do</h2>
+
+<p>We already had a working 7-phase AI engineering process — grill-me, write-a-prd, prd-to-plan, tdd, triage-issue — proven on the Tag Manager build. The process produced clean, tested code. But it had a gap: after each feature shipped, the knowledge layer was empty.</p>
+
+<div class="callout callout-warn">
+  <p><strong>The gap discovered:</strong> After the catalog domain was built with 21 passing tests, the domain had zero knowledge docs. No DOMAIN_BUSINESS.md, no DOMAIN_API.md, no DOMAIN_DATA.md, no openapi.yaml, no AGENT_CONTEXT.md. The code was right. The knowledge layer was missing. The next Claude session would have no context to work from.</p>
+</div>
+
+<p>The fix was not to write docs manually. It was to define where in the pipeline each gap occurred and build a skill to close it automatically at that exact transition point.</p>
+
+<hr>
+
+<h2>The Full Pipeline — Before and After</h2>
+
+<div class="pipeline">
+<span style="color:#888">BEFORE (11 skills):</span>
+PROJECT START  →  Phase 0  →  /grill-me  →  /ubiquitous-language
+  →  /write-a-prd  →  /prd-to-plan  →  /prd-to-issues  →  /tdd  →  /triage-issue
+  <span style="color:#e67e00">↳ knowledge layer: empty after every feature</span>
+
+<span style="color:#888">AFTER (17 skills):</span>
+PROJECT START
+  <span class="new">→  /scaffold-domain</span>              ← domain stubs + AGENT_CONTEXT.md for all domains
+
+Phase 0
+  <span class="new">→  /define-seam-contract</span>          ← cross-domain features only; before PRD
+
+Phase 1
+  →  /grill-me  →  /ubiquitous-language
+  <span class="new">→  /write-domain-business</span>         ← DOMAIN_BUSINESS.md + seed rules as draft
+
+Phase 4  →  /write-a-prd               ← now includes Business Rules Affected section
+Phase 5  →  /prd-to-plan  →  /prd-to-issues
+Phase 6  →  /tdd
+  <span class="new">→  /generate-domain-docs</span>          ← reads code → DOMAIN_DATA, openapi, DOMAIN_API, ARCHITECTURE
+
+Phase 7  →  /triage-issue
+  <span class="new">→  /ship-feature</span>                  ← PROCESS_LOG, promote rules, FEATURES.md, reverse sync
+
+<span style="color:#888">+ /validate-knowledge runs before any knowledge doc write (conflict gate)</span>
+</div>
+
+<hr>
+
+<h2>What Was Built on the E-commerce Platform</h2>
+
+<div class="domains">
+  <div class="domain-card">
+    <h3>Catalog</h3>
+    <p>Product browsing — list, filter by category, search, product detail</p>
+    <div class="domain-stat"><strong>21</strong> tests · <strong>4</strong> active rules · PRD #1</div>
+    <div class="domain-stat">Tables: products, categories, product_images</div>
+    <div class="domain-stat" style="margin-top:6px;color:#1a6630">✓ Full knowledge layer</div>
+  </div>
+  <div class="domain-card">
+    <h3>Orders</h3>
+    <p>Place an order — catalog validation, price snapshot, atomic creation</p>
+    <div class="domain-stat"><strong>23</strong> tests · <strong>3</strong> active rules · PRD #6</div>
+    <div class="domain-stat">Tables: orders, order_items</div>
+    <div class="domain-stat" style="margin-top:6px;color:#1a6630">✓ Full knowledge layer + seam contract</div>
+  </div>
+  <div class="domain-card">
+    <h3>Customers</h3>
+    <p>Customer registration — unique email, loyalty points initialized at zero</p>
+    <div class="domain-stat"><strong>17</strong> tests · <strong>2</strong> active rules · PRD #10</div>
+    <div class="domain-stat">Tables: customers</div>
+    <div class="domain-stat" style="margin-top:6px;color:#1a6630">✓ Full knowledge layer</div>
+  </div>
+</div>
+
+<h3>Seam contract: orders → catalog</h3>
+<p>Before orders could call catalog, a 3-document contract was established: what business capability is consumed, how it is integrated (in-process service call), and exactly which fields cross the boundary with their source-of-truth and snapshot rules. The contract exists <em>before the code</em>, not after.</p>
+
+<hr>
+
+<h2>The Knowledge Consistency Problem</h2>
+
+<p>Writing docs once is easy. Keeping them consistent across 200+ PRDs over time is the real problem — because an LLM both reads and writes the docs. PRD 30 adds a billing rule. PRD 100 changes it. If both survive in DOMAIN_BUSINESS.md, every session after the conflict gets wrong information. The error is silent and compounds.</p>
+
+<p>Five industry patterns were evaluated: ADR, database migrations, event sourcing, knowledge graphs, and structured YAML with ID matching. The chosen approach borrows from all five.</p>
+
+<h3>The four-layer quality architecture</h3>
+
+<div class="layers">
+  <div class="layer">
+    <div class="layer-num">Layer 1</div>
+    <div class="layer-name">Structure</div>
+    <div class="layer-desc">Business rules live in <code>domain-rules.yaml</code> with IDs, entity+field+operation conflict key, and status. Conflict detection is a deterministic lookup — no LLM semantic matching.</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">Layer 2</div>
+    <div class="layer-name">Surgical edit</div>
+    <div class="layer-desc">Skills always read before writing. Changes target specific rule IDs. Edit tool only — never overwrite the whole file. Nothing is deleted; superseded rules stay in history.</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">Layer 3</div>
+    <div class="layer-name">Human approval gate</div>
+    <div class="layer-desc"><span class="skill-new">/validate-knowledge</span> shows the exact diff before any write. Human reads raw diff and approves. The human is the semantic validator — not the LLM.</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">Layer 4</div>
+    <div class="layer-name">CI validation</div>
+    <div class="layer-desc">Every active rule has test cases in <code>domain-rules.yaml</code>. CI validates test cases against actual code. If rule says X but code does Y → CI fails → blocked from merge.</div>
+  </div>
+</div>
+
+<div class="callout">
+  <p><strong>Conflict test result:</strong> We simulated PRD #30 (price &gt; $100 → premium badge) then PRD #100 (price &gt; $50 → premium badge). The gate blocked PRD #100 with a side-by-side conflict map, forced human resolution, and correctly applied the supersede. After both PRDs: exactly one active rule, one superseded rule with full lineage. Zero contradictions.</p>
+</div>
+
+<hr>
+
+<h2>The 6 New Skills</h2>
+
+<table>
+  <thead><tr><th>Skill</th><th>When</th><th>What it produces</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><span class="skill-new">/scaffold-domain</span></td>
+      <td>Project start — once per domain</td>
+      <td>All domain stub docs: AGENT_CONTEXT.md, DOMAIN_BUSINESS.md, DOMAIN_API.md, DOMAIN_BACKEND_ARCHITECTURE.md, DOMAIN_DATA.md, openapi.yaml, domain-rules.yaml (backend + frontend)</td>
+    </tr>
+    <tr>
+      <td><span class="skill-new">/write-domain-business</span></td>
+      <td>Phase 1 → Phase 4 transition</td>
+      <td>DOMAIN_BUSINESS.md populated from grill-me output. Business rules seeded to domain-rules.yaml as draft.</td>
+    </tr>
+    <tr>
+      <td><span class="skill-new">/validate-knowledge</span></td>
+      <td>Before any knowledge doc write</td>
+      <td>APPROVED (with diff for human review) or BLOCKED (conflict map + resolution options). Never writes without human confirmation.</td>
+    </tr>
+    <tr>
+      <td><span class="skill-new">/generate-domain-docs</span></td>
+      <td>Phase 6 → Phase 7 transition</td>
+      <td>Reads actual code → DOMAIN_DATA.md (from schema), openapi.yaml (from router), DOMAIN_API.md (human-readable), DOMAIN_BACKEND_ARCHITECTURE.md (module map, data flows, patterns, debt).</td>
+    </tr>
+    <tr>
+      <td><span class="skill-new">/ship-feature</span></td>
+      <td>After Phase 7 QA passes</td>
+      <td>PROCESS_LOG step, draft rules → active with test cases, PLATFORM_CONTEXT.md capabilities updated, FEATURES.md indexed, reverse sync to business docs, git commit.</td>
+    </tr>
+    <tr>
+      <td><span class="skill-new">/define-seam-contract</span></td>
+      <td>Phase 0 — cross-domain features only</td>
+      <td>Interviews user (10 questions). Writes docs/contracts/&lt;provider&gt;→&lt;consumer&gt;/: FUNCTIONAL.md, ARCHITECTURE.md, DATA.md. Updates platform context.</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>What the Process Now Guarantees</h2>
+
+<table>
+  <thead><tr><th>Guarantee</th><th>How</th></tr></thead>
+  <tbody>
+    <tr><td>Every domain has a complete knowledge layer before the next feature begins</td><td>/scaffold-domain + /generate-domain-docs + /ship-feature</td></tr>
+    <tr><td>Business rules are tracked with IDs, history, and test coverage</td><td>domain-rules.yaml + /validate-knowledge + CI</td></tr>
+    <tr><td>No code crosses a domain boundary without a written contract</td><td>/define-seam-contract runs before Phase 1 for cross-domain features</td></tr>
+    <tr><td>Contradictory rules are caught before they are written</td><td>/validate-knowledge conflict gate — deterministic, not semantic</td></tr>
+    <tr><td>The knowledge layer reflects actual code, not planned code</td><td>/generate-domain-docs reads real source files after TDD</td></tr>
+    <tr><td>A new Claude session has full context from day one</td><td>CLAUDE.md → AGENT_CONTEXT.md → DOMAIN_BUSINESS.md reading order</td></tr>
+    <tr><td>Every action is logged with files, GitHub refs, and test counts</td><td>PROCESS_LOG.md — updated by /ship-feature after every feature</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>What's Next</h2>
+
+<ul style="line-height:2.2;margin-left:20px;">
+  <li><strong>Layer 4 CI script</strong> — a Node script that reads domain-rules.yaml and runs test cases against actual code. Currently described; not yet implemented.</li>
+  <li><strong>Orders → Customers seam</strong> — link orders to a customer record; requires /define-seam-contract for orders → customers boundary.</li>
+  <li><strong>Order history</strong> — GET /api/v1/orders/:id, customer's order list.</li>
+  <li><strong>Address management</strong> — Customers domain, second PRD.</li>
+  <li><strong>RAG system</strong> — Index the knowledge hierarchy for natural language Q&amp;A across all domain docs. Architecture is defined in ai-engineering-process.html.</li>
+</ul>
+
+<hr>
+
+<footer>
+  Experiment conducted: March 2026<br>
+  E-commerce platform repo: <a href="https://github.com/amitjava/ecommerce_platform">github.com/amitjava/ecommerce_platform</a><br>
+  Full process guide: <a href="./ai-engineering-process.html">ai-engineering-process.html</a><br>
+  Knowledge consistency options: <a href="./knowledge-consistency-options.md">knowledge-consistency-options.md</a><br>
+  Skills library: ~/.claude/skills/ (17 skills)
+</footer>
+
+</body>
+</html>
