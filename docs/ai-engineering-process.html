@@ -267,7 +267,7 @@
 <p class="subtitle">Idea → PRD → Execution → QA</p>
 
 <div class="meta-box">
-  Built from running 11 Claude Code skills end-to-end on a real feature.<br>
+  Built from running 17 Claude Code skills end-to-end across a full e-commerce platform.<br>
   Source: Tag Manager POC — a full-stack CRUD app built to document this exact process.<br>
   For: Mid-sized engineering teams using GitHub + Claude Code.
 </div>
@@ -294,6 +294,7 @@
     <li><a href="#maintenance">Maintenance Cadence</a></li>
     <li><a href="#when-to-skip">When to Skip Phases</a></li>
     <li><a href="#principles">Key Principles</a></li>
+    <li><a href="#knowledge-quality">Knowledge Quality Layer</a></li>
     <li><a href="#skills-reference">Skills Quick Reference</a></li>
     <li><a href="#appendix">Appendix: Real Numbers</a></li>
   </ol>
@@ -318,22 +319,29 @@
 <h2 id="process-map">The Process Map</h2>
 
 <pre>PROJECT START (once)
-          System Architecture Document  ← domains, boundaries, ownership, language per domain
-
-PHASE 0   Platform Context   read PLATFORM_CONTEXT.md + domain assignment
+  System Architecture Document  ← domains, boundaries, ownership, language per domain
+  /scaffold-domain              ← domain stubs + AGENT_CONTEXT.md for all domains
              ↓
-PHASE 1   Idea          /grill-me (from unknowns, within assigned domain)  →  /ubiquitous-language
+PHASE 0   read CLAUDE.md + confirm domain assignment
+  /define-seam-contract         ← (cross-domain features only) write contract before PRD
+             ↓
+PHASE 1   Idea
+  /grill-me                     ← resolve all design decisions
+  /ubiquitous-language          ← canonical terms
+  /write-domain-business        ← DOMAIN_BUSINESS.md + seed domain-rules.yaml (draft rules)
+             ↓
 PHASE 2   Research      (manual — optional)
 PHASE 3   Prototype     /design-an-interface  →  /improve-codebase-architecture
-PHASE 4   PRD           /write-a-prd
+             ↓
+PHASE 4   PRD           /write-a-prd          ← now includes Business Rules Affected section
              ↓
 PHASE 5   Planning      /prd-to-plan  →  /prd-to-issues
              ↓
 PHASE 6   Execution     /setup-pre-commit  →  /git-guardrails-claude-code  →  /tdd
+  /generate-domain-docs         ← DOMAIN_DATA + openapi + DOMAIN_API + DOMAIN_BACKEND_ARCHITECTURE
              ↓
 PHASE 7   QA            /triage-issue  →  loop back to Phase 5
-             ↓
-AFTER EACH FEATURE      update PLATFORM_CONTEXT.md
+  /ship-feature                 ← PROCESS_LOG + promote rules to active + reverse sync + FEATURES.md
              ↓
 MAINTENANCE             /improve-codebase-architecture  →  /request-refactor-plan</pre>
 
@@ -1420,6 +1428,75 @@ Slice 5: Validation — all error states hardened front-to-back</pre>
 
 <hr>
 
+<h2 id="knowledge-quality">Knowledge Quality Layer</h2>
+
+<p>An LLM that both reads and writes knowledge docs creates a consistency problem that does not exist in traditional documentation. PRD 30 says billing = divide by 10. PRD 100 says billing = multiply by 100. If both rules survive in <code>DOMAIN_BUSINESS.md</code>, every agent session after the corruption acts on wrong information — and the error compounds silently across every subsequent feature.</p>
+
+<p>This is not a traditional knowledge management problem. Standard solutions (wikis, ADRs, documentation reviews) assume human writers and human readers. The fix must be deterministic — not reliant on LLM semantic judgment about whether two rules conflict.</p>
+
+<h3>The four-layer quality architecture</h3>
+
+<table>
+  <thead><tr><th>Layer</th><th>Mechanism</th><th>What it prevents</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1 — Structure</strong></td><td><code>domain-rules.yaml</code> with IDs, entity+field+operation conflict key, status (draft/active/superseded)</td><td>LLM misidentifying which rule to change; duplicate active rules for the same entity+field+operation</td></tr>
+    <tr><td><strong>2 — Surgical edit</strong></td><td>Skills always read existing doc before writing. Changes target specific rule IDs, not prose sections. Edit tool, not Write tool.</td><td>Silent overwrites; rules being lost in reformatting</td></tr>
+    <tr><td><strong>3 — Human approval gate</strong></td><td><span class="skill">/validate-knowledge</span> shows exact diff before any write. Human reads raw diff and approves. No write proceeds without explicit approval.</td><td>Silent wrong writes; LLM hallucinating rule content</td></tr>
+    <tr><td><strong>4 — CI validation</strong></td><td>Every active rule has test cases in <code>domain-rules.yaml</code>. CI reads the file and validates test cases against actual code.</td><td>Rule says X but code does Y — contradiction caught before merge</td></tr>
+  </tbody>
+</table>
+
+<h3>domain-rules.yaml — the structured rules registry</h3>
+
+<p>Business rules are not embedded in prose. Each rule has a structured entry:</p>
+
+<pre>rules:
+  - id: RULE-BILLING-001
+    status: superseded
+    superseded_by: RULE-BILLING-002
+    entity: invoice
+    field: amount
+    operation: calculate
+    rule: "amount = customer_spend / 10"
+    introduced_prd: 30
+
+  - id: RULE-BILLING-002
+    status: active
+    supersedes: RULE-BILLING-001
+    entity: invoice
+    field: amount
+    operation: calculate
+    rule: "amount = customer_spend * 100"
+    introduced_prd: 100
+    test_cases:
+      - input: { customer_spend: 100 }
+        expected: { amount: 10000 }</pre>
+
+<p>Conflict detection is a deterministic lookup: same <code>entity + field + operation</code> = same slot. No LLM semantic matching needed. Rules are never deleted — <code>status: superseded</code> preserves history. An agent reading the doc reads only <code>status: active</code> rules.</p>
+
+<h3>Rule lifecycle</h3>
+
+<ol>
+  <li><strong>draft</strong> — seeded in <code>domain-rules.yaml</code> by <span class="skill">/write-domain-business</span> after Phase 1. Rule is declared but code not yet written.</li>
+  <li><strong>active</strong> — promoted by <span class="skill">/ship-feature</span> after TDD confirms code matches rule. Test cases added.</li>
+  <li><strong>superseded</strong> — marked when a later PRD replaces the rule. Old rule stays in file with <code>superseded_by</code> link. New rule added as active.</li>
+</ol>
+
+<h3>/validate-knowledge — the conflict gate</h3>
+
+<p>Run before any knowledge doc write. The gate:</p>
+<ol>
+  <li>Reads the target knowledge doc and <code>domain-rules.yaml</code></li>
+  <li>Extracts the conflict key for each incoming rule (entity + field + operation)</li>
+  <li>Looks up active rules with that key — deterministic, no semantic matching</li>
+  <li>If no conflict: shows diff, waits for human "yes" before writing</li>
+  <li>If conflict and no declared supersede: <strong>BLOCKED</strong> — surfaces conflict side-by-side, presents resolution options, does not proceed until human chooses</li>
+</ol>
+
+<p>The human is the semantic validator at this layer. Everything else is deterministic.</p>
+
+<hr>
+
 <h2 id="skills-reference">Skills Quick Reference</h2>
 
 <table>
@@ -1427,49 +1504,57 @@ Slice 5: Validation — all error states hardened front-to-back</pre>
     <tr><th>Skill</th><th>Phase</th><th>When</th><th>What it produces</th></tr>
   </thead>
   <tbody>
+    <tr><td><span class="skill">/scaffold-domain</span></td><td>Project Start</td><td>Once per domain at project start or when a new domain is added</td><td>All domain stub docs + <code>AGENT_CONTEXT.md</code> (backend + frontend) + <code>domain-rules.yaml</code></td></tr>
+    <tr><td><span class="skill">/define-seam-contract</span></td><td>Phase 0</td><td>When a feature crosses a domain boundary — before Phase 1</td><td><code>docs/contracts/&lt;provider&gt;→&lt;consumer&gt;/</code> — FUNCTIONAL.md, ARCHITECTURE.md, DATA.md</td></tr>
     <tr><td><span class="skill">/grill-me</span></td><td>1 — Idea</td><td>First. Before everything.</td><td>Resolved assumptions, zero open questions</td></tr>
     <tr><td><span class="skill">/ubiquitous-language</span></td><td>1 — Idea</td><td>After grill-me, before PRD</td><td><code>UBIQUITOUS_LANGUAGE.md</code> — canonical terms</td></tr>
+    <tr><td><span class="skill">/write-domain-business</span></td><td>1 → 4 transition</td><td>After ubiquitous-language, before write-a-prd</td><td><code>DOMAIN_BUSINESS.md</code> populated + business rules seeded to <code>domain-rules.yaml</code> as draft</td></tr>
+    <tr><td><span class="skill">/validate-knowledge</span></td><td>Before any knowledge write</td><td>Called by other knowledge-writing skills; also run directly when updating docs</td><td>APPROVED with diff for human review, or BLOCKED with conflict map + resolution options</td></tr>
     <tr><td><span class="skill">/design-an-interface</span></td><td>3 — Prototype</td><td>When module shape is unclear</td><td>3 competing interface designs + recommendation</td></tr>
     <tr><td><span class="skill">/improve-codebase-architecture</span></td><td>3 + ongoing</td><td>Before touching existing code; weekly</td><td>RFC GitHub issues for architectural improvements</td></tr>
-    <tr><td><span class="skill">/write-a-prd</span></td><td>4 — PRD</td><td>After grill-me + ubiquitous-language</td><td>PRD file (12 sections)</td></tr>
+    <tr><td><span class="skill">/write-a-prd</span></td><td>4 — PRD</td><td>After grill-me + ubiquitous-language + write-domain-business</td><td>PRD as GitHub Issue — includes Business Rules Affected structured section</td></tr>
     <tr><td><span class="skill">/prd-to-plan</span></td><td>5 — Planning</td><td>After PRD is approved</td><td><code>plans/&lt;feature&gt;.md</code> — phased tracer bullet plan</td></tr>
     <tr><td><span class="skill">/prd-to-issues</span></td><td>5 — Planning</td><td>After plan is approved</td><td>GitHub Issues with dependencies + acceptance criteria</td></tr>
     <tr><td><span class="skill">/setup-pre-commit</span></td><td>6 — Execution</td><td>Once per repo, before first commit</td><td>Husky hook: lint → typecheck → test</td></tr>
     <tr><td><span class="skill">/git-guardrails-claude-code</span></td><td>6 — Execution</td><td>Once globally</td><td><code>~/.claude/settings.json</code> — blocks destructive git ops</td></tr>
     <tr><td><span class="skill">/tdd</span></td><td>6 — Execution</td><td>Every feature, every bug fix</td><td>Code + tests, red → green → refactor</td></tr>
+    <tr><td><span class="skill">/generate-domain-docs</span></td><td>6 → 7 transition</td><td>After TDD, before Phase 7 QA</td><td><code>DOMAIN_DATA.md</code>, <code>openapi.yaml</code>, <code>DOMAIN_API.md</code>, <code>DOMAIN_BACKEND_ARCHITECTURE.md</code> — generated from actual code</td></tr>
     <tr><td><span class="skill">/triage-issue</span></td><td>7 — QA</td><td>On bug discovery</td><td>GitHub Issue with root cause + TDD fix plan</td></tr>
+    <tr><td><span class="skill">/ship-feature</span></td><td>After Phase 7</td><td>When QA passes and feature is confirmed ready</td><td><code>PROCESS_LOG.md</code> step, rules promoted to active, <code>PLATFORM_CONTEXT.md</code> updated, <code>FEATURES.md</code> indexed, reverse sync, git commit</td></tr>
     <tr><td><span class="skill">/request-refactor-plan</span></td><td>Maintenance</td><td>When a module is painful</td><td>GitHub Issue with 6-commit refactor plan</td></tr>
   </tbody>
 </table>
 
 <hr>
 
-<h2 id="appendix">Appendix: Real Numbers from the Tag Manager Build</h2>
+<h2 id="appendix">Appendix: Real Numbers from the E-commerce Platform Process Test</h2>
 
 <table>
   <thead><tr><th>Metric</th><th>Value</th></tr></thead>
   <tbody>
-    <tr><td>Features built</td><td>5 tracer bullet slices</td></tr>
-    <tr><td>Tests written</td><td>36 (10 unit repo, 8 unit service, 18 integration)</td></tr>
-    <tr><td>GitHub Issues</td><td>8 (#1–5 feature, #6 triage, #7 RFC, #8 refactor)</td></tr>
-    <tr><td>Open questions at PRD time</td><td><strong>0</strong></td></tr>
-    <tr><td>Blockers during execution</td><td>4 (all resolved in Phase 1 by checking compatibility first)</td></tr>
-    <tr><td>Phases that completed earlier than expected</td><td>2 (architecture was right so they were structural, not new features)</td></tr>
-    <tr><td>Pre-commit hook failures caught before commit</td><td>4 type errors</td></tr>
+    <tr><td>Domains built</td><td>3 (catalog, orders, customers)</td></tr>
+    <tr><td>Features shipped</td><td>3 (product browsing, place order, customer registration)</td></tr>
+    <tr><td>Tests written</td><td>61 across 9 suites (repository integration, service unit, router integration per domain)</td></tr>
+    <tr><td>GitHub Issues</td><td>12 (#1 PRD catalog, #2–5 phases, #6 PRD orders, #7–9 phases, #10 PRD customers, #11–12 phases)</td></tr>
+    <tr><td>Knowledge docs created</td><td>31 files across 3 domains (AGENT_CONTEXT, DOMAIN_BUSINESS, DOMAIN_API, DOMAIN_BACKEND_ARCHITECTURE, DOMAIN_DATA, openapi.yaml, domain-rules.yaml per domain + frontend stubs)</td></tr>
+    <tr><td>Business rules tracked</td><td>9 active rules (4 catalog, 3 orders, 2 customers) in structured YAML with test cases</td></tr>
+    <tr><td>Seam contracts established</td><td>1 (orders → catalog: FUNCTIONAL.md, ARCHITECTURE.md, DATA.md)</td></tr>
+    <tr><td>Conflict test result</td><td><strong>BLOCKED</strong> — /validate-knowledge correctly detected conflicting rule, forced human resolution, supersede applied correctly</td></tr>
+    <tr><td>Open questions at PRD time</td><td><strong>0</strong> per PRD</td></tr>
+    <tr><td>Process log steps recorded</td><td>20 (every action logged with date, files, GitHub refs, checks)</td></tr>
+    <tr><td>Skills in library</td><td>17 (11 original + 6 new documentation skills)</td></tr>
   </tbody>
 </table>
 
 <blockquote>
-  <p>The zero open questions at PRD time is the most important number. It came directly from <span class="skill">/grill-me</span> and <span class="skill">/ubiquitous-language</span> running before the PRD was written.</p>
+  <p>The knowledge layer was the gap the first process test exposed. Code was clean — 21 tests GREEN — but 6 required domain docs were missing. The fix was not to write docs manually; it was to build skills that generate docs automatically from code and conversation output. The second pass produced both clean code and a complete knowledge layer, in the same pipeline, without additional human effort.</p>
 </blockquote>
 
 <footer>
-  Built during: Tag Manager POC, March 2026<br>
-  Skills source: <a href="https://github.com/mattpocock/skills">mattpocock/skills</a><br>
-  Process source: <a href="https://aihero.dev">aihero.dev</a> (7-phase AI development model)<br>
-  Real Q&A log: <a href="./grill-me-qa-log.md">grill-me-qa-log.md</a> ·
-  PRD example: <a href="./tag-manager-prd.md">tag-manager-prd.md</a> ·
-  Plan example: <a href="./plans/tag-manager.md">plans/tag-manager.md</a>
+  Built during: E-commerce Platform Process Test, March 2026<br>
+  Process log: <a href="https://github.com/amitjava/ecommerce_platform/blob/main/docs/PROCESS_LOG.md">ecommerce_platform/docs/PROCESS_LOG.md</a><br>
+  Knowledge consistency options: <a href="./knowledge-consistency-options.md">knowledge-consistency-options.md</a><br>
+  Skills source: ~/.claude/skills/ (17 skills)
 </footer>
 
 </body>
