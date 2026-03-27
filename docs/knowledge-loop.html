@@ -21,36 +21,61 @@ body {
 .page-header {
   background: #1a1a1a;
   color: #fff;
-  padding: 48px 40px 40px;
+  padding: 10px 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
 }
-.page-header h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
-.page-header .sub { color: #aaa; font-size: 0.92rem; max-width: 700px; line-height: 1.7; }
+.page-header h1 { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
+.page-header .sub { color: #888; font-size: 0.78rem; line-height: 1.4; }
 
-/* ── Content wrapper ── */
-.content { max-width: 980px; margin: 0 auto; padding: 0 28px; }
-
-/* ── Progress bar ── */
-.progress {
-  display: flex; gap: 0; margin: 36px 0 48px;
-  border: 1px solid #d0d0d0; border-radius: 10px; overflow: hidden;
+/* ── Layout: left nav + main ── */
+.layout {
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100vh - 38px);
+}
+.left-nav {
+  width: 156px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 38px);
+  overflow-y: auto;
   background: #fff;
+  border-right: 1px solid #e0e0e0;
+}
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 24px 28px 80px;
+}
+
+/* ── Left nav (was progress bar) ── */
+.progress {
+  display: flex; flex-direction: column; gap: 0;
 }
 .prog-step {
-  flex: 1; padding: 14px 18px; border-right: 1px solid #d0d0d0;
-  font-size: 0.8rem;
+  padding: 11px 14px; border-bottom: 1px solid #f0f0f0;
+  font-size: 0.78rem;
 }
-.prog-step:last-child { border-right: none; }
-.prog-num { font-weight: 800; font-size: 0.72rem; text-transform: uppercase;
-  letter-spacing: 0.08em; margin-bottom: 3px; }
-.prog-label { font-weight: 600; font-size: 0.83rem; color: #222; }
-.prog-desc { font-size: 0.74rem; color: #888; margin-top: 2px; }
+.prog-step:last-child { border-bottom: none; }
+.prog-num { font-weight: 800; font-size: 0.68rem; text-transform: uppercase;
+  letter-spacing: 0.07em; margin-bottom: 2px; }
+.prog-label { font-weight: 600; font-size: 0.78rem; color: #222; line-height: 1.3; }
+.prog-desc { font-size: 0.7rem; color: #999; margin-top: 2px; line-height: 1.3; }
 .prog-step.s1 { background: #f0f7ff; } .prog-step.s1 .prog-num { color: #3b82f6; }
 .prog-step.s2 { background: #f0fff4; } .prog-step.s2 .prog-num { color: #22c55e; }
 .prog-step.s3 { background: #fffbf0; } .prog-step.s3 .prog-num { color: #f59e0b; }
-.prog-step.s4 { background: #fff0f0; } .prog-step.s4 .prog-num { color: #ef4444; }
+.prog-step.s4 { background: #f5f0ff; } .prog-step.s4 .prog-num { color: #7c3aed; }
+.prog-step.s5 { background: #f0f9ff; } .prog-step.s5 .prog-num { color: #0284c7; }
+.prog-step.s6 { background: #f9fafb; } .prog-step.s6 .prog-num { color: #6b7280; }
+.prog-step.s7 { background: #fff8e1; } .prog-step.s7 .prog-num { color: #d97706; }
+.prog-step.s8 { background: #fff0f0; } .prog-step.s8 .prog-num { color: #ef4444; }
 
 /* ── Chapter ── */
-.chapter { margin-bottom: 64px; }
+.chapter { display: none; margin-bottom: 0; }
+.chapter.open { display: block; }
 
 .chapter-header {
   display: flex; align-items: flex-start; gap: 18px;
@@ -65,7 +90,11 @@ body {
 .ch-num.c1 { background: #dbeafe; color: #1d4ed8; }
 .ch-num.c2 { background: #dcfce7; color: #15803d; }
 .ch-num.c3 { background: #fef9c3; color: #a16207; }
-.ch-num.c4 { background: #fee2e2; color: #b91c1c; }
+.ch-num.c4 { background: #ede9fe; color: #6d28d9; }
+.ch-num.c5 { background: #e0f2fe; color: #0369a1; }
+.ch-num.c6 { background: #f3f4f6; color: #374151; }
+.ch-num.c7 { background: #fef3c7; color: #92400e; }
+.ch-num.c8 { background: #fee2e2; color: #b91c1c; }
 .ch-title { font-size: 1.2rem; font-weight: 700; color: #111; margin-bottom: 4px; }
 .ch-desc { font-size: 0.88rem; color: #666; line-height: 1.6; }
 .ch-tag {
@@ -76,7 +105,17 @@ body {
 .tag-new     { background: #dbeafe; color: #1d4ed8; }
 .tag-update  { background: #dcfce7; color: #15803d; }
 .tag-multi   { background: #fef9c3; color: #a16207; }
+.tag-compose { background: #ede9fe; color: #6d28d9; }
+.tag-scoped  { background: #e0f2fe; color: #0369a1; }
+.tag-retire  { background: #f3f4f6; color: #374151; }
+.tag-chain   { background: #fef3c7; color: #92400e; }
 .tag-blocked { background: #fee2e2; color: #b91c1c; }
+
+/* ── VK compose / scoped / retire outcome colours ── */
+.vk-compose { color: #a78bfa; }
+.vk-scoped  { color: #38bdf8; }
+.vk-retire  { color: #9ca3af; }
+.vk-chain   { color: #fbbf24; }
 
 /* ── User stories box ── */
 .stories-box {
@@ -129,16 +168,16 @@ pre {
 .y-str    { color: #f38ba8; }
 .y-num    { color: #fab387; }
 .y-flag   { color: #cba6f7; }
-.y-comment{ color: #6c7086; font-style: italic; }
+.y-comment{ color: #a0aec0; font-style: italic; }
 .y-add    { color: #a6e3a1; }
-.y-sup    { color: #6c7086; text-decoration: line-through; }
+.y-sup    { color: #a0aec0; text-decoration: line-through; }
 .y-new    { background: rgba(166,227,161,0.12); display: block; margin: 0 -20px; padding: 0 20px; }
 .y-gone   { background: rgba(243,139,168,0.10); display: block; margin: 0 -20px; padding: 0 20px; }
 
 /* ── validate-knowledge log ── */
 .vk-wrap { margin-bottom: 18px; }
 .vk-header {
-  background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: 700;
+  background: #0f172a; color: #e2e8f0; font-size: 0.7rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.08em;
   padding: 8px 18px; border-radius: 10px 10px 0 0;
   border-bottom: 1px solid #1e293b;
@@ -154,10 +193,18 @@ pre {
 .vk-warn    { color: #fbbf24; }
 .vk-err     { color: #f87171; }
 .vk-fetch   { color: #60a5fa; }
-.vk-dim     { color: #475569; }
+.fetch-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #1e3a5f; color: #93c5fd;
+  font-size: 0.67rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; padding: 2px 7px; border-radius: 4px;
+  margin-right: 6px; vertical-align: middle;
+  border: 1px solid #2d5a8e;
+}
+.vk-dim     { color: #cbd5e1; }
 .vk-indent  { padding-left: 20px; display: block; }
 .vk-bold    { font-weight: 700; }
-.vk-section { color: #94a3b8; display: block; margin-top: 8px; }
+.vk-section { color: #e2e8f0; display: block; margin-top: 8px; }
 
 /* ── Diff approval box ── */
 .diff-box {
@@ -183,16 +230,23 @@ pre {
 .diff-line-add { color: #15803d; }
 .diff-line-dim { color: #9ca3af; }
 
-/* ── Approval banner ── */
-.approval {
-  display: flex; align-items: center; gap: 12px;
-  border-radius: 8px; padding: 12px 18px; margin-bottom: 18px;
-  font-size: 0.84rem;
+/* ── Outcome banners ── */
+.outcome {
+  display: flex; align-items: flex-start; gap: 18px;
+  border-radius: 10px; padding: 20px 22px; margin-bottom: 18px;
 }
-.approval.approved { background: #f0fdf4; border: 1px solid #86efac; }
-.approval.blocked  { background: #fff0f0; border: 1px solid #fca5a5; }
-.approval .icon { font-size: 1.2rem; flex-shrink: 0; }
-.approval strong { font-weight: 700; display: block; }
+.outcome.auto  { background: #f0fdf4; border: 1px solid #86efac; }
+.outcome.human { background: #fff5f5; border: 2px solid #ef4444; }
+.outcome-icons { font-size: 2rem; flex-shrink: 0; line-height: 1.1; }
+.outcome-body  { flex: 1; }
+.outcome-code  {
+  font-family: 'SF Mono','Fira Code',monospace; font-size: 0.8rem; font-weight: 800;
+  letter-spacing: 0.02em; margin-bottom: 6px;
+}
+.outcome.auto  .outcome-code { color: #15803d; }
+.outcome.human .outcome-code { color: #b91c1c; }
+.outcome-text   { font-size: 0.86rem; color: #333; line-height: 1.6; }
+.outcome-reason { font-size: 0.8rem; color: #666; margin-top: 6px; font-style: italic; }
 
 /* ── MD change box ── */
 .md-box {
@@ -224,6 +278,62 @@ pre {
   text-transform: uppercase; letter-spacing: 0.08em;
 }
 
+/* ── Accordion ── */
+.chapter-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.chapter-header:hover { background: rgba(0,0,0,0.025); border-radius: 10px; }
+.ch-chevron {
+  flex-shrink: 0; margin-left: 12px; font-size: 1rem; color: #aaa;
+  transition: transform 0.25s ease;
+}
+.chapter.open .ch-chevron { transform: rotate(180deg); color: #555; }
+
+.chapter-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+.chapter.open .chapter-body {
+  max-height: 8000px;
+  opacity: 1;
+}
+
+/* ── Chapter nav ── */
+.chapter-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 32px; padding-top: 18px; border-top: 1px solid #e8e8e8;
+}
+.ch-nav-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 8px; font-size: 0.83rem; font-weight: 600;
+  border: 1px solid #d0d0d0; background: #fff; color: #333;
+  cursor: pointer; transition: background 0.15s, border-color 0.15s;
+}
+.ch-nav-btn:hover { background: #f5f5f5; border-color: #bbb; }
+.ch-nav-btn:disabled { opacity: 0.35; cursor: default; }
+.ch-nav-btn:disabled:hover { background: #fff; border-color: #d0d0d0; }
+.ch-nav-count { font-size: 0.78rem; color: #aaa; }
+
+/* ── Active prog step ── */
+.prog-step { cursor: pointer; transition: filter 0.15s; }
+.prog-step:hover { filter: brightness(0.96); }
+.prog-step.active { box-shadow: inset 0 -3px 0 0 currentColor; }
+.prog-step.s1.active { box-shadow: inset 0 -3px 0 0 #3b82f6; }
+.prog-step.s2.active { box-shadow: inset 0 -3px 0 0 #22c55e; }
+.prog-step.s3.active { box-shadow: inset 0 -3px 0 0 #f59e0b; }
+.prog-step.s4.active { box-shadow: inset 0 -3px 0 0 #7c3aed; }
+.prog-step.s5.active { box-shadow: inset 0 -3px 0 0 #0284c7; }
+.prog-step.s6.active { box-shadow: inset 0 -3px 0 0 #6b7280; }
+.prog-step.s7.active { box-shadow: inset 0 -3px 0 0 #d97706; }
+.prog-step.s8.active { box-shadow: inset 0 -3px 0 0 #ef4444; }
+
+/* hide connectors — chapter nav replaces them */
+.connector { display: none; }
+
 /* ── Related reading ── */
 .related {
   background: #fff; border: 1px solid #e0e0e0; border-radius: 10px;
@@ -237,6 +347,94 @@ pre {
   padding: 10px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
 }
 .related .note { font-size: 0.78rem; color: #9ca3af; margin-top: 10px; }
+
+/* ── Table of contents ── */
+.toc {
+  background: #fff; border: 1px solid #e0e0e0; border-radius: 10px;
+  padding: 18px 22px; margin-bottom: 28px;
+}
+.toc-label {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.09em; color: #999; margin-bottom: 12px;
+}
+.toc-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 16px;
+}
+.toc-item {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 0.82rem; color: #333; cursor: pointer;
+  padding: 5px 0; border-bottom: 1px solid #f4f4f4;
+  text-decoration: none;
+}
+.toc-item:hover { color: #111; }
+.toc-item:last-child { border-bottom: none; }
+.toc-n { font-size: 0.68rem; font-weight: 800; flex-shrink: 0; width: 32px; }
+.toc-item.c1 .toc-n { color: #3b82f6; }
+.toc-item.c2 .toc-n { color: #22c55e; }
+.toc-item.c3 .toc-n { color: #f59e0b; }
+.toc-item.c4 .toc-n { color: #7c3aed; }
+.toc-item.c5 .toc-n { color: #0284c7; }
+.toc-item.c6 .toc-n { color: #6b7280; }
+.toc-item.c7 .toc-n { color: #d97706; }
+.toc-item.c8 .toc-n { color: #ef4444; }
+.toc-item.c9 .toc-n { color: #4338ca; }
+
+/* ── Methodology chapter ── */
+.meth-section { margin-bottom: 32px; }
+.meth-section h3 {
+  font-size: 0.95rem; font-weight: 700; color: #111;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 2px solid #e8e8e8;
+}
+.meth-section h4 {
+  font-size: 0.82rem; font-weight: 700; color: #333;
+  margin: 16px 0 8px; text-transform: uppercase;
+  letter-spacing: 0.06em; font-size: 0.72rem;
+}
+.meth-section p { font-size: 0.86rem; color: #444; line-height: 1.7; margin-bottom: 10px; }
+.meth-section ul { padding-left: 20px; margin-bottom: 12px; }
+.meth-section li { font-size: 0.86rem; color: #444; line-height: 1.7; margin-bottom: 4px; }
+
+/* ── Outcome code table ── */
+.code-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 18px; }
+.code-table th {
+  text-align: left; font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: #888; padding: 8px 12px;
+  border-bottom: 2px solid #e0e0e0; background: #f8f8f8;
+}
+.code-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; color: #333; }
+.code-table tr:last-child td { border-bottom: none; }
+.code-table .code-cell {
+  font-family: 'SF Mono','Fira Code',monospace; font-size: 0.74rem; font-weight: 700;
+}
+.code-table .auto-row td:first-child { border-left: 3px solid #22c55e; }
+.code-table .human-row td:first-child { border-left: 3px solid #ef4444; }
+
+/* ── Flow diagram (text) ── */
+.flow-box {
+  background: #0f172a; color: #cbd5e1; font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 0.74rem; line-height: 1.9; padding: 20px 24px; border-radius: 10px;
+  margin-bottom: 18px; overflow-x: auto; white-space: pre;
+}
+.flow-ok   { color: #4ade80; }
+.flow-warn { color: #fbbf24; }
+.flow-err  { color: #f87171; }
+.flow-dim  { color: #cbd5e1; }
+
+/* ── Token cost bar ── */
+.token-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 0.82rem; }
+.token-label { width: 260px; flex-shrink: 0; color: #333; }
+.token-bar-wrap { flex: 1; background: #f0f0f0; border-radius: 4px; height: 14px; overflow: hidden; }
+.token-bar { height: 100%; border-radius: 4px; }
+.token-count { width: 100px; text-align: right; color: #888; font-size: 0.78rem; flex-shrink: 0; }
+
+/* ── Industry ref box ── */
+.ref-box {
+  background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px;
+  padding: 14px 18px; margin-bottom: 10px; font-size: 0.84rem; line-height: 1.6;
+}
+.ref-box strong { font-weight: 700; display: block; margin-bottom: 3px; }
+.ref-box span { color: #666; font-size: 0.78rem; }
 
 /* ── Callout ── */
 .callout {
@@ -253,48 +451,94 @@ pre {
 
 <div class="page-header">
   <h1>The Knowledge Loop</h1>
-  <p class="sub">One loyalty system. Four PRDs. Read top to bottom — each PRD picks up where the last left off. By the end you will have seen a rule born, extended, superseded, and blocked. This is the full lifecycle.</p>
+  <p class="sub">One loyalty system. Eight PRDs. Every rule lifecycle event — born, superseded, composed, scoped, retired, chained, blocked.</p>
 </div>
 
-<div class="content">
+<div class="layout">
 
-<!-- Progress bar -->
+<nav class="left-nav">
 <div class="progress">
-  <div class="prog-step s1">
+  <div id="prog-1" class="prog-step s1" onclick="goCh(1)">
     <div class="prog-num">PRD #1</div>
-    <div class="prog-label">First rule</div>
-    <div class="prog-desc">Earn 1pt per $1 spent</div>
+    <div class="prog-label">Create</div>
+    <div class="prog-desc">First rule, clean slot</div>
   </div>
-  <div class="prog-step s2">
+  <div id="prog-2" class="prog-step s2" onclick="goCh(2)">
     <div class="prog-num">PRD #2</div>
     <div class="prog-label">Supersede</div>
-    <div class="prog-desc">Tier multipliers added</div>
+    <div class="prog-desc">Tier multipliers</div>
   </div>
-  <div class="prog-step s3">
+  <div id="prog-3" class="prog-step s3" onclick="goCh(3)">
     <div class="prog-num">PRD #3</div>
-    <div class="prog-label">Multi-rule + clean + supersede</div>
-    <div class="prog-desc">Redemption &amp; new earn base</div>
+    <div class="prog-label">Multi-rule</div>
+    <div class="prog-desc">Clean + supersede</div>
   </div>
-  <div class="prog-step s4">
+  <div id="prog-4" class="prog-step s4" onclick="goCh(4)">
     <div class="prog-num">PRD #4</div>
+    <div class="prog-label">Composition</div>
+    <div class="prog-desc">Two rules, one slot</div>
+  </div>
+  <div id="prog-5" class="prog-step s5" onclick="goCh(5)">
+    <div class="prog-num">PRD #5</div>
+    <div class="prog-label">Scoped variant</div>
+    <div class="prog-desc">VIP carve-out</div>
+  </div>
+  <div id="prog-6" class="prog-step s6" onclick="goCh(6)">
+    <div class="prog-num">PRD #6</div>
+    <div class="prog-label">Pure retire</div>
+    <div class="prog-desc">Feature removed</div>
+  </div>
+  <div id="prog-7" class="prog-step s7" onclick="goCh(7)">
+    <div class="prog-num">PRD #7</div>
+    <div class="prog-label">Chain notice</div>
+    <div class="prog-desc">Depends_on surfaced</div>
+  </div>
+  <div id="prog-8" class="prog-step s8" onclick="goCh(8)">
+    <div class="prog-num">PRD #8</div>
     <div class="prog-label">Blocked</div>
-    <div class="prog-desc">Genuine conflict detected</div>
+    <div class="prog-desc">Genuine conflict</div>
+  </div>
+  <div id="prog-9" class="prog-step" style="background:#f0f4ff;" onclick="goCh(9)">
+    <div class="prog-num" style="color:#4338ca;">§</div>
+    <div class="prog-label">Methodology</div>
+    <div class="prog-desc">Reference guide</div>
+  </div>
+</div>
+</nav>
+
+<div class="main-content">
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-label">Contents — click to jump</div>
+  <div class="toc-grid">
+    <a class="toc-item c1" onclick="goCh(1)"><span class="toc-n">PRD #1</span>Create — first rule born</a>
+    <a class="toc-item c2" onclick="goCh(2)"><span class="toc-n">PRD #2</span>Supersede — tier multipliers</a>
+    <a class="toc-item c3" onclick="goCh(3)"><span class="toc-n">PRD #3</span>Multi-rule — clean + supersede</a>
+    <a class="toc-item c4" onclick="goCh(4)"><span class="toc-n">PRD #4</span>Composition — two rules, one slot</a>
+    <a class="toc-item c5" onclick="goCh(5)"><span class="toc-n">PRD #5</span>Scoped variant — VIP carve-out</a>
+    <a class="toc-item c6" onclick="goCh(6)"><span class="toc-n">PRD #6</span>Pure retire — feature removed</a>
+    <a class="toc-item c7" onclick="goCh(7)"><span class="toc-n">PRD #7</span>Chain notice — depends_on surfaced</a>
+    <a class="toc-item c8" onclick="goCh(8)"><span class="toc-n">PRD #8</span>Blocked — genuine conflict</a>
+    <a class="toc-item c9" onclick="goCh(9)"><span class="toc-n">§</span>Methodology — reference guide</a>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════ -->
 <!-- CHAPTER 1                                               -->
 <!-- ═══════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" id="ch-1">
 
-  <div class="chapter-header">
+  <div class="chapter-header" onclick="goCh(1)">
     <div class="ch-num c1">PRD<br>#1</div>
     <div>
       <div class="ch-title">Basic earning — the first rule is born</div>
       <div class="ch-desc">Customers earn loyalty points when they place an order. Nothing exists yet. No rules, no YAML, no conflicts to check.</div>
     </div>
     <span class="ch-tag tag-new">New rule</span>
+    <span class="ch-chevron">▾</span>
   </div>
+  <div class="chapter-body">
 
   <!-- User stories -->
   <div class="stories-box">
@@ -352,8 +596,16 @@ pre {
 <span class="vk-section">Step 1 — scan domain-rules.yaml for matching conflict_key...</span>
 <span class="vk-indent vk-dim">File does not exist. No existing rules to check.</span>
 
-<span class="vk-ok">✓ CLEAN — no conflicts. First rule in this domain.</span>
-<span class="vk-ok">  Proceed: write RULE-EARN-001 to domain-rules.yaml.</span></div>
+<span class="vk-ok">✓ validate-knowledge-CLEAN — no existing rules. New slot, no owner.</span>
+<span class="vk-ok">  Auto-writing RULE-EARN-001 directly. No human gate.</span></div>
+  </div>
+
+  <div class="outcome auto">
+    <div class="outcome-icons">✅</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-CLEAN</div>
+      <div class="outcome-text">New conflict key with no existing owner. validate-knowledge writes directly to domain-rules.yaml. No human input required.</div>
+    </div>
   </div>
 
   <!-- MD box -->
@@ -362,6 +614,12 @@ pre {
     <p>Rule table gains its first row: <strong>RULE-EARN-001 | active | 1 point per dollar spent, rounded down | PRD #1</strong>. The "Use cases" section gains one entry. No superseded section yet.</p>
   </div>
 
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" disabled>← (first chapter)</button>
+      <span class="ch-nav-count">1 of 9</span>
+      <button class="ch-nav-btn" onclick="goCh(2)">PRD #2 — Supersede →</button>
+    </div>
+  </div><!-- /chapter-body -->
 </div><!-- /chapter 1 -->
 
 <div class="connector">PRD #1 shipped — PRD #2 begins with the state above</div>
@@ -369,16 +627,18 @@ pre {
 <!-- ═══════════════════════════════════════════════════════ -->
 <!-- CHAPTER 2                                               -->
 <!-- ═══════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" id="ch-2">
 
-  <div class="chapter-header">
+  <div class="chapter-header" onclick="goCh(2)">
     <div class="ch-num c2">PRD<br>#2</div>
     <div>
       <div class="ch-title">Tier multipliers — first supersede</div>
       <div class="ch-desc">Bronze customers earn 1×, Silver 2×, Gold 3×. Same earn slot — same conflict key — as RULE-EARN-001. validate-knowledge will find a match and go read both PRDs before deciding.</div>
     </div>
     <span class="ch-tag tag-update">Supersede</span>
+    <span class="ch-chevron">▾</span>
   </div>
+  <div class="chapter-body">
 
   <!-- User stories -->
   <div class="stories-box">
@@ -462,13 +722,13 @@ pre {
 <span class="vk-indent vk-warn">⚠ MATCH — RULE-EARN-001 owns customer.loyaltyPoints.earn (status: active)</span>
 
 <span class="vk-section">Step 2 — fetch PRD context to determine intent...</span>
-<span class="vk-indent"><span class="vk-fetch">→ gh issue view 1</span>  <span class="vk-dim">[source of RULE-EARN-001]</span>
+<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 1</span>  <span class="vk-dim">— source of RULE-EARN-001</span>
 <span class="vk-indent">  Story 1: "earn 1 point for every dollar I spend"
   Story 2: "fractional amounts rounded down"
   Formula: floor(order_total_cents / 100)
   Why: "simple, predictable flat rate"</span>
 
-<span class="vk-fetch">→ gh issue view 2</span>  <span class="vk-dim">[incoming PRD]</span>
+<span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 2</span>  <span class="vk-dim">— incoming PRD</span>
 <span class="vk-indent">  Story 1–3: "earn at 1×/2×/3× rate based on tier"
   Formula: floor(order_total_cents / 100) × tier_multiplier
   Tier thresholds: Bronze 0+, Silver 1000+, Gold 5000+</span></span>
@@ -484,41 +744,16 @@ pre {
 
   Clear version boundary. No ambiguity. PRD #2 supersedes PRD #1.</span>
 
-<span class="vk-ok">✓ APPROVED — intentional supersede with clear version boundary.</span>
-<span class="vk-ok">  Action: mark RULE-EARN-001 → superseded, add RULE-EARN-002 as active.</span>
-<span class="vk-ok">  Showing diff for human approval ↓</span></div>
+<span class="vk-ok">✓ validate-knowledge-DECLARED-WRITE — PRD #2 explicitly declared supersede RULE-EARN-001.</span>
+<span class="vk-ok">  Intent confirmed by PRD fetch. Auto-executing. No human gate.</span></div>
   </div>
 
-  <!-- Diff -->
-  <div class="diff-box">
-    <div class="diff-header">
-      <span>Human approval required — rule change diff</span>
+  <div class="outcome auto">
+    <div class="outcome-icons">✅</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-DECLARED-WRITE</div>
+      <div class="outcome-text">The PRD author made this decision when they wrote "supersede RULE-EARN-001" in the Business Rules Affected block. That was the human gate. validate-knowledge confirms intent via PRD fetch, then auto-executes: RULE-EARN-001 → superseded, RULE-EARN-002 → active.</div>
     </div>
-    <div class="diff-body">
-      <div class="diff-side before">
-        <h5>Before</h5>
-        <div class="diff-line-del">RULE-EARN-001</div>
-        <div class="diff-line-del">  status: active</div>
-        <div class="diff-line-del">  formula: floor(total / 100)</div>
-        <div class="diff-line-dim">  plain_english: "1 pt per $1"</div>
-      </div>
-      <div class="diff-side after">
-        <h5>After</h5>
-        <div class="diff-line-dim">RULE-EARN-001</div>
-        <div class="diff-line-add">  status: superseded → by RULE-EARN-002</div>
-        <div class="diff-line-dim">  (formula kept as audit trail)</div>
-        <br>
-        <div class="diff-line-add">RULE-EARN-002 (new)</div>
-        <div class="diff-line-add">  status: active</div>
-        <div class="diff-line-add">  formula: floor(total/100) × tier_mult</div>
-        <div class="diff-line-add">  tiers: bronze 1×, silver 2×, gold 3×</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="approval approved">
-    <div class="icon">✓</div>
-    <div><strong>Human approved.</strong> RULE-EARN-001 marked superseded. RULE-EARN-002 written as active. CI test_cases updated to include tier inputs.</div>
   </div>
 
   <!-- MD box -->
@@ -527,6 +762,12 @@ pre {
     <p>Rule table: RULE-EARN-001 moves to a <em>Superseded</em> section with a note linking to RULE-EARN-002. RULE-EARN-002 becomes the single active row for <code>customer.loyaltyPoints.earn</code>. Domain language section gains: Tier, Tier Multiplier, Bronze/Silver/Gold thresholds.</p>
   </div>
 
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(1)">← PRD #1 — Create</button>
+      <span class="ch-nav-count">2 of 9</span>
+      <button class="ch-nav-btn" onclick="goCh(3)">PRD #3 — Multi-rule →</button>
+    </div>
+  </div><!-- /chapter-body -->
 </div><!-- /chapter 2 -->
 
 <div class="connector">PRD #2 shipped — PRD #3 begins with two files above (RULE-EARN-002 active, RULE-EARN-001 superseded)</div>
@@ -534,16 +775,18 @@ pre {
 <!-- ═══════════════════════════════════════════════════════ -->
 <!-- CHAPTER 3                                               -->
 <!-- ═══════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" id="ch-3">
 
-  <div class="chapter-header">
+  <div class="chapter-header" onclick="goCh(3)">
     <div class="ch-num c3">PRD<br>#3</div>
     <div>
       <div class="ch-title">Point redemption — two rules, two different outcomes</div>
       <div class="ch-desc">Customers can redeem points for a discount. 1pt = 1 cent. 50% cap. Points are earned on the post-discount total. This PRD adds two rules: one lands in a clean slot, one supersedes RULE-EARN-002. validate-knowledge runs twice.</div>
     </div>
     <span class="ch-tag tag-multi">2 rules: clean + supersede</span>
+    <span class="ch-chevron">▾</span>
   </div>
+  <div class="chapter-body">
 
   <!-- User stories -->
   <div class="stories-box">
@@ -655,7 +898,7 @@ pre {
 <span class="vk-section">Step 1 — scan domain-rules.yaml for matching conflict_key...</span>
 <span class="vk-indent vk-dim">Scanned 2 rules. No rule owns order.discount.apply.</span>
 
-<span class="vk-ok">✓ CLEAN — new slot, no existing owner. Proceed.</span></div>
+<span class="vk-ok">✓ validate-knowledge-CLEAN — new slot, no existing owner. Auto-writing directly.</span></div>
   </div>
 
   <div class="vk-wrap">
@@ -668,12 +911,12 @@ pre {
 <span class="vk-indent vk-warn">⚠ MATCH — RULE-EARN-002 owns customer.loyaltyPoints.earn (status: active)</span>
 
 <span class="vk-section">Step 2 — fetch PRD context...</span>
-<span class="vk-indent"><span class="vk-fetch">→ gh issue view 2</span>  <span class="vk-dim">[source of RULE-EARN-002]</span>
+<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 2</span>  <span class="vk-dim">— source of RULE-EARN-002</span>
 <span class="vk-indent">  Stories 1–3: "earn at tier rate on order total"
   Formula: floor(order_total_cents / 100) × tier_mult
   Base: gross order total (no redemption concept existed)</span>
 
-<span class="vk-fetch">→ gh issue view 3</span>  <span class="vk-dim">[incoming PRD]</span>
+<span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 3</span>  <span class="vk-dim">— incoming PRD</span>
 <span class="vk-indent">  Story 4: "earn on what I actually paid — post-discount"
   Reason given: "so redemption does not create a compounding loop"
   Formula: floor(effective_total_cents / 100) × tier_mult
@@ -687,36 +930,16 @@ pre {
   No ambiguity — PRD #3 is extending the system with redemption
   and correcting the earn base as a necessary consequence.</span>
 
-<span class="vk-ok">✓ APPROVED — intentional supersede. Earn base change is required by redemption design.</span>
-<span class="vk-ok">  Action: RULE-EARN-002 → superseded. RULE-EARN-003 → active.</span>
-<span class="vk-ok">  Showing diff for human approval ↓</span></div>
+<span class="vk-ok">✓ validate-knowledge-DECLARED-WRITE — PRD #3 declared supersede RULE-EARN-002.</span>
+<span class="vk-ok">  Intent confirmed by PRD fetch. Auto-executing. No human gate.</span></div>
   </div>
 
-  <!-- Diff -->
-  <div class="diff-box">
-    <div class="diff-header"><span>Human approval required — earn rule change</span></div>
-    <div class="diff-body">
-      <div class="diff-side before">
-        <h5>Before</h5>
-        <div class="diff-line-del">RULE-EARN-002   status: active</div>
-        <div class="diff-line-del">formula: floor(total/100) × tier_mult</div>
-        <div class="diff-line-del">base:    gross order total</div>
-      </div>
-      <div class="diff-side after">
-        <h5>After</h5>
-        <div class="diff-line-dim">RULE-EARN-002   status: superseded → by RULE-EARN-003</div>
-        <br>
-        <div class="diff-line-add">RULE-EARN-003   status: active</div>
-        <div class="diff-line-add">formula: floor(effective_total/100) × tier_mult</div>
-        <div class="diff-line-add">base:    effective_total (gross − discount)</div>
-        <div class="diff-line-add">depends_on: [RULE-REDEEM-001]</div>
-      </div>
+  <div class="outcome auto">
+    <div class="outcome-icons">✅</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-CLEAN + validate-knowledge-DECLARED-WRITE</div>
+      <div class="outcome-text">Two rules, two outcomes, both auto. RULE-REDEEM-001 goes to a new slot (CLEAN). RULE-EARN-003 supersedes RULE-EARN-002 — the PRD declared this explicitly (DECLARED-WRITE). Neither requires a human gate: both intents were committed when the PRD was written.</div>
     </div>
-  </div>
-
-  <div class="approval approved">
-    <div class="icon">✓</div>
-    <div><strong>Human approved.</strong> RULE-EARN-003 active. RULE-EARN-002 archived. RULE-REDEEM-001 written to new slot. Three active rules now: RULE-EARN-003, RULE-REDEEM-001 (new), plus all superseded history.</div>
   </div>
 
   <div class="md-box">
@@ -724,158 +947,976 @@ pre {
     <p>Two new rows in active rules table: RULE-REDEEM-001 and RULE-EARN-003. RULE-EARN-002 moves to superseded section with a reason note. Domain language gains: Redemption, Effective Total, Gross Total, Discount. Use cases section gains Story 1–5 from PRD #3.</p>
   </div>
 
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(2)">← PRD #2 — Supersede</button>
+      <span class="ch-nav-count">3 of 9</span>
+      <button class="ch-nav-btn" onclick="goCh(4)">PRD #4 — Composition →</button>
+    </div>
+  </div><!-- /chapter-body -->
 </div><!-- /chapter 3 -->
 
 <div class="connector">PRD #3 shipped — PRD #4 begins with RULE-EARN-003 and RULE-REDEEM-001 both active</div>
 
 <!-- ═══════════════════════════════════════════════════════ -->
-<!-- CHAPTER 4                                               -->
+<!-- CHAPTER 4 — COMPOSITION                                 -->
 <!-- ═══════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" id="ch-4">
 
-  <div class="chapter-header">
+  <div class="chapter-header" onclick="goCh(4)">
     <div class="ch-num c4">PRD<br>#4</div>
     <div>
-      <div class="ch-title">VIP gross earning — blocked by a genuine conflict</div>
-      <div class="ch-desc">A proposed PRD: VIP customers should earn on gross total, not effective total, so they are not penalised for redeeming points. This hits the same conflict key as RULE-EARN-003 — and this time there is no clear version boundary. validate-knowledge blocks it.</div>
+      <div class="ch-title">Weekend multiplier — two rules active on the same slot</div>
+      <div class="ch-desc">Weekend orders should earn 1.5× on top of the normal tier rate. This lands on <code>customer.loyaltyPoints.earn</code> — the same conflict key as RULE-EARN-003. But it does not replace it. It stacks on top. This introduces the <strong>COMPOSITION</strong> outcome: both rules stay active simultaneously, one modifying the other.</div>
+    </div>
+    <span class="ch-tag tag-compose">Composition</span>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="chapter-body">
+
+  <div class="stories-box">
+    <h4>User stories proposed in this PRD</h4>
+    <div class="story">
+      <div class="story-n">1</div>
+      <div>As a customer placing an order on a Saturday or Sunday, I want to earn 1.5× points so that weekends are incentivised.</div>
+      <div class="story-rule">→ RULE-EARN-004</div>
+    </div>
+    <div class="story">
+      <div class="story-n">2</div>
+      <div>As a customer, I want the weekend multiplier to stack with my tier rate, not replace it, so that my loyalty tier still matters.</div>
+      <div class="story-rule">→ RULE-EARN-004</div>
+    </div>
+  </div>
+
+  <div class="callout info"><strong>New YAML fields introduced here:</strong> <code>composes_with</code> (which rule this modifies), <code>modifier_type</code> (multiplicative / additive / conditional), <code>composition_order</code> (applied_after means base rule runs first), <code>applies_when</code> (the condition under which this modifier fires).</div>
+
+  <div class="state-row">
+    <div class="state-col before">
+      <div class="state-label">domain-rules.yaml — before PRD #4</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-REDEEM-001</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">order.discount.apply</span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-003</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(effective_total / 100) * tier_mult"</span>
+    <span class="y-key">depends_on</span><span class="y-val">:</span> <span class="y-val">[RULE-REDEEM-001]</span>
+
+  <span class="y-comment">  # superseded: RULE-EARN-002, RULE-EARN-001 (omitted for brevity)</span></pre>
+    </div>
+    <div class="state-col after">
+      <div class="state-label">domain-rules.yaml — after PRD #4</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-REDEEM-001</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">order.discount.apply</span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-003</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(effective_total / 100) * tier_mult"</span>
+
+<span class="y-new">  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-004</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+    <span class="y-key">modifier_type</span><span class="y-val">:</span> <span class="y-str">multiplicative</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"base_points * 1.5"</span>
+    <span class="y-key">applies_when</span><span class="y-val">:</span> <span class="y-str">"day_of_week IN [saturday, sunday]"</span>
+    <span class="y-key">composes_with</span><span class="y-val">:</span> <span class="y-str">RULE-EARN-003</span>
+    <span class="y-key">composition_order</span><span class="y-val">:</span> <span class="y-str">applied_after</span>
+    <span class="y-key">plain_english</span><span class="y-val">:</span> <span class="y-str">"Weekend orders earn 1.5× on top of tier rate"</span>
+    <span class="y-key">why</span><span class="y-val">:</span> <span class="y-str">"Drive off-peak orders. Stacks with tier — does not replace it."</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">4</span>
+    <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #4 Story 1, 2"</span>
+    <span class="y-key">test_cases</span><span class="y-val">:</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ effective_total: 2500, balance: 300, day: saturday }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 37 }</span>  <span class="y-comment"># 25 × 1.5 = 37.5 → 37</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ effective_total: 2500, balance: 300, day: tuesday }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span>  <span class="y-comment"># modifier not applied</span></span></pre>
+    </div>
+  </div>
+
+  <div class="vk-wrap">
+    <div class="vk-header"><div class="dot" style="background:#a78bfa;"></div>validate-knowledge — PRD #4</div>
+    <div class="vk-body"><span class="vk-dim">▶ Incoming rule: RULE-EARN-004</span>
+<span class="vk-dim">  conflict_key: customer.loyaltyPoints.earn</span>
+<span class="vk-dim">  action: add  |  modifier_type: multiplicative  |  composes_with: RULE-EARN-003</span>
+
+<span class="vk-section">Step 1 — scan domain-rules.yaml for matching conflict_key...</span>
+<span class="vk-indent vk-warn">⚠ MATCH — RULE-EARN-003 owns customer.loyaltyPoints.earn (status: active)</span>
+
+<span class="vk-section">Step 2 — check relationship declaration...</span>
+<span class="vk-indent vk-dim">Incoming rule declares composes_with: RULE-EARN-003.
+  This is an explicit composition declaration — not a supersede or conflict.
+  Validating: does RULE-EARN-003 exist and is it active? ✓ yes.</span>
+
+<span class="vk-section">Step 3 — verify non-contradiction...</span>
+<span class="vk-indent vk-dim">RULE-EARN-003: base formula — runs always
+  RULE-EARN-004: modifier — runs only when applies_when is true (weekends)
+  On weekdays: only RULE-EARN-003 applies
+  On weekends: RULE-EARN-003 runs first, RULE-EARN-004 multiplies the result
+  No customer ever gets contradictory answers. Composition is safe.</span>
+
+<span class="vk-compose">✓ validate-knowledge-DECLARED-WRITE (COMPOSITION)</span>
+<span class="vk-compose">  PRD #4 declared composes_with: RULE-EARN-003. Intent explicit. Auto-executing.</span>
+<span class="vk-compose">  Evaluation order: RULE-EARN-003 (base) → RULE-EARN-004 (×1.5, weekends only)</span>
+<span class="vk-compose">  Combined formula (weekend): floor(effective_total/100) × tier_mult × 1.5</span></div>
+  </div>
+
+  <div class="outcome auto">
+    <div class="outcome-icons">✅</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-DECLARED-WRITE (COMPOSITION)</div>
+      <div class="outcome-text">The PRD declared <code>composes_with: RULE-EARN-003</code> and <code>modifier_type: multiplicative</code>. validate-knowledge confirms the composition is safe (non-contradictory, applies_when is non-overlapping), then auto-writes RULE-EARN-004 as an active modifier. No human gate needed — the intent was stated in the PRD.</div>
+    </div>
+  </div>
+
+  <div class="md-box">
+    <h4>DOMAIN_BUSINESS.md — what changes</h4>
+    <p>New row added to active rules table: RULE-EARN-004 with modifier tag. A note is added under RULE-EARN-003: "modified by RULE-EARN-004 on weekends." Domain language gains: Modifier, Composition, applies_when. Use cases gains: weekend earning story.</p>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(3)">← PRD #3 — Multi-rule</button>
+      <span class="ch-nav-count">4 of 9</span>
+      <button class="ch-nav-btn" onclick="goCh(5)">PRD #5 — Scoped variant →</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 4 -->
+
+<div class="connector">PRD #4 shipped — PRD #5 begins: RULE-EARN-003 (base) and RULE-EARN-004 (modifier) both active</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 5 — SCOPED VARIANT                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="chapter" id="ch-5">
+
+  <div class="chapter-header" onclick="goCh(5)">
+    <div class="ch-num c5">PRD<br>#5</div>
+    <div>
+      <div class="ch-title">VIP gross earning — scoped variant, not a conflict</div>
+      <div class="ch-desc">VIP customers should earn on gross total (pre-discount), not effective total. This hits <code>customer.loyaltyPoints.earn</code> again. But the incoming rule declares a scope: <code>vip</code>. validate-knowledge detects the scopes are non-overlapping and triggers <strong>validate-knowledge-SCOPE-INFERRED</strong>. It fetches both PRDs, confirms the intent of each is consistent with the inferred split, and checks whether exactly one deterministic scope partition exists. In this case it does — so it auto-resolves without a human.</div>
+    </div>
+    <span class="ch-tag tag-scoped">Scoped variant</span>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="chapter-body">
+
+  <div class="stories-box">
+    <h4>User stories proposed in this PRD</h4>
+    <div class="story">
+      <div class="story-n">1</div>
+      <div>As a VIP customer, I want to earn on my gross order total so that redeeming points does not reduce what I earn.</div>
+      <div class="story-rule">→ RULE-EARN-005</div>
+    </div>
+    <div class="story">
+      <div class="story-n">2</div>
+      <div>As a non-VIP customer, I want my earning to be unchanged so that the VIP benefit does not affect me.</div>
+      <div class="story-rule">→ RULE-EARN-003 (unchanged)</div>
+    </div>
+  </div>
+
+  <div class="callout info"><strong>New YAML fields introduced here:</strong> <code>scope</code> (which customer segment this rule applies to), <code>scope_condition</code> (the exact boolean that determines applicability). When an incoming rule declares a scope, validate-knowledge checks whether any active rule with the same conflict_key has an overlapping scope. Non-overlapping → <strong>validate-knowledge-SCOPE-INFERRED</strong> (human required to confirm retroactive annotation). Overlapping → <strong>validate-knowledge-CONFLICT-UNRESOLVABLE</strong> (blocked).</div>
+
+  <div class="state-row">
+    <div class="state-col before">
+      <div class="state-label">domain-rules.yaml — before PRD #5</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-003</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(effective_total / 100) * tier_mult"</span>
+    <span class="y-comment">    # no scope field — applies to all customers</span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-004</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+    <span class="y-key">modifier_type</span><span class="y-val">:</span> <span class="y-str">multiplicative</span>
+    <span class="y-key">composes_with</span><span class="y-val">:</span> <span class="y-str">RULE-EARN-003</span></pre>
+    </div>
+    <div class="state-col after">
+      <div class="state-label">domain-rules.yaml — after PRD #5</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+<span class="y-new">  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-005</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+    <span class="y-key">scope</span><span class="y-val">:</span>          <span class="y-str">vip</span>
+    <span class="y-key">scope_condition</span><span class="y-val">:</span> <span class="y-str">"customer.vip == true"</span>
+    <span class="y-key">formula</span><span class="y-val">:</span>       <span class="y-str">"floor(gross_total / 100) * tier_mult"</span>
+    <span class="y-key">plain_english</span><span class="y-val">:</span> <span class="y-str">"VIP earn on gross total (pre-discount)"</span>
+    <span class="y-key">why</span><span class="y-val">:</span>           <span class="y-str">"VIPs should not be penalised for redeeming.</span>
+<span class="y-str">                  Loop risk accepted for VIP tier."</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">5</span>
+    <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #5 Story 1"</span>
+    <span class="y-key">test_cases</span><span class="y-val">:</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ gross: 2500, discount: 200, vip: true, balance: 300 }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span>  <span class="y-comment"># gross, not effective</span></span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-003</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+<span class="y-new">    <span class="y-key">scope</span><span class="y-val">:</span>          <span class="y-str">non_vip</span>              <span class="y-comment"># inferred + annotated by validate-knowledge — was implicit</span>
+    <span class="y-key">scope_condition</span><span class="y-val">:</span> <span class="y-str">"customer.vip != true"</span></span>
+    <span class="y-key">formula</span><span class="y-val">:</span>       <span class="y-str">"floor(effective_total / 100) * tier_mult"</span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-004</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">composes_with</span><span class="y-val">:</span> <span class="y-str">RULE-EARN-003</span></pre>
+    </div>
+  </div>
+
+  <div class="vk-wrap">
+    <div class="vk-header"><div class="dot" style="background:#38bdf8;"></div>validate-knowledge — PRD #5</div>
+    <div class="vk-body"><span class="vk-dim">▶ Incoming rule: RULE-EARN-005</span>
+<span class="vk-dim">  conflict_key: customer.loyaltyPoints.earn</span>
+<span class="vk-dim">  scope: vip  |  scope_condition: "customer.vip == true"</span>
+
+<span class="vk-section">Step 1 — scan for matching conflict_key...</span>
+<span class="vk-indent vk-warn">⚠ MATCH — RULE-EARN-003 owns customer.loyaltyPoints.earn (status: active, scope: none)</span>
+
+<span class="vk-section">Step 2 — fetch PRD context to understand conflict...</span>
+<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 3</span>  <span class="vk-dim">— source of RULE-EARN-003</span>
+<span class="vk-indent">  Applies to: customers generally. No scope restriction stated.
+  Why: prevent compounding loop for non-VIP customers.</span>
+<span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 5</span>  <span class="vk-dim">— incoming PRD</span>
+<span class="vk-indent">  Applies to: VIP customers only (customer.vip == true)
+  Why: VIPs should not be penalised for redeeming.</span></span>
+
+<span class="vk-section">Step 3 — scope resolution check...</span>
+<span class="vk-indent vk-dim">Incoming rule declares an explicit scope: vip.
+  Existing rule has no scope — currently applies to ALL customers.
+  A VIP customer would hit both rules simultaneously.
+
+  Can this be resolved deterministically?
+  — Only one valid split exists: existing → non_vip, incoming → vip.
+  — non_vip + vip covers 100% of customers with zero overlap.
+  — No other interpretation is possible. The split is mathematically unique.</span>
+
+<span class="vk-section">Step 4 — verify PRD intent supports the split...</span>
+<span class="vk-indent vk-dim">PRD #3 intent: non-VIP earning on effective_total to prevent loop. ✓ consistent with non_vip scope.
+  PRD #5 intent: VIP earning on gross_total. ✓ explicitly declares vip scope.
+  No contradiction between PRDs. The scope split is what both PRDs want.</span>
+
+<span class="vk-scoped">⚠ validate-knowledge-SCOPE-INFERRED — split is deterministic, but halting for human. Required.</span>
+<span class="vk-scoped">  Reason: RULE-EARN-003 was not authored by PRD #5. Annotating a rule you did not write</span>
+<span class="vk-scoped">  requires explicit human authorisation — even when the annotation is mathematically obvious.</span>
+<span class="vk-scoped">  Git principle: never silently modify a line you did not touch in your branch.</span></div>
+  </div>
+
+  <div class="outcome human">
+    <div class="outcome-icons">❌ 👤</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-SCOPE-INFERRED — human required</div>
+      <div class="outcome-text">The scope split is deterministic and validate-knowledge is confident in the annotation. But RULE-EARN-003 was authored by PRD #3, not PRD #5. Silently modifying another PRD's rule — even with high confidence — violates the conservative principle: only the human can authorise changes to a rule they did not write. validate-knowledge halts, shows the proposed annotation, and waits.</div>
+      <div class="outcome-reason">Git parallel: git never auto-modifies a file your branch didn't touch, even if the modification would be logically correct. The author of that file must merge the change deliberately.</div>
+    </div>
+  </div>
+
+  <div class="diff-box">
+    <div class="diff-header"><span>❌ Human must confirm — proposed scope annotation on RULE-EARN-003</span></div>
+    <div class="diff-body">
+      <div class="diff-side before">
+        <h5>RULE-EARN-003 as authored by PRD #3</h5>
+        <div class="diff-line-del">scope: (none — implicit all customers)</div>
+        <div class="diff-line-dim">formula: floor(effective/100) × tier</div>
+      </div>
+      <div class="diff-side after">
+        <h5>Proposed by validate-knowledge</h5>
+        <div class="diff-line-add">scope: non_vip  ← inferred annotation</div>
+        <div class="diff-line-add">modified_prd: 5  ← attribution</div>
+        <div class="diff-line-add">modified_by: validate-knowledge</div>
+        <div class="diff-line-dim">formula: unchanged</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcome auto" style="margin-top:0;">
+    <div class="outcome-icons">✅</div>
+    <div class="outcome-body">
+      <div class="outcome-code">Human confirmed — proceeding</div>
+      <div class="outcome-text">Human confirms the annotation is correct. RULE-EARN-003 updated with scope: non_vip, modified_prd: 5, modified_by: validate-knowledge. RULE-EARN-005 written as active (scope: vip). Attribution is now in the YAML — future agents and git blame will both show this change came from PRD #5 via validate-knowledge.</div>
+    </div>
+  </div>
+
+  <div class="md-box">
+    <h4>DOMAIN_BUSINESS.md — what changes</h4>
+    <p>RULE-EARN-003 row gains a scope annotation in the table. RULE-EARN-005 added as new active row. A new section "Scoped rules" explains that non-VIP and VIP customers follow different earn bases. The distinction is explicit — no reader can mistake which rule applies to which customer.</p>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(4)">← PRD #4 — Composition</button>
+      <span class="ch-nav-count">5 of 9</span>
+      <button class="ch-nav-btn" onclick="goCh(6)">PRD #6 — Pure retire →</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 5 -->
+
+<div class="connector">PRD #5 shipped — PRD #6 begins with earn rules now scope-split between VIP and non-VIP</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 6 — PURE RETIRE                                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="chapter" id="ch-6">
+
+  <div class="chapter-header" onclick="goCh(6)">
+    <div class="ch-num c6">PRD<br>#6</div>
+    <div>
+      <div class="ch-title">Birthday bonus removed — pure retire, no replacement</div>
+      <div class="ch-desc">The birthday bonus (50 points on account anniversary) is being removed. The feature had 0.3% redemption rate and high operational cost. RULE-BIRTHDAY-001 has been active since PRD #0. This PRD retires it with no successor — the conflict key becomes unowned, test_cases are removed from CI, the use case is struck through in DOMAIN_BUSINESS.md.</div>
+    </div>
+    <span class="ch-tag tag-retire">Pure retire</span>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="chapter-body">
+
+  <div class="stories-box">
+    <h4>Change proposed in this PRD</h4>
+    <div class="story">
+      <div class="story-n">—</div>
+      <div>Remove the birthday bonus feature. Customers who previously received anniversary points will no longer do so. No replacement benefit. Existing accumulated points are not affected.</div>
+      <div class="story-rule">→ retire RULE-BIRTHDAY-001</div>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>Retire is different from supersede.</strong> Supersede means: "this rule is replaced by a better version." Retire means: "this behaviour no longer exists in the product." There is no <code>superseded_by</code>. The conflict key <code>customer.loyaltyPoints.birthday_bonus</code> becomes unowned — it can be claimed by a future PRD if the feature is ever reintroduced.</div>
+
+  <div class="state-row">
+    <div class="state-col before">
+      <div class="state-label">domain-rules.yaml — before PRD #6</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-BIRTHDAY-001</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.birthday_bonus</span>
+    <span class="y-key">formula</span><span class="y-val">:</span>       <span class="y-str">"50 points on account_anniversary_date"</span>
+    <span class="y-key">plain_english</span><span class="y-val">:</span> <span class="y-str">"50 bonus points on account anniversary"</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">0</span>
+    <span class="y-key">test_cases</span><span class="y-val">:</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ days_since_creation: 365 }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_awarded: 50 }</span>
+
+  <span class="y-comment">  # ... other rules ...</span></pre>
+    </div>
+    <div class="state-col after">
+      <div class="state-label">domain-rules.yaml — after PRD #6</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+  <span class="y-comment">  # ── Active ───────────────────────────────────────</span>
+  <span class="y-comment">  # ... RULE-EARN-003, RULE-EARN-004, RULE-EARN-005,</span>
+  <span class="y-comment">  # ... RULE-REDEEM-001 unchanged ...</span>
+
+  <span class="y-comment">  # ── Retired (feature removed, no replacement) ───</span>
+<span class="y-new">  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-BIRTHDAY-001</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-sup">retired</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.birthday_bonus</span>
+    <span class="y-key">retired_prd</span><span class="y-val">:</span>    <span class="y-num">6</span>
+    <span class="y-key">retire_reason</span><span class="y-val">:</span>  <span class="y-str">"Feature removed — 0.3% engagement, high ops cost"</span>
+    <span class="y-key">retired_replaces</span><span class="y-val">:</span> <span class="y-val">null</span>       <span class="y-comment"># no successor</span>
+    <span class="y-key">formula</span><span class="y-val">:</span>        <span class="y-str">"50 points on account_anniversary_date"</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">0</span>
+    <span class="y-key">test_cases</span><span class="y-val">:</span>     <span class="y-val">[]</span>          <span class="y-comment"># removed from CI on retire</span></span></pre>
+    </div>
+  </div>
+
+  <div class="vk-wrap">
+    <div class="vk-header"><div class="dot" style="background:#6b7280;"></div>validate-knowledge — PRD #6</div>
+    <div class="vk-body"><span class="vk-dim">▶ Action: retire RULE-BIRTHDAY-001</span>
+<span class="vk-dim">  conflict_key: customer.loyaltyPoints.birthday_bonus</span>
+<span class="vk-dim">  retired_replaces: null</span>
+
+<span class="vk-section">Step 1 — verify rule exists and is active...</span>
+<span class="vk-indent vk-dim">RULE-BIRTHDAY-001 found. status: active. ✓</span>
+
+<span class="vk-section">Step 2 — check for dependents...</span>
+<span class="vk-indent vk-dim">Scanning all rules for depends_on: [RULE-BIRTHDAY-001]...
+  No rules depend on RULE-BIRTHDAY-001. No chain notice required.</span>
+
+<span class="vk-section">Step 3 — check for active compositions...</span>
+<span class="vk-indent vk-dim">Scanning for composes_with: RULE-BIRTHDAY-001...
+  No modifier rules compose with RULE-BIRTHDAY-001.</span>
+
+<span class="vk-retire">○ validate-knowledge-DECLARED-WRITE (RETIRE)</span>
+<span class="vk-retire">  PRD #6 declared retire RULE-BIRTHDAY-001. No dependents. No compositions. Auto-executing.</span>
+<span class="vk-retire">  RULE-BIRTHDAY-001 → status: retired. test_cases cleared. conflict_key now unowned.</span></div>
+  </div>
+
+  <div class="outcome auto">
+    <div class="outcome-icons">✅</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-DECLARED-WRITE (RETIRE)</div>
+      <div class="outcome-text">The PRD declared the retirement explicitly with a reason. validate-knowledge confirmed no other rules depend on RULE-BIRTHDAY-001 and nothing composes with it. Clean retirement — auto-executes. RULE-BIRTHDAY-001 marked retired, test_cases cleared from CI, conflict key becomes unowned. No human gate needed.</div>
+    </div>
+  </div>
+
+  <div class="md-box">
+    <h4>DOMAIN_BUSINESS.md — what changes</h4>
+    <p>Use case for birthday bonus is struck through with a note: "Removed in PRD #6 — feature retired." The rules table moves RULE-BIRTHDAY-001 to a new <em>Retired</em> section below Superseded. The Retired section includes the reason so any future agent understands why it was removed, not just that it was.</p>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(5)">← PRD #5 — Scoped variant</button>
+      <span class="ch-nav-count">6 of 9</span>
+      <button class="ch-nav-btn" onclick="goCh(7)">PRD #7 — Chain notice →</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 6 -->
+
+<div class="connector">PRD #6 shipped — PRD #7 brings a redemption cap change that surfaces a depends_on chain</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 7 — DEPENDS_ON CHAIN NOTICE                     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="chapter" id="ch-7">
+
+  <div class="chapter-header" onclick="goCh(7)">
+    <div class="ch-num c7">PRD<br>#7</div>
+    <div>
+      <div class="ch-title">Redemption cap tightened — chain notice surfaces a dependent rule</div>
+      <div class="ch-desc">The redemption cap is being reduced from 50% to 40% of gross total. RULE-REDEEM-001 is superseded by RULE-REDEEM-002. But RULE-EARN-003 has <code>depends_on: [RULE-REDEEM-001]</code>. validate-knowledge detects this and fires <strong>validate-knowledge-CHAIN-IMPACT</strong>. It fetches the PRDs, reads RULE-EARN-003's formula, and scans it for any direct reference to the changed parameter. If the formula is agnostic — it takes a pre-computed input and doesn't embed the cap value — validate-knowledge auto-resolves. If the formula referenced the cap directly, it would halt for a human.</div>
+    </div>
+    <span class="ch-tag tag-chain">Chain notice</span>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="chapter-body">
+
+  <div class="stories-box">
+    <h4>User stories proposed in this PRD</h4>
+    <div class="story">
+      <div class="story-n">1</div>
+      <div>As the business, we want to reduce the redemption cap from 50% to 40% so that minimum order revenue is protected.</div>
+      <div class="story-rule">→ RULE-REDEEM-002 supersedes RULE-REDEEM-001</div>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>Why depends_on matters here.</strong> RULE-EARN-003 declared <code>depends_on: [RULE-REDEEM-001]</code> because its earn base (effective_total) is calculated after redemption is applied. If the redemption cap changes, the effective_total changes too. The dependency declaration ensures this is never silently missed.</div>
+
+  <div class="state-row">
+    <div class="state-col before">
+      <div class="state-label">domain-rules.yaml — before PRD #7</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-REDEEM-001</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">order.discount.apply</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"min(redeem, floor(gross * 0.5))"</span>
+    <span class="y-key">cap</span><span class="y-val">:</span>     <span class="y-str">"50% of gross total"</span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-003</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(effective_total / 100) * tier_mult"</span>
+    <span class="y-key">depends_on</span><span class="y-val">:</span> <span class="y-val">[RULE-REDEEM-001]</span>  <span class="y-comment"># ← this fires the chain notice</span></pre>
+    </div>
+    <div class="state-col after">
+      <div class="state-label">domain-rules.yaml — after PRD #7 (human confirms, approved)</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+<span class="y-new">  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-REDEEM-002</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">order.discount.apply</span>
+    <span class="y-key">formula</span><span class="y-val">:</span>       <span class="y-str">"min(redeem, floor(gross * 0.4))"</span>
+    <span class="y-key">cap</span><span class="y-val">:</span>           <span class="y-str">"40% of gross total"</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">7</span>
+    <span class="y-key">supersedes</span><span class="y-val">:</span>    <span class="y-str">RULE-REDEEM-001</span>
+    <span class="y-key">why</span><span class="y-val">:</span>          <span class="y-str">"Protect minimum order revenue. 50% allowed full</span>
+<span class="y-str">                  margin erosion on high-value redemptions."</span></span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-003</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(effective_total / 100) * tier_mult"</span>
+<span class="y-new">    <span class="y-key">depends_on</span><span class="y-val">:</span> <span class="y-val">[RULE-REDEEM-002]</span>  <span class="y-comment"># updated from RULE-REDEEM-001</span></span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-REDEEM-001</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-sup">superseded</span>
+    <span class="y-key">superseded_by</span><span class="y-val">:</span> <span class="y-str">RULE-REDEEM-002</span>
+    <span class="y-key">reason</span><span class="y-val">:</span>       <span class="y-str">"Cap reduced from 50% to 40%"</span></pre>
+    </div>
+  </div>
+
+  <div class="vk-wrap">
+    <div class="vk-header"><div class="dot" style="background:#fbbf24;"></div>validate-knowledge — PRD #7</div>
+    <div class="vk-body"><span class="vk-dim">▶ Incoming rule: RULE-REDEEM-002</span>
+<span class="vk-dim">  conflict_key: order.discount.apply</span>
+<span class="vk-dim">  action: supersede RULE-REDEEM-001</span>
+
+<span class="vk-section">Step 1 — scan for conflict_key match...</span>
+<span class="vk-indent vk-warn">⚠ MATCH — RULE-REDEEM-001 (active). Fetch PRDs to verify intentional supersede.</span>
+
+<span class="vk-section">Step 2 — fetch PRD context...</span>
+<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 3</span>  <span class="vk-dim">— source of RULE-REDEEM-001</span>
+<span class="vk-indent">  Cap: 50% of gross total. Reason: prevent full-discount abuse.</span>
+<span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 7</span>  <span class="vk-dim">— incoming PRD</span>
+<span class="vk-indent">  Cap: 40% of gross total. Reason: protect minimum order revenue.</span></span>
+
+<span class="vk-section">Step 3 — semantic comparison...</span>
+<span class="vk-indent vk-dim">Same slot, clear version boundary, explicit reason. Intentional supersede. ✓</span>
+
+<span class="vk-section">Step 4 — scan for depends_on chain...</span>
+<span class="vk-indent vk-warn">⚠ CHAIN NOTICE — RULE-EARN-003 declares depends_on: [RULE-REDEEM-001]</span>
+<span class="vk-indent vk-dim">RULE-REDEEM-001 is being superseded. RULE-EARN-003 depends on it.
+  RULE-EARN-003 formula: floor(effective_total/100) × tier_mult
+  effective_total = gross - discount
+  Discount is now capped at 40% instead of 50%.
+  effective_total will change for orders near the cap.
+
+  Question for human: does RULE-EARN-003's formula still hold under the new cap?
+  (The formula itself doesn't reference the cap — it uses effective_total as input.
+   If code passes the correct effective_total after the new cap, RULE-EARN-003 is fine.)</span>
+
+<span class="vk-section">Step 4 — scan for depends_on chain...</span>
+<span class="vk-indent vk-warn">⚠ CHAIN-IMPACT — RULE-EARN-003 declares depends_on: [RULE-REDEEM-001] which is being superseded.</span>
+<span class="vk-indent vk-dim">Fetching PRDs to understand whether the dependency is formula-sensitive...</span>
+
+<span class="vk-section">Step 5 — fetch dependent rule context...</span>
+<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 7</span>  <span class="vk-dim">— incoming PRD, what is changing in RULE-REDEEM-002</span>
+<span class="vk-indent">  Change: cap reduced from 50% to 40% of gross total.
+  Formula changes: min(redeem, floor(gross * 0.5)) → min(redeem, floor(gross * 0.4))
+  The changed parameter is the cap multiplier (0.5 → 0.4).</span></span>
+
+<span class="vk-section">Step 6 — formula sensitivity scan on RULE-EARN-003...</span>
+<span class="vk-indent vk-dim">RULE-EARN-003 formula: floor(effective_total / 100) * tier_mult
+
+  Scanning formula for direct reference to cap multiplier (0.5, 0.4, cap_pct)... not found.
+  Scanning formula for reference to gross_total... not found.
+  Formula input is: effective_total — a pre-computed value passed in as a variable.
+  Formula does NOT contain the cap value. It is agnostic to what produced effective_total.
+
+  Conclusion: changing the cap changes effective_total's value at runtime,
+  but RULE-EARN-003's formula does not need to be rewritten. It will receive
+  the correctly-capped effective_total from RULE-REDEEM-002 automatically.</span>
+
+<span class="vk-chain">⚠ validate-knowledge-CHAIN-IMPACT — formula scan complete. Halting for human to confirm scan.</span>
+<span class="vk-chain">  validate-knowledge read the formula and judged it cap-agnostic. That judgment is LLM inference.</span>
+<span class="vk-chain">  The human must confirm the scan is correct before validate-knowledge proceeds.</span>
+<span class="vk-chain">  If formula is more complex (aliased vars, helper functions), the scan may have missed a dependency.</span></div>
+  </div>
+
+  <div class="outcome human">
+    <div class="outcome-icons">❌ 👤</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-CHAIN-IMPACT — human confirms LLM analysis</div>
+      <div class="outcome-text">validate-knowledge ran a formula sensitivity scan and concluded RULE-EARN-003 is cap-agnostic. But that conclusion is based on LLM reasoning — not a deterministic check. The formula could reference the cap through an aliased variable or helper function that validate-knowledge misread. Git principle: if the resolution depends on reasoning rather than structure, involve a human. The human is not deciding the outcome — they are confirming the machine read the formula correctly.</div>
+      <div class="outcome-reason">Contrast with CONFLICT-UNRESOLVABLE: there, the human makes a product decision. Here, the human confirms an analysis. The question is narrow: "is validate-knowledge's formula reading correct?" If yes → auto-proceeds. If no → halt for formula rewrite.</div>
+    </div>
+  </div>
+
+  <div class="diff-box">
+    <div class="diff-header"><span>❌ Human must confirm — validate-knowledge formula scan result</span></div>
+    <div class="diff-body">
+      <div class="diff-side before">
+        <h5>validate-knowledge scan result</h5>
+        <div class="diff-line-dim">RULE-EARN-003 formula:</div>
+        <div class="diff-line-dim">floor(effective_total / 100) * tier_mult</div>
+        <br>
+        <div class="diff-line-dim">Scan: no direct reference to cap value (0.5/0.4)</div>
+        <div class="diff-line-dim">Input: effective_total (pre-computed)</div>
+        <div class="diff-line-dim">Conclusion: formula is cap-agnostic</div>
+      </div>
+      <div class="diff-side after">
+        <h5>Human confirms scan → proposed write</h5>
+        <div class="diff-line-add">  depends_on: [RULE-REDEEM-002]  ← updated</div>
+        <div class="diff-line-dim">  formula: unchanged</div>
+        <div class="diff-line-dim">  If human says scan is WRONG →</div>
+        <div class="diff-line-dim">  halt, human must provide new formula</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcome auto" style="margin-top:0;">
+    <div class="outcome-icons">✅</div>
+    <div class="outcome-body">
+      <div class="outcome-code">Human confirmed scan is correct — proceeding</div>
+      <div class="outcome-text">Human confirms: formula receives effective_total as a pre-computed input, does not embed the cap percentage. depends_on pointer updated to RULE-REDEEM-002. RULE-REDEEM-001 superseded. Both writes proceed atomically.</div>
+    </div>
+  </div>
+
+  <div class="md-box">
+    <h4>DOMAIN_BUSINESS.md — what changes</h4>
+    <p>RULE-REDEEM-001 moves to superseded section. RULE-REDEEM-002 added as active with updated cap. RULE-EARN-003 row: depends_on pointer updated to RULE-REDEEM-002. A note added: "Cap reduced in PRD #7 — earn formula unaffected (receives effective_total as input, not the cap value)."</p>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(6)">← PRD #6 — Pure retire</button>
+      <span class="ch-nav-count">7 of 9</span>
+      <button class="ch-nav-btn" onclick="goCh(8)">PRD #8 — Blocked →</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 7 -->
+
+<div class="connector">PRD #7 shipped — PRD #8 is a genuine conflict that cannot be resolved by scoping or composition</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 8 — BLOCKED                                     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="chapter" id="ch-8">
+
+  <div class="chapter-header" onclick="goCh(8)">
+    <div class="ch-num c8">PRD<br>#8</div>
+    <div>
+      <div class="ch-title">VIP earn override — blocked, genuine conflict, no safe resolution</div>
+      <div class="ch-desc">A second proposed PRD about VIP earning: override the scoped rules entirely so all customers use gross total. Unlike PRD #5 (which introduced a clean scope split), this PRD proposes to remove the scope distinction and make gross-total earning universal. validate-knowledge blocks it — overriding an existing scope split without a clear supersede chain creates unresolvable contradictions.</div>
     </div>
     <span class="ch-tag tag-blocked">Blocked</span>
+    <span class="ch-chevron">▾</span>
   </div>
+  <div class="chapter-body">
 
   <!-- User stories -->
   <div class="stories-box">
     <h4>User stories proposed in this PRD (not yet approved)</h4>
     <div class="story">
       <div class="story-n">1</div>
-      <div>As a VIP customer, I want to earn points on my gross order total so that redeeming points does not reduce my earning.</div>
-      <div class="story-rule">→ conflicts RULE-EARN-003</div>
+      <div>As the product team, we want all customers to earn on gross total so that the earning experience is consistent regardless of VIP status.</div>
+      <div class="story-rule">→ conflicts RULE-EARN-003 + RULE-EARN-005</div>
     </div>
     <div class="story">
       <div class="story-n">2</div>
-      <div>As a VIP customer, I want this benefit to apply automatically based on my status so that I do not need to opt in.</div>
-      <div class="story-rule">→ scope unclear</div>
+      <div>As a non-VIP customer who redeems points, I should also earn on gross total so that redemption is not penalised for anyone.</div>
+      <div class="story-rule">→ conflicts RULE-EARN-003</div>
     </div>
   </div>
 
-  <div class="callout danger"><strong>Watch what happens.</strong> The incoming rule proposes <code>customer.loyaltyPoints.earn</code> — the same slot as RULE-EARN-003. But unlike PRD #2→#3 where the reason was clear, this time RULE-EARN-003's <em>why</em> field explicitly explains why gross earning was rejected. validate-knowledge will surface both PRDs for human review and halt.</div>
+  <div class="callout danger"><strong>This is different from PRD #5.</strong> PRD #5 introduced a clean scope split — it did not contradict RULE-EARN-003, it restricted it. PRD #8 wants to collapse the scope split and make gross-total universal. That directly contradicts RULE-EARN-003 (non-VIP, effective_total) and also contradicts the reasoning in RULE-EARN-003's <em>why</em> field. There is no scope carve-out that resolves this — it's a direction change.</div>
 
   <!-- VK log — blocked -->
   <div class="vk-wrap">
-    <div class="vk-header"><div class="dot" style="background:#ef4444;"></div>validate-knowledge — PRD #4 (proposed)</div>
-    <div class="vk-body"><span class="vk-dim">▶ Incoming rule: RULE-EARN-004 (proposed)</span>
+    <div class="vk-header"><div class="dot" style="background:#ef4444;"></div>validate-knowledge — PRD #8 (proposed)</div>
+    <div class="vk-body"><span class="vk-dim">▶ Incoming rule: RULE-EARN-006 (proposed)</span>
 <span class="vk-dim">  conflict_key: customer.loyaltyPoints.earn</span>
-<span class="vk-dim">  action: add  (scope: vip customers only — not yet declared in YAML)</span>
+<span class="vk-dim">  scope: all  (no scope restriction — intended to be universal)</span>
 
 <span class="vk-section">Step 1 — scan domain-rules.yaml for matching conflict_key...</span>
-<span class="vk-indent vk-warn">⚠ MATCH — RULE-EARN-003 owns customer.loyaltyPoints.earn (status: active)</span>
+<span class="vk-indent vk-warn">⚠ MATCH — 2 active rules own customer.loyaltyPoints.earn:</span>
+<span class="vk-indent vk-warn">   RULE-EARN-003 (scope: non_vip)  — effective_total base</span>
+<span class="vk-indent vk-warn">   RULE-EARN-005 (scope: vip)      — gross_total base</span>
 
 <span class="vk-section">Step 2 — fetch PRD context...</span>
-<span class="vk-indent"><span class="vk-fetch">→ gh issue view 3</span>  <span class="vk-dim">[source of RULE-EARN-003]</span>
-<span class="vk-indent">  Story 4: "earn on what I actually paid so redemption does not loop"
-  Why field: "earning on gross after redemption creates a compounding loop"
-  Formula: floor(effective_total / 100) × tier_mult
-  Scope: ALL customers — no carve-out</span>
+<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 3</span>  <span class="vk-dim">— source of RULE-EARN-003</span>
+<span class="vk-indent">  Story 4: "earn on what I actually paid — post-discount"
+  Why: "earning on gross after redemption creates a compounding loop"
+  Formula: floor(effective_total / 100) × tier_mult</span>
 
-<span class="vk-fetch">→ gh issue view 4</span>  <span class="vk-dim">[incoming PRD]</span>
-<span class="vk-indent">  Story 1: "earn on gross total so redemption does not reduce earning"
-  Scope: VIP customers only
-  Formula: floor(gross_total / 100) × tier_mult (for VIP)
-  No tier threshold defined for VIP status</span></span>
+<span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 5</span>  <span class="vk-dim">— source of RULE-EARN-005</span>
+<span class="vk-indent">  Story 1: "VIP customers earn on gross total"
+  Why: "VIPs should not be penalised for redeeming"</span>
 
-<span class="vk-section">Step 3 — semantic comparison...</span>
-<span class="vk-indent vk-dim">Both own customer.loyaltyPoints.earn. Same slot.
-  RULE-EARN-003: base = effective_total, scope = all customers
-  PRD #4 incoming: base = gross_total, scope = VIP customers
+<span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 8</span>  <span class="vk-dim">— incoming PRD</span>
+<span class="vk-indent">  Story 1: "all customers earn on gross total"
+  Story 2: "non-VIP should not be penalised for redeeming either"
+  Intent: collapse scope split, make gross-total universal</span></span>
 
-  A VIP customer redeeming points would qualify for BOTH rules.
-  Which applies? The rules give contradictory answers for the same entity.
+<span class="vk-section">Step 3 — semantic comparison (all PRDs fully read)...</span>
+<span class="vk-indent vk-dim">Incoming rule has no scope — it targets ALL customers.
+  RULE-EARN-003 targets non_vip customers (effective_total base).
+  Incoming directly contradicts RULE-EARN-003 for non-VIP customers.
 
-  RULE-EARN-003's why field explicitly rejects gross-total earning:
-  "creates a compounding loop" — that risk applies to VIP customers too.
+  Checking auto-resolve paths:
+  — Scope split? No. Incoming has no scope — it is meant to be universal.
+  — Composition? No. It does not declare composes_with and replaces the formula entirely.
+  — Formula agnostic? No. PRD #3's explicit why is "prevent compounding loop."
+    PRD #8 Story 2 directly reverses that decision for non-VIP customers.
 
-  No clear version boundary. PRD #4 does not say "supersede RULE-EARN-003",
-  it proposes a parallel rule for a sub-scope that the slot does not support.
+  validate-knowledge fully understands all three PRDs.
+  The problem is not missing information.
+  Both sides are deliberate and completely understood.
+  They have opposite product intent for the same customer segment.</span>
 
-  This is a genuine conflict, not a supersede.</span>
+<span class="vk-err">✗ validate-knowledge-CONFLICT-UNRESOLVABLE — full context read, no auto path exists.</span>
+<span class="vk-err">  This is not a knowledge gap. Both PRDs are fully understood.</span>
+<span class="vk-err">  The conflict is between product decisions. validate-knowledge does not resolve those. No write will occur.</span>
 
-<span class="vk-err">✗ BLOCKED — genuine conflict detected. Cannot proceed without human resolution.</span>
-
-<span class="vk-section">Conflict map for human review:</span>
-<span class="vk-indent vk-warn">┌─ RULE-EARN-003 (active, PRD #3)
-│   scope:   all customers
-│   base:    effective_total
-│   why:     prevents compounding points loop
+<span class="vk-section">Conflict map:</span>
+<span class="vk-indent vk-warn">┌─ RULE-EARN-003 (active, scope: non_vip, PRD #3)
+│   base: effective_total
+│   why:  prevents compounding loop for non-VIP
 │
-├─ PRD #4 incoming (proposed)
-│   scope:   VIP customers
-│   base:    gross_total
-│   why:     VIPs should not be penalised for redeeming
+├─ RULE-EARN-005 (active, scope: vip, PRD #5)
+│   base: gross_total
+│   why:  VIPs accepted loop risk
 │
-└─ Conflict: a VIP customer who redeems gets two contradictory answers.</span>
+├─ PRD #8 incoming: scope = all, base = gross_total
+│
+└─ Contradiction: non-VIP customers would have two rules: RULE-EARN-003 (effective)
+   and PRD #8 incoming (gross). Which wins?</span>
 
-<span class="vk-section">Resolution options (human must choose one):</span>
-<span class="vk-indent"><span class="vk-dim">A) Add scope to RULE-EARN-003: "scope: non-vip" — then add new RULE-EARN-004</span>
-<span class="vk-dim">   with "scope: vip, base: gross_total". Two rules, explicit scopes, no overlap.</span>
-<span class="vk-dim">   Risk: compounding loop now applies to VIP redemptions — accept or mitigate?</span>
+<span class="vk-section">Resolution options:</span>
+<span class="vk-indent"><span class="vk-dim">A) Rewrite PRD #8 to explicitly supersede RULE-EARN-003 with clear reasoning
+   on why the loop risk is now accepted for non-VIP customers too.
+   Then RULE-EARN-006 supersedes RULE-EARN-003, RULE-EARN-005 can be retired.</span>
 
-<span class="vk-dim">B) Reject PRD #4 — the compounding loop risk applies to VIP customers too.</span>
-<span class="vk-dim">   VIP benefit should come from tier multiplier (3×), not from earn base change.</span>
+<span class="vk-dim">B) Reject PRD #8 — the loop risk reasoning in RULE-EARN-003 still holds.
+   Non-VIP gross earning was deliberately excluded in PRD #3.</span>
 
-<span class="vk-dim">C) Reframe PRD #4 as a separate VIP bonus (e.g. +10pts per redemption order)</span>
-<span class="vk-dim">   using a new conflict_key that does not collide with RULE-EARN-003.</span></span></div>
+<span class="vk-dim">C) Scope PRD #8 differently — keep the scope split but change the earn formula
+   for both scopes in separate rules, each explicitly superseding its predecessor.</span></span></div>
   </div>
 
-  <div class="approval blocked">
-    <div class="icon">✗</div>
-    <div><strong>Blocked — awaiting human decision.</strong> domain-rules.yaml is not written. PRD #4 is not shipped. The rule table and all downstream docs remain unchanged until a resolution is chosen and approved.</div>
+  <div class="outcome human">
+    <div class="outcome-icons">❌ 👤</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-CONFLICT-UNRESOLVABLE — always human, no auto path</div>
+      <div class="outcome-text">Unlike SCOPE-INFERRED and CHAIN-IMPACT, this outcome has no auto-resolve branch. validate-knowledge fetched all three PRDs and fully understood the intent of each. The problem is not missing information — it is that two deliberate product decisions directly contradict each other. PRD #3 explicitly chose effective_total to prevent a compounding loop. PRD #8 explicitly wants to reverse that. Knowing both fully does not resolve the conflict. No algorithm can determine which product priority wins. Only a human can make that call.</div>
+      <div class="outcome-reason">The rule: if validate-knowledge can fully understand both sides and still cannot determine a correct resolution — the conflict is not a knowledge gap, it is a product decision. Those are always human gates. domain-rules.yaml is not written. RULE-EARN-003 and RULE-EARN-005 remain unchanged.</div>
+    </div>
   </div>
 
   <div class="md-box">
     <h4>DOMAIN_BUSINESS.md — what changes</h4>
-    <p>Nothing. The block prevents any write. DOMAIN_BUSINESS.md still shows RULE-EARN-003 as the single active rule for <code>customer.loyaltyPoints.earn</code>. No contradictory content is ever written.</p>
+    <p>Nothing. The block prevents any write. DOMAIN_BUSINESS.md still shows RULE-EARN-003 (non_vip) and RULE-EARN-005 (vip) as the two active earn rules. No contradictory universal rule is ever written. The conflict map is preserved in the validate-knowledge log for the human to act on.</p>
   </div>
 
-</div><!-- /chapter 4 -->
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(7)">← PRD #7 — Chain notice</button>
+      <span class="ch-nav-count">8 of 9</span>
+      <button class="ch-nav-btn" onclick="goCh(9)">§ Methodology →</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 8 -->
+
 
 <!-- ═══════════════════════════════════════════════════════ -->
-<!-- FINAL STATE                                             -->
+<!-- CHAPTER 9 — METHODOLOGY                                 -->
 <!-- ═══════════════════════════════════════════════════════ -->
-<div class="connector">End state — after 3 shipped PRDs, 1 blocked</div>
+<div class="chapter" id="ch-9">
 
-<div class="final-state">
-  <h3>Final domain-rules.yaml — after PRDs #1, #2, #3 shipped</h3>
-  <pre style="background:transparent;padding:0;border-radius:0;"><span class="y-key">rules</span><span class="y-val">:</span>
-  <span class="y-comment"># ── Active ──────────────────────────────────────────────────────────</span>
+  <div class="chapter-header" onclick="goCh(9)">
+    <div class="ch-num" style="background:#e0e7ff;color:#3730a3;width:48px;height:48px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;">§</div>
+    <div>
+      <div class="ch-title">Methodology — validate-knowledge reference guide</div>
+      <div class="ch-desc">How the system decides what to auto-execute and when to involve a human. All outcome codes, the YAML-first rationale, PRD fallback strategy, token cost model, industry parallels, and key learnings from this design exercise.</div>
+    </div>
+    <span class="ch-tag" style="background:#e0e7ff;color:#3730a3;">Reference</span>
+    <span class="ch-chevron">▾</span>
+  </div>
 
-  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-REDEEM-001</span>
-    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>  |  <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">order.discount.apply</span>
-    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"min(redeem, floor(gross * 0.5))"</span>  |  <span class="y-key">rate</span><span class="y-val">:</span> <span class="y-str">"1pt = 1 cent"</span>
-    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">3</span>
+  <div class="chapter-body">
 
-  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-003</span>
-    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>  |  <span class="y-key">conflict_key</span><span class="y-val">:</span> <span class="y-str">customer.loyaltyPoints.earn</span>
-    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(effective_total / 100) * tier_mult"</span>
-    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">3</span>  |  <span class="y-key">supersedes</span><span class="y-val">:</span> <span class="y-str">RULE-EARN-002</span>  |  <span class="y-key">depends_on</span><span class="y-val">:</span> <span class="y-val">[RULE-REDEEM-001]</span>
+  <!-- ── Section 1: Decision framework ── -->
+  <div class="meth-section">
+    <h3>1 — When does validate-knowledge involve a human?</h3>
+    <p>The decision is not about confidence. It is about <strong>who has authority to make the change</strong>. Three questions, in order:</p>
 
-  <span class="y-comment"># ── Superseded (history only — not run in CI) ────────────────────────</span>
+    <div class="flow-box"><span class="flow-dim">Incoming rule arrives with a conflict_key
+  ↓
+</span><span class="flow-dim">Q1: Is there an existing active rule on the same conflict_key?
+  ├── NO  →</span> <span class="flow-ok">validate-knowledge-CLEAN → auto-write. Done.</span>
+<span class="flow-dim">  └── YES → continue ↓
 
-  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-002</span>
-    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-sup">superseded</span>  |  <span class="y-key">superseded_by</span><span class="y-val">:</span> <span class="y-str">RULE-EARN-003</span>  |  <span class="y-key">superseded_prd</span><span class="y-val">:</span> <span class="y-num">3</span>
-    <span class="y-key">reason</span><span class="y-val">:</span> <span class="y-str">"Earn base changed: gross → effective_total"</span>
+Q2: Did the incoming PRD explicitly declare rule_id + action in Business Rules Affected?
+  ├── YES →</span> <span class="flow-ok">validate-knowledge-DECLARED-WRITE → auto-execute declared intent. Done.</span>
+<span class="flow-dim">  └── NO  → fetch PRDs for context → semantic comparison
+              ├── intent unambiguous →</span> <span class="flow-ok">validate-knowledge-INFERRED-WRITE → auto. Done.</span>
+<span class="flow-dim">              └── continue ↓
 
-  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">RULE-EARN-001</span>
-    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-sup">superseded</span>  |  <span class="y-key">superseded_by</span><span class="y-val">:</span> <span class="y-str">RULE-EARN-002</span>  |  <span class="y-key">superseded_prd</span><span class="y-val">:</span> <span class="y-num">2</span>
-    <span class="y-key">reason</span><span class="y-val">:</span> <span class="y-str">"Flat rate replaced by tier-multiplied rate"</span></pre>
-</div>
+Q3: What kind of conflict is it?
+  ├── Scope inferred on a rule we did not author →</span> <span class="flow-warn">validate-knowledge-SCOPE-INFERRED → ❌ HUMAN</span>
+<span class="flow-dim">  │     Human authorises annotation on someone else's rule.
+  ├── Dependency chain affected by change →</span> <span class="flow-warn">validate-knowledge-CHAIN-IMPACT → ❌ HUMAN</span>
+<span class="flow-dim">  │     Human confirms LLM formula scan is correct.
+  └── Contradictory product intent, no resolution path →</span> <span class="flow-err">validate-knowledge-CONFLICT-UNRESOLVABLE → ❌ HUMAN</span>
+<span class="flow-dim">        Human makes product decision. No write until resolved.</span></div>
 
-<!-- Related reading -->
-<div class="related">
-  <h3>Related reading</h3>
-  <p>Five industry patterns were evaluated before this approach was chosen — ADR, database migrations, event sourcing, knowledge graphs, and structured YAML. The full trade-off analysis is here:</p>
-  <a href="experiment-summary.html">→ Pattern comparison &amp; decision record</a>
-  <p class="note">Covers: ADR approach, database migration pattern, event sourcing, knowledge graphs — failure modes and why the four-layer architecture was chosen over each.</p>
-</div>
+    <p>The key insight: <strong>the human gate for DECLARED-WRITE cases is at PRD writing time, not at validate-knowledge time.</strong> When the PM writes <code>action: supersede RULE-EARN-001</code> in Business Rules Affected, that is the human decision. validate-knowledge is executing an already-authorised instruction.</p>
+  </div>
 
-</div><!-- /content -->
+  <!-- ── Section 2: All outcome codes ── -->
+  <div class="meth-section">
+    <h3>2 — Outcome codes reference</h3>
+    <table class="code-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Trigger</th>
+          <th>PRD fetch?</th>
+          <th>Human?</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="auto-row">
+          <td class="code-cell">validate-knowledge-CLEAN</td>
+          <td>No existing rule on conflict_key</td>
+          <td>No</td>
+          <td>No</td>
+          <td>New slot, no owner, nothing to conflict</td>
+        </tr>
+        <tr class="auto-row">
+          <td class="code-cell">validate-knowledge-DECLARED-WRITE</td>
+          <td>PRD explicitly declares rule_id + action</td>
+          <td>No</td>
+          <td>No — gate was at PRD writing</td>
+          <td>Human already decided when writing the PRD</td>
+        </tr>
+        <tr class="auto-row">
+          <td class="code-cell">validate-knowledge-INFERRED-WRITE</td>
+          <td>Match found, no declaration, PRD fetch resolves unambiguously</td>
+          <td>Yes — to confirm intent</td>
+          <td>No</td>
+          <td>Equivalent to git 3-way auto-merge: one side changed, clear version boundary</td>
+        </tr>
+        <tr class="human-row">
+          <td class="code-cell">validate-knowledge-SCOPE-INFERRED</td>
+          <td>Incoming rule's scope forces annotation on an existing rule</td>
+          <td>Yes — to understand both sides</td>
+          <td>Yes — authorise annotation on unowned rule</td>
+          <td>Git principle: never silently modify a line you did not touch</td>
+        </tr>
+        <tr class="human-row">
+          <td class="code-cell">validate-knowledge-CHAIN-IMPACT</td>
+          <td>Superseded/retired rule has a depends_on chain</td>
+          <td>Yes — to scan formula sensitivity</td>
+          <td>Yes — confirm LLM scan is correct</td>
+          <td>Formula scan is LLM inference; human confirms the machine read it right</td>
+        </tr>
+        <tr class="human-row">
+          <td class="code-cell">validate-knowledge-CONFLICT-UNRESOLVABLE</td>
+          <td>Contradictory product intent, all auto paths exhausted</td>
+          <td>Yes — to build conflict map</td>
+          <td>Yes — product decision required</td>
+          <td>Both sides fully understood; conflict is between priorities, not knowledge</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Section 3: The git parallel ── -->
+  <div class="meth-section">
+    <h3>3 — The git parallel — conservative over optimistic</h3>
+    <p>Git resolves merges structurally: same lines changed differently → conflict. It does not reason. It does not fetch context. If there is any structural ambiguity, it halts. The conservative principle is absolute.</p>
+    <p>Our system does more than git: it reads semantic content and fetches context. This creates a temptation toward optimism — "we can reason to a resolution, so let's auto-execute." The exercise showed this is dangerous. The more we added "smart" auto-resolve paths, the more we introduced silent LLM failure risk.</p>
+    <p>The rule we landed on: <strong>if the resolution involves LLM reasoning about content, involve a human.</strong> LLM reasoning is fallible. A wrong silent write is worse than an unnecessary confirmation prompt. The three human outcomes all involve reasoning about meaning, not structure.</p>
+
+    <h4>What this approach maps to in industry</h4>
+    <div class="ref-box">
+      <strong>Conventional Commits + Protected Branch Rules (GitHub/GitLab)</strong>
+      <span>The pattern of declaring intent in a structured commit message (equivalent to our Business Rules Affected block) so that automation can execute it deterministically is widespread in CI/CD. GitHub branch protection rules enforce that certain changes require explicit human review before merge — the same conservative gate we apply to SCOPE-INFERRED and CHAIN-IMPACT.</span>
+    </div>
+    <div class="ref-box">
+      <strong>ADR (Architecture Decision Records) — Michael Nygard, 2011</strong>
+      <span>The original ADR format (Context → Decision → Consequences → Status) is the closest industry parallel to our domain-rules.yaml. Each ADR has a status (proposed → accepted → superseded → deprecated), an explicit supersedes pointer, and a rationale. Our YAML adds machine-readability and CI linkage — the structural difference is that ADRs are prose documents while our rules are schema-validated and testable.</span>
+    </div>
+    <div class="ref-box">
+      <strong>Database Migration Versioning — Flyway / Liquibase</strong>
+      <span>The immutable-history model (never delete, only add new migration versions) is identical to our supersede/retire model. Flyway uses sequential version numbers to track schema state; we use rule IDs. Both systems maintain a full audit trail and forbid retroactive rewriting of committed versions. The key difference: migrations are code, ours are business rules — but the versioning discipline is the same.</span>
+    </div>
+    <div class="ref-box">
+      <strong>Feature Flags with Audit Trails — LaunchDarkly / Split.io</strong>
+      <span>These systems enforce that any change to a flag's targeting rules is attributed (who, when, why), versioned, and reviewable. Our modified_prd / modified_by fields mirror this — any retroactive change to an existing rule (like the scope annotation in PRD #5) must carry attribution. Without it, the system becomes unauditable over time.</span>
+    </div>
+    <div class="ref-box">
+      <strong>IETF RFC Process — Status field evolution</strong>
+      <span>RFCs have a formal status lifecycle: Proposed Standard → Draft Standard → Internet Standard, and can be Obsoleted by a successor RFC with an explicit Obsoletes: header. This is conceptually identical to our active → superseded → retired lifecycle with superseded_by pointers. The industry learned that technical standards need immutable history and explicit succession chains — we apply the same discipline to business rules.</span>
+    </div>
+  </div>
+
+  <!-- ── Section 4: YAML-first rationale ── -->
+  <div class="meth-section">
+    <h3>4 — Why YAML-first — the structured source of truth</h3>
+    <p>The alternative is storing business rules as English prose in DOMAIN_BUSINESS.md. Here is why that fails at scale:</p>
+    <ul>
+      <li><strong>Conflict detection becomes semantic search.</strong> To know if a new rule conflicts, you must read all existing rules and judge by meaning. At 50 rules, this works. At 200, it is unreliable — LLMs produce false negatives (miss conflicts) and false positives (flag non-conflicts).</li>
+      <li><strong>No machine-readable identity.</strong> Prose rules have no stable ID. "Customers earn 1 point per dollar" in PRD #1 and "earn rate is 1× for Bronze" in PRD #2 might refer to the same rule. A lookup by conflict_key is O(1) and deterministic. A lookup by prose is O(n) and probabilistic.</li>
+      <li><strong>No CI linkage.</strong> You cannot run a test against an English sentence. YAML rules carry test_cases — CI verifies rules against actual code on every build. If the code and the rule ever diverge, the build breaks.</li>
+      <li><strong>No schema enforcement.</strong> Prose cannot enforce "every active rule must have a test case" or "exactly one active rule per conflict_key (except composition/scoped variants)." Schema validation catches structural hallucinations before commit.</li>
+    </ul>
+    <p>DOMAIN_BUSINESS.md still exists — it is the human-readable layer, generated from the YAML. But it is a view, not the source. The YAML is the source.</p>
+  </div>
+
+  <!-- ── Section 5: PRD fallback and token cost ── -->
+  <div class="meth-section">
+    <h3>5 — The PRD fallback — when and why we fetch, and what it costs</h3>
+    <p>The YAML is the fast path. PRD fetches are the fallback. validate-knowledge only fetches a PRD when the YAML lookup alone cannot determine the outcome.</p>
+
+    <div class="token-row">
+      <div class="token-label" style="font-weight:700;font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:0.06em;">Path</div>
+      <div class="token-bar-wrap" style="background:transparent;"></div>
+      <div class="token-count" style="font-weight:700;font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:0.06em;">~tokens</div>
+    </div>
+    <div class="token-row">
+      <div class="token-label">CLEAN — read YAML only</div>
+      <div class="token-bar-wrap"><div class="token-bar" style="width:4%;background:#22c55e;"></div></div>
+      <div class="token-count">~400</div>
+    </div>
+    <div class="token-row">
+      <div class="token-label">DECLARED-WRITE — read YAML only</div>
+      <div class="token-bar-wrap"><div class="token-bar" style="width:5%;background:#22c55e;"></div></div>
+      <div class="token-count">~500</div>
+    </div>
+    <div class="token-row">
+      <div class="token-label">INFERRED-WRITE — YAML + 2 PRD fetches</div>
+      <div class="token-bar-wrap"><div class="token-bar" style="width:30%;background:#f59e0b;"></div></div>
+      <div class="token-count">~6,000</div>
+    </div>
+    <div class="token-row">
+      <div class="token-label">SCOPE-INFERRED / CHAIN-IMPACT — YAML + 2–3 PRDs</div>
+      <div class="token-bar-wrap"><div class="token-bar" style="width:50%;background:#f97316;"></div></div>
+      <div class="token-count">~10,000</div>
+    </div>
+    <div class="token-row">
+      <div class="token-label">CONFLICT-UNRESOLVABLE — YAML + 3+ PRDs + conflict map</div>
+      <div class="token-bar-wrap"><div class="token-bar" style="width:100%;background:#ef4444;"></div></div>
+      <div class="token-count">~20,000</div>
+    </div>
+
+    <p style="margin-top:14px;">The critical property: <strong>most PRDs are DECLARED-WRITE or CLEAN.</strong> They cost ~500 tokens. PRD fetches only happen when the conflict detection fires — which is rare for a well-maintained rule set. Without the YAML fast path, every PRD would need to read all previous PRDs to check for conflicts — O(n²) token growth as the system scales. With the YAML, conflict detection is O(1).</p>
+    <p>At 200 PRDs shipped: without YAML, PRD #200 would need to scan ~199 previous PRDs. With YAML, PRD #200 reads one file regardless of history length.</p>
+  </div>
+
+  <!-- ── Section 6: Key learnings ── -->
+  <div class="meth-section">
+    <h3>6 — Key learnings from this design exercise</h3>
+
+    <h4>The rule_id in the PRD is the linchpin</h4>
+    <p>Everything in the DECLARED-WRITE path depends on the PM writing <code>action: supersede RULE-EARN-001</code> in Business Rules Affected. Without that declaration, validate-knowledge falls back to PRD fetch + semantic comparison. The rule ID forces the human to be explicit at decision time — not at review time. This is the highest-leverage design choice in the whole system.</p>
+
+    <h4>The <code>why</code> field is what enables conflict detection</h4>
+    <p>Two formulas — <code>floor(order_total / 100)</code> and <code>floor(order_total / 100) × tier_mult</code> — look like a conflict. The <code>why</code> field on RULE-EARN-001 ("simple flat rate, no tier") makes clear it is a supersede, not a contradiction. Without the <code>why</code> field, validate-knowledge cannot distinguish intentional replacement from accidental duplication. Verbose rules are not overhead — they are what makes the system work.</p>
+
+    <h4>Modification attribution is not optional</h4>
+    <p>Any time validate-knowledge modifies an existing rule (not just creates one), it must record <code>modified_prd</code> and <code>modified_by: validate-knowledge</code> in the YAML. Without this, git blame on domain-rules.yaml cannot explain why RULE-EARN-003's scope changed between PRD #3 and PRD #5. Attribution makes the audit trail complete. Any auto-modification without attribution is a silent write.</p>
+
+    <h4>Conservative is safer than optimistic — always</h4>
+    <p>Every time we added a "smart" auto-resolve path in this design session, we found a failure mode. SCOPE-INFERRED auto-resolve: silently modifies another author's rule. CHAIN-IMPACT auto-resolve: depends on LLM formula reading, which can be wrong. The more sophisticated the reasoning, the more ways it can fail silently. The cost of an unnecessary human prompt is low. The cost of a wrong silent write is high. Default to human.</p>
+
+    <h4>Immutable history is not optional</h4>
+    <p>Rules are never deleted — only superseded or retired. This was a structural choice, not a cosmetic one. If validate-knowledge ever writes a wrong rule, the worst case is a wrong active rule — visible in the YAML, fixable by marking it superseded and writing the correct version. With deletion, the worst case is permanent data loss. Immutable history is what makes the system recoverable from LLM mistakes.</p>
+
+    <h4>CI test cases close the loop</h4>
+    <p>domain-rules.yaml carries test_cases for every active rule. A CI check reads the YAML and verifies test cases pass against the actual code. If validate-knowledge writes a rule with a wrong formula, or if code is deployed that contradicts an active rule, the build fails. The code is the final validator — not the LLM, not the human review, not the schema. Test cases are what give the YAML teeth.</p>
+
+    <h4>The human gate is at PRD writing time for declared changes</h4>
+    <p>For DECLARED-WRITE, the PM already made the decision when they wrote the Business Rules Affected block. validate-knowledge is not a second review — it is execution. Adding a human confirmation step on top of an already-declared intent would be redundant and would slow down the pipeline for no safety gain. The design insight: <strong>push the human gate as early as possible</strong> (to PRD writing), and make it structural (a required field), not optional (a prompt the PM might skim).</p>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(8)">← PRD #8 — Blocked</button>
+      <span class="ch-nav-count">9 of 9</span>
+      <button class="ch-nav-btn" disabled>(end)</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 9 -->
+
+</div><!-- /main-content -->
+</div><!-- /layout -->
+
+<script>
+const TOTAL = 9;
+
+function goCh(n) {
+  for (let i = 1; i <= TOTAL; i++) {
+    const ch = document.getElementById('ch-' + i);
+    const prog = document.getElementById('prog-' + i);
+    if (ch)   ch.classList.remove('open');
+    if (prog) prog.classList.remove('active');
+  }
+  const target = document.getElementById('ch-' + n);
+  const prog   = document.getElementById('prog-' + n);
+  if (target) { target.classList.add('open'); }
+  if (prog)   { prog.classList.add('active'); }
+  if (target) {
+    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 20);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { goCh(1); });
+</script>
 </body>
 </html>
