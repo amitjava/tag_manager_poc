@@ -1037,12 +1037,16 @@ Accepted 2026-03-21. PRD: domains/advertisers/docs/prd-csv-export.md</pre>
 <p><strong>What you're trying to resolve:</strong></p>
 <ul>
   <li>What is the entity? What are its fields?</li>
-  <li>Who can do what? What roles exist?</li>
+  <li>Who are the actors? — human roles, automated systems, and AI agents (virtual employees)</li>
+  <li>What does each AI agent decide autonomously? What does it escalate to a human?</li>
   <li>What happens at each boundary? (create, edit, delete, error states)</li>
   <li>What's the data shape? (DB, API, file system, UI)</li>
   <li>What is explicitly NOT in scope?</li>
   <li>What happens when two operations conflict?</li>
 </ul>
+<div class="callout">
+  <p><strong>Agent-as-actor branch:</strong> For every significant workflow, grill-me asks explicitly: "Is any part of this process currently manual that an AI agent could own?" This is a business decision — not a tech decision — because it defines accountability, cost, and risk tolerance. An agent that auto-approves refunds is a business call. Grill-me surfaces it; you decide.</p>
+</div>
 <p><strong>Practical signal you're done:</strong> You can answer any "what happens when X?" question without thinking. There are no open tabs in your head.</p>
 <blockquote>
   <p><strong>Real example:</strong> "I want a tag manager" → 17 questions across 4 rounds resolved: one tag per advertiser (not multiple), SQLite as source of truth, JS files as output artifacts, CodeMirror editor (not plain textarea), advertiser name read-only on edit, no auth. Every one of these was a decision that could have gone multiple ways and would have required backtracking if left open.</p>
@@ -1051,6 +1055,7 @@ Accepted 2026-03-21. PRD: domains/advertisers/docs/prd-csv-export.md</pre>
 <h3>Step 2 — <span class="skill">/ubiquitous-language</span></h3>
 <p>Run this immediately after <span class="skill">/grill-me</span>, before writing the PRD.</p>
 <p>What it does: Extracts a DDD-style glossary from the decisions made in grill-me. Flags terms that could be interpreted multiple ways. Proposes canonical names. Saves to <code>UBIQUITOUS_LANGUAGE.md</code>.</p>
+<p><strong>AI agent roles are first-class terms here.</strong> If grill-me identified an AI agent actor (e.g. "Fulfillment Agent", "Review Moderator"), it gets a named entry in <code>UBIQUITOUS_LANGUAGE.md</code> with: what it owns, what triggers it, what it decides autonomously, and what it escalates. The name flows downstream into PRD user stories, implementation decisions, and DOMAIN_BUSINESS.md.</p>
 
 <div class="callout">
   <p><strong>Why it matters:</strong> If you call it a "tag" in the DB schema, a "script" in the API response, and a "pixel" in the UI label, agents will produce code that looks correct in isolation but has mismatched field names across the stack. This is a bug that is invisible until integration.</p>
@@ -1135,8 +1140,23 @@ Accepted 2026-03-21. PRD: domains/advertisers/docs/prd-csv-export.md</pre>
 </div>
 
 <div class="prd-section">
+  <h4>§4b — Workflow Actors</h4>
+  <p>Every actor in this feature's workflows, classified explicitly. Derived from the grill-me Workflow Actors branch.</p>
+  <table>
+    <tr><th>Actor</th><th>Type</th><th>What they own</th><th>Autonomous decisions</th><th>Escalates to human when</th></tr>
+    <tr><td>Customer</td><td>Human</td><td>Places orders</td><td>—</td><td>—</td></tr>
+    <tr><td>Fulfillment Agent</td><td>AI agent</td><td>Routes orders to warehouse</td><td>Stock available + address valid</td><td>Ambiguous address, no stock, high-value order</td></tr>
+  </table>
+  <p>If no AI agents are involved: "No AI agents — all actors are humans or automated systems."</p>
+</div>
+
+<div class="prd-section">
   <h4>§5 — User Stories</h4>
-  <p>Format: "As a [role], I want [capability], so that [outcome]." Write one story per user-visible action. Include happy path, error path, and boundary stories. Aim for 10–20.</p>
+  <p>Format: "As a [actor], I want [capability], so that [outcome]." Actors may be human roles, automated systems, or AI agents named in §4b. Include happy path, error path, and boundary stories. Aim for 10–20.</p>
+  <blockquote>
+    <p>"As a <strong>Fulfillment Agent</strong>, I want to route orders to the nearest available warehouse automatically, so that processing time is minimised without human intervention."<br>
+    "As a <strong>Fulfillment Agent</strong>, I want to escalate orders with no available stock to the Ops team, so that a human can decide whether to backorder or cancel."</p>
+  </blockquote>
 </div>
 
 <div class="prd-section">
@@ -1152,6 +1172,14 @@ Accepted 2026-03-21. PRD: domains/advertisers/docs/prd-csv-export.md</pre>
 <div class="prd-section">
   <h4>§7 — Implementation Decisions</h4>
   <p>The one place in the PRD where you go below user-visible behaviour. Cover: domain declaration, modules, DB schema, API contract, file/storage format.</p>
+  <p>If this feature includes AI agent actors, add an <strong>Agent Boundaries</strong> subsection:</p>
+  <ul>
+    <li>What the agent calls (APIs, tools, services)</li>
+    <li>What it reads vs what it writes</li>
+    <li>Hard limits (max spend, max retries, max blast radius)</li>
+    <li>Escalation trigger conditions (exact, not vague)</li>
+    <li>How failures are logged and surfaced</li>
+  </ul>
   <pre>POST /api/advertisers
 Body: { name: string, tag_name: string, tag_code: string }
 201: { id, name, tag_name, tag_code, created_at }
