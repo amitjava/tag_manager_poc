@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Knowledge Loop — All Scenarios</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #1a1a1a;
+  background: #f5f5f5;
+  padding: 0 0 80px;
+}
+
+/* ── Page header ── */
+.page-header {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 48px 40px 40px;
+}
+.page-header h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.page-header .sub { color: #aaa; font-size: 0.95rem; max-width: 680px; line-height: 1.6; }
+
+/* ── Content wrapper ── */
+.content { max-width: 1060px; margin: 0 auto; padding: 0 32px; }
+
+/* ── Section headings ── */
+h2 {
+  font-size: 1.1rem; font-weight: 700; margin: 48px 0 18px;
+  padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;
+  color: #111;
+}
+h2 span { font-weight: 400; color: #888; font-size: 0.9rem; margin-left: 8px; }
+
+/* ── Pipeline ── */
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 24px 0;
+  background: #fff;
+}
+.phase { padding: 18px 16px; border-right: 1px solid #d0d0d0; }
+.phase:last-child { border-right: none; }
+.phase-num  { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; margin-bottom: 4px; }
+.phase-skill { font-size: 0.82rem; font-weight: 700; font-family: 'SF Mono','Fira Code',monospace; color: #222; margin-bottom: 6px; }
+.phase-desc { font-size: 0.78rem; color: #666; line-height: 1.5; }
+.phase.p1 { background: #f0f7ff; }
+.phase.p2 { background: #f0fff4; }
+.phase.p3 { background: #fffbf0; }
+.phase.p4 { background: #fdf0ff; }
+
+/* ── Gate strip ── */
+.gate-strip {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: #fff8e1; border: 1px solid #ffe082;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px; padding: 14px 18px; margin: 16px 0 36px;
+  font-size: 0.84rem;
+}
+.gate-strip .icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+.gate-strip strong { display: block; margin-bottom: 4px; }
+
+/* ── PRD card ── */
+.prd {
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+/* PRD header bar */
+.prd-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #ebebeb;
+}
+.prd-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
+}
+.prd-title { font-weight: 700; font-size: 0.98rem; }
+.prd-sub   { font-size: 0.78rem; color: #888; margin-top: 1px; }
+.prd-tag {
+  margin-left: auto; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 4px 12px; border-radius: 20px; flex-shrink: 0;
+}
+
+/* type colours */
+.t-create   .prd-num { background:#dbeafe; color:#1d4ed8; }
+.t-create   .prd-header { background:#f8fbff; }
+.t-create   .prd-tag    { background:#dbeafe; color:#1d4ed8; }
+
+.t-update   .prd-num { background:#fef9c3; color:#854d0e; }
+.t-update   .prd-header { background:#fffef5; }
+.t-update   .prd-tag    { background:#fef9c3; color:#854d0e; }
+
+.t-cross    .prd-num { background:#dcfce7; color:#14532d; }
+.t-cross    .prd-header { background:#f5fff8; }
+.t-cross    .prd-tag    { background:#dcfce7; color:#14532d; }
+
+.t-retire   .prd-num { background:#fee2e2; color:#991b1b; }
+.t-retire   .prd-header { background:#fff5f5; }
+.t-retire   .prd-tag    { background:#fee2e2; color:#991b1b; }
+
+.t-nearmiss .prd-num { background:#fce7f3; color:#9d174d; }
+.t-nearmiss .prd-header { background:#fff5fb; }
+.t-nearmiss .prd-tag    { background:#fce7f3; color:#9d174d; }
+
+.t-conflict .prd-num { background:#ffedd5; color:#9a3412; }
+.t-conflict .prd-header { background:#fff9f5; }
+.t-conflict .prd-tag    { background:#ffedd5; color:#9a3412; }
+
+.t-collision .prd-num { background:#ede9fe; color:#5b21b6; }
+.t-collision .prd-header { background:#f8f5ff; }
+.t-collision .prd-tag    { background:#ede9fe; color:#5b21b6; }
+
+.t-revert   .prd-num { background:#d1fae5; color:#064e3b; }
+.t-revert   .prd-header { background:#f5fffc; }
+.t-revert   .prd-tag    { background:#d1fae5; color:#064e3b; }
+
+/* ── Before / After file panels ── */
+.file-panels {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border-bottom: 1px solid #ebebeb;
+}
+.file-panel { padding: 16px 20px; }
+.file-panel:first-child { border-right: 1px solid #ebebeb; }
+.file-panel-label {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #aaa; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.file-panel-label .fname {
+  font-family: 'SF Mono','Fira Code',monospace;
+  color: #666; font-weight: 600; text-transform: none; letter-spacing: 0;
+}
+
+.state-label {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; padding: 3px 10px; border-radius: 4px;
+  margin-bottom: 10px; display: inline-block;
+}
+.state-before { background: #f1f5f9; color: #64748b; }
+.state-after  { background: #dcfce7; color: #15803d; }
+
+/* code blocks */
+.yaml-block {
+  background: #1e1e2e;
+  border-radius: 7px;
+  padding: 12px 14px;
+  font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 0.74rem;
+  line-height: 1.7;
+  color: #cdd6f4;
+  overflow-x: auto;
+  white-space: pre;
+}
+.y-comment { color: #6c7086; }
+.y-key     { color: #89b4fa; }
+.y-val     { color: #a6e3a1; }
+.y-str     { color: #f38ba8; }
+.y-active  { color: #a6e3a1; }
+.y-draft   { color: #fab387; }
+.y-super   { color: #6c7086; text-decoration: line-through; }
+.y-retired { color: #6c7086; }
+.y-id      { color: #cba6f7; font-weight: 600; }
+
+/* business doc table */
+.biz-table { width: 100%; border-collapse: collapse; font-size: 0.77rem; }
+.biz-table th {
+  text-align: left; padding: 6px 10px;
+  background: #f8f8f8; border: 1px solid #e8e8e8;
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: #888;
+}
+.biz-table td { padding: 7px 10px; border: 1px solid #ebebeb; vertical-align: top; }
+.biz-table tr:nth-child(even) td { background: #fafafa; }
+.rule-id { font-family: 'SF Mono','Fira Code',monospace; font-size: 0.72rem; white-space: nowrap; }
+.badge {
+  display: inline-block; font-size: 0.64rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+}
+.b-active    { background: #dcfce7; color: #15803d; }
+.b-draft     { background: #e2e8f0; color: #475569; }
+.b-superseded{ background: #fee2e2; color: #991b1b; }
+.b-retired   { background: #f3f4f6; color: #9ca3af; }
+.b-new       { background: #fef9c3; color: #854d0e; }
+
+.empty-state {
+  text-align: center; padding: 20px; color: #aaa;
+  font-size: 0.8rem; font-style: italic;
+  border: 1px dashed #ddd; border-radius: 6px;
+}
+
+/* ── Step flow ── */
+.steps-section {
+  padding: 20px 20px;
+  border-bottom: 1px solid #ebebeb;
+  background: #fdfdfd;
+}
+.steps-title {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #aaa; margin-bottom: 16px;
+}
+.steps { display: flex; flex-direction: column; gap: 0; }
+.step { display: flex; gap: 14px; position: relative; }
+.step:not(:last-child)::before {
+  content: ''; position: absolute; left: 14px; top: 30px; bottom: 0;
+  width: 2px; background: #ebebeb;
+}
+.step-dot {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; flex-shrink: 0; z-index: 1;
+  border: 2px solid #e0e0e0; background: #fff; color: #888;
+}
+.step-content { padding: 4px 0 18px; flex: 1; }
+.step-skill {
+  font-size: 0.75rem; font-family: 'SF Mono','Fira Code',monospace;
+  font-weight: 600; color: #555; margin-bottom: 4px;
+}
+.step-desc { font-size: 0.84rem; color: #333; }
+.step-quote {
+  font-style: italic; color: #555; font-size: 0.84rem;
+  border-left: 3px solid #e0e0e0; padding-left: 10px; margin: 6px 0;
+}
+
+/* ── Gate decision boxes ── */
+.gate-box {
+  border-radius: 7px; padding: 12px 14px;
+  margin: 8px 0; font-size: 0.82rem; line-height: 1.6;
+}
+.g-clean    { background:#f0fdf4; border:1px solid #86efac; border-left:3px solid #22c55e; }
+.g-conflict { background:#fff7ed; border:1px solid #fed7aa; border-left:3px solid #f97316; }
+.g-notice   { background:#eff6ff; border:1px solid #bfdbfe; border-left:3px solid #3b82f6; }
+.g-halt     { background:#fef2f2; border:1px solid #fca5a5; border-left:3px solid #dc2626; }
+.g-collision{ background:#f5f3ff; border:1px solid #c4b5fd; border-left:3px solid #7c3aed; }
+.g-approved { background:#f0fdf4; border:1px solid #86efac; border-left:3px solid #16a34a; }
+.gate-box strong { display: block; margin-bottom: 6px; font-size: 0.85rem; }
+
+.diff-block {
+  background: #1e1e2e; border-radius: 6px; padding: 10px 12px;
+  font-family: 'SF Mono','Fira Code',monospace; font-size: 0.74rem;
+  line-height: 1.7; margin: 8px 0;
+}
+.diff-rm  { color: #f38ba8; }
+.diff-add { color: #a6e3a1; }
+.diff-ctx { color: #6c7086; }
+
+/* rule card inline */
+.rule-inline {
+  display: inline-block;
+  font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 0.76rem; padding: 8px 12px; border-radius: 6px; margin: 6px 0;
+  line-height: 1.6; width: 100%;
+}
+.ri-active    { background:#f0fdf4; border:1px solid #86efac; color:#14532d; }
+.ri-draft     { background:#f8fafc; border:1px solid #cbd5e1; color:#475569; }
+.ri-superseded{ background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; opacity:.75; }
+.ri-retired   { background:#f3f4f6; border:1px solid #d1d5db; color:#9ca3af; }
+
+.supersede-flow {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 8px 0;
+}
+.supersede-flow .arrow { color: #94a3b8; font-size: 1.1rem; }
+
+/* ── Panel divider ── */
+.panel-divider {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; background: #f8f8f8;
+  border-top: 1px solid #ebebeb; border-bottom: 1px solid #ebebeb;
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #aaa;
+}
+.panel-divider::before, .panel-divider::after {
+  content: ''; flex: 1; height: 1px; background: #e0e0e0;
+}
+
+/* ── Summary table ── */
+.summary-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0;
+}
+.sum-card {
+  border-radius: 8px; padding: 16px; border: 1px solid #e0e0e0; background: #fff;
+  text-align: center;
+}
+.sum-card .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.sum-card .lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+
+/* ── One sentence ── */
+.closing {
+  margin-top: 48px; padding: 28px 32px;
+  background: #1a1a1a; color: #fff; border-radius: 10px;
+  font-size: 1rem; line-height: 1.75;
+}
+.closing strong { color: #a5f3fc; }
+.closing .rule { color: #86efac; font-family: 'SF Mono','Fira Code',monospace; font-size: 0.85rem; }
+
+@media(max-width:700px){
+  .pipeline,.file-panels,.summary-grid{grid-template-columns:1fr;}
+  .file-panel:first-child{border-right:none;border-bottom:1px solid #ebebeb;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ PAGE HEADER ══════════════════════════════════════════════ -->
+<div class="page-header">
+  <h1>The Knowledge Loop</h1>
+  <p class="sub">
+    8 scenarios showing every way a rule can move through the loop —
+    create, update, cross-domain, retire, near-miss, human approval, draft collision, and revert.
+    Each PRD shows the exact state of <code style="color:#a5f3fc">domain-rules.yaml</code> and
+    <code style="color:#a5f3fc">DOMAIN_BUSINESS.md</code> before and after.
+  </p>
+</div>
+
+<div class="content">
+
+<!-- ══ PIPELINE ══════════════════════════════════════════════════ -->
+<h2>The Loop <span>every feature follows this path</span></h2>
+
+<div class="pipeline">
+  <div class="phase p1">
+    <div class="phase-num">Phase 1</div>
+    <div class="phase-skill">/grill-me</div>
+    <div class="phase-desc">Extract rules, actors, edge cases. Draft rules written to YAML with status: draft, introduced_prd: TBD.</div>
+  </div>
+  <div class="phase p2">
+    <div class="phase-num">Phase 4</div>
+    <div class="phase-skill">/write-a-prd</div>
+    <div class="phase-desc">PRD opened as GitHub issue. introduced_prd written back to YAML immediately. No more TBD.</div>
+  </div>
+  <div class="phase p3">
+    <div class="phase-num">Phase 6</div>
+    <div class="phase-skill">/tdd</div>
+    <div class="phase-desc">RED tests first, then GREEN. Every rule must have passing tests before it can be promoted.</div>
+  </div>
+  <div class="phase p4">
+    <div class="phase-num">Ship</div>
+    <div class="phase-skill">/ship-feature</div>
+    <div class="phase-desc">Rules promoted to active. Docs regenerated from YAML. Platform context updated. Loop closed.</div>
+  </div>
+</div>
+
+<div class="gate-strip">
+  <div class="icon">🔒</div>
+  <div>
+    <strong>/validate-knowledge — runs before every write to any knowledge doc</strong>
+    Conflict key = entity + field + operation. If two rules share the same key → CONFLICT, halt, show diff.
+    Human approves or rejects. If different key → CLEAN, proceed.
+    Cross-domain dep scan runs on every supersede. Human is the semantic validator — not the LLM.
+  </div>
+</div>
+
+<!-- ══ BABY EXAMPLE INTRO ════════════════════════════════════════ -->
+<h2>Baby Example: Coffee Shop Loyalty Stamps <span>one rule, 8 PRDs, every scenario</span></h2>
+
+<p style="margin-bottom:24px;color:#555;font-size:0.88rem;">
+  A coffee shop starts with zero rules and builds up a loyalty stamp program across 8 PRDs.
+  Every scenario that can happen to a rule — does.
+</p>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRD 1 — CREATE
+════════════════════════════════════════════════════════════════ -->
+<div class="prd t-create">
+  <div class="prd-header">
+    <div class="prd-num">1</div>
+    <div>
+      <div class="prd-title">Loyalty Stamps: Basic Earning</div>
+      <div class="prd-sub">A brand-new rule is created from scratch — nothing existed before</div>
+    </div>
+    <span class="prd-tag">🆕 Create</span>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="panel-divider">Before</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="empty-state">No rules yet. File contains only the header comment.</div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <div class="empty-state">No rules section yet.</div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+    <div class="steps-title">Step flow</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-skill">/grill-me</div>
+          <div class="step-quote">"Customers earn 1 stamp for every coffee they buy."</div>
+          <div class="rule-inline ri-draft">RULE-001 [draft] &nbsp;|&nbsp; purchase.stamps.earn<br>
+"1 stamp per coffee" &nbsp;|&nbsp; introduced_prd: TBD</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-skill">/write-a-prd → issue #1 opened</div>
+          <div class="step-desc">PRD submitted. introduced_prd written back immediately.</div>
+          <div class="rule-inline ri-draft">RULE-001 [draft] &nbsp;|&nbsp; introduced_prd: <strong>#1</strong></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-skill">/validate-knowledge</div>
+          <div class="gate-box g-clean"><strong>✅ CLEAN</strong>
+No existing rule covers purchase.stamps.earn — this is net-new. Proceed.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">4</div>
+        <div class="step-content">
+          <div class="step-skill">/tdd → RED then GREEN</div>
+          <div class="step-desc">Tests written and passing. test_cases added to YAML.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">5</div>
+        <div class="step-content">
+          <div class="step-skill">/ship-feature → promoted to active</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel-divider">After</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block"><span class="y-comment"># rules:</span>
+  - <span class="y-key">id</span>: <span class="y-id">RULE-001</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">entity</span>: <span class="y-val">purchase</span>
+    <span class="y-key">field</span>: <span class="y-val">stamps</span>
+    <span class="y-key">operation</span>: <span class="y-val">earn</span>
+    <span class="y-key">rule</span>: <span class="y-str">"1 stamp per coffee"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">1</span>
+    <span class="y-key">test_cases</span>:
+      - earn(1 coffee) → stamps = 1 ✓</div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr>
+          <td class="rule-id">RULE-001</td>
+          <td>1 stamp per coffee purchased</td>
+          <td><span class="badge b-active">active</span></td>
+          <td>#1</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRD 2 — UPDATE / SUPERSEDE
+════════════════════════════════════════════════════════════════ -->
+<div class="prd t-update">
+  <div class="prd-header">
+    <div class="prd-num">2</div>
+    <div>
+      <div class="prd-title">Loyalty Stamps: Weekend Double Stamps</div>
+      <div class="prd-sub">An existing rule changes — old rule is superseded, never deleted</div>
+    </div>
+    <span class="prd-tag">✏️ Update</span>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="panel-divider">Before</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block"><span class="y-comment"># rules:</span>
+  - <span class="y-key">id</span>: <span class="y-id">RULE-001</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">rule</span>: <span class="y-str">"1 stamp per coffee"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">1</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-001</td><td>1 stamp per coffee purchased</td><td><span class="badge b-active">active</span></td><td>#1</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+    <div class="steps-title">Step flow</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-skill">/grill-me</div>
+          <div class="step-quote">"On weekends, customers earn 2 stamps per coffee instead of 1."</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-skill">/validate-knowledge — CONFLICT DETECTED</div>
+          <div class="gate-box g-conflict">
+            <strong>⚠️ CONFLICT — same conflict key as RULE-001</strong>
+            entity=purchase, field=stamps, operation=earn<br>
+            <div class="diff-block"><span class="diff-ctx">RULE-001 (existing):</span>
+<span class="diff-rm">- rule: "1 stamp per coffee" (always)</span>
+<span class="diff-add">+ rule: "2 stamps on weekends, 1 on weekdays"</span></div>
+            → Halted. Showing diff. Awaiting human decision.
+          </div>
+          <div class="step-desc" style="margin-top:8px;color:#666;font-size:0.82rem;">
+            <strong>Human approves:</strong> <em>"Yes — RULE-001 is superseded. The new rule replaces it."</em>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-skill">/tdd + /ship-feature — supersede applied, history preserved</div>
+          <div class="supersede-flow">
+            <div class="rule-inline ri-superseded" style="width:auto;display:inline-block">RULE-001 → superseded_by: RULE-002</div>
+            <span class="arrow">→</span>
+            <div class="rule-inline ri-active" style="width:auto;display:inline-block">RULE-002 active, supersedes: RULE-001</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel-divider">After</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-001</span>
+    <span class="y-key">status</span>: <span class="y-super">superseded</span>
+    <span class="y-key">rule</span>: <span class="y-str">"1 stamp per coffee"</span>
+    <span class="y-key">superseded_by</span>: <span class="y-val">RULE-002</span>
+
+  - <span class="y-key">id</span>: <span class="y-id">RULE-002</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">rule</span>: <span class="y-str">"2 stamps weekend / 1 stamp weekday"</span>
+    <span class="y-key">supersedes</span>: <span class="y-val">RULE-001</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">2</span>
+    <span class="y-key">test_cases</span>:
+      - earn(weekend) → 2 stamps ✓
+      - earn(weekday) → 1 stamp ✓</div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-002</td><td>2 stamps (weekend) / 1 stamp (weekday)</td><td><span class="badge b-active">active</span></td><td>#2</td></tr>
+        <tr style="opacity:.5"><td class="rule-id">RULE-001</td><td>1 stamp per coffee ← superseded</td><td><span class="badge b-superseded">superseded</span></td><td>#1</td></tr>
+      </table>
+      <p style="font-size:0.72rem;color:#aaa;margin-top:6px;">Active rules shown first. Superseded kept as lineage.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRD 3 — CROSS-DOMAIN DEPENDENCY
+════════════════════════════════════════════════════════════════ -->
+<div class="prd t-cross">
+  <div class="prd-header">
+    <div class="prd-num">3</div>
+    <div>
+      <div class="prd-title">Loyalty Stamps: Redeem for Free Coffee</div>
+      <div class="prd-sub">A new rule in a different domain depends on an existing rule — dependency is tracked</div>
+    </div>
+    <span class="prd-tag">🔗 Cross-Domain</span>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="panel-divider">Before</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span> (orders domain)</div>
+      <div class="empty-state">No redemption rules yet in orders domain.</div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> (orders domain)</div>
+      <div class="empty-state">No redemption use cases in orders domain.</div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+    <div class="steps-title">Step flow</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-skill">/grill-me</div>
+          <div class="step-quote">"10 stamps = 1 free coffee. Stamps deducted at order time."</div>
+          <div class="rule-inline ri-draft">RULE-O-001 [draft] &nbsp;|&nbsp; order.redemption.apply<br>
+"10 stamps = 1 free coffee" &nbsp;|&nbsp; depends_on: [RULE-002]</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-skill">/validate-knowledge — two checks run</div>
+          <div class="gate-box g-clean" style="margin-bottom:8px;"><strong>✅ CLEAN — no conflict</strong>
+Conflict key: order.redemption.apply — unique, no existing rule covers this operation. Proceed.</div>
+          <div class="gate-box g-notice"><strong>ℹ️ CROSS-DOMAIN NOTICE — dep scan triggered</strong>
+RULE-O-001 declares depends_on: [RULE-002] (in loyalty domain).<br>
+If RULE-002 changes, this rule is affected. Registered in dependency map.<br>
+<span style="color:#1d4ed8;font-size:0.8rem;">→ No action needed now. Human informed.</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-skill">/tdd + /ship-feature</div>
+          <div class="rule-inline ri-active">RULE-O-001 [active] &nbsp;|&nbsp; depends_on: [RULE-002] &nbsp;|&nbsp; test_cases: ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel-divider">After</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span> (orders domain)</div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-O-001</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">entity</span>: <span class="y-val">order</span>
+    <span class="y-key">field</span>: <span class="y-val">redemption</span>
+    <span class="y-key">operation</span>: <span class="y-val">apply</span>
+    <span class="y-key">rule</span>: <span class="y-str">"10 stamps = 1 free coffee"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">3</span>
+    <span class="y-key">depends_on</span>: [<span class="y-val">RULE-002</span>]
+    <span class="y-key">test_cases</span>:
+      - redeem(10 stamps) → discount = 1 coffee ✓
+      - redeem(9 stamps)  → INSUFFICIENT_STAMPS ✓</div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> (orders domain)</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-O-001</td><td>10 stamps = 1 free coffee at checkout</td><td><span class="badge b-active">active</span></td><td>#3</td></tr>
+      </table>
+      <p style="font-size:0.72rem;color:#aaa;margin-top:6px;">depends_on: RULE-002 (loyalty domain) — if earn rate changes, this is affected.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRD 4 — RETIRE / DELETE
+════════════════════════════════════════════════════════════════ -->
+<div class="prd t-retire">
+  <div class="prd-header">
+    <div class="prd-num">4</div>
+    <div>
+      <div class="prd-title">Remove: New Customer Bonus Stamps</div>
+      <div class="prd-sub">A rule is no longer needed — it's retired, never deleted. History preserved.</div>
+    </div>
+    <span class="prd-tag">🗑 Retire</span>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="panel-divider">Before</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-003</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">entity</span>: <span class="y-val">customer</span>
+    <span class="y-key">field</span>: <span class="y-val">stamps</span>
+    <span class="y-key">operation</span>: <span class="y-val">signup_bonus</span>
+    <span class="y-key">rule</span>: <span class="y-str">"New customers get 5 bonus stamps on signup"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">4a</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-003</td><td>New customers get 5 bonus stamps on signup</td><td><span class="badge b-active">active</span></td><td>#4a</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+    <div class="steps-title">Step flow</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-skill">/grill-me</div>
+          <div class="step-quote">"We're removing the signup bonus. It was abused — people made fake accounts."</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-skill">/validate-knowledge — dep scan</div>
+          <div class="gate-box g-notice"><strong>ℹ️ RETIREMENT DEP SCAN</strong>
+Scanning all domains for rules with depends_on: [RULE-003]...<br>
+None found. Safe to retire.<br>
+<span style="color:#1d4ed8;font-size:0.8rem;">→ Proceed. Human confirms retirement.</span></div>
+          <div class="step-desc" style="margin-top:8px;color:#666;font-size:0.82rem;">
+            If any rule depended on RULE-003, the gate would surface them for manual review first.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-skill">/ship-feature — status set to retired</div>
+          <div class="step-desc">Code deleted. Tests removed. Rule status set to <code>retired</code> with reason and PRD link. Never physically removed from YAML.</div>
+          <div class="rule-inline ri-retired">RULE-003 [retired] &nbsp;|&nbsp; retired_prd: #4 &nbsp;|&nbsp; reason: "signup bonus removed — fraud risk"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel-divider">After</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-003</span>
+    <span class="y-key">status</span>: <span class="y-retired">retired</span>
+    <span class="y-key">rule</span>: <span class="y-str">"New customers get 5 bonus stamps on signup"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">4a</span>
+    <span class="y-key">retired_prd</span>: <span class="y-val">4</span>
+    <span class="y-key">retired_reason</span>: <span class="y-str">"Signup bonus removed — fraud risk"</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-002</td><td>2 stamps weekend / 1 stamp weekday</td><td><span class="badge b-active">active</span></td><td>#2</td></tr>
+        <tr style="opacity:.45"><td class="rule-id">RULE-003</td><td>Signup bonus ← retired PRD #4</td><td><span class="badge b-retired">retired</span></td><td>#4a</td></tr>
+      </table>
+      <p style="font-size:0.72rem;color:#aaa;margin-top:6px;">Retired rules kept for audit trail. Not shown to future agents as current rules.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRD 5 — NEAR-MISS / FALSE ALARM
+════════════════════════════════════════════════════════════════ -->
+<div class="prd t-nearmiss">
+  <div class="prd-header">
+    <div class="prd-num">5</div>
+    <div>
+      <div class="prd-title">Loyalty Stamps: Expiry After 12 Months</div>
+      <div class="prd-sub">Looks like it might conflict — different operation, gate passes CLEAN — but human spots an interaction</div>
+    </div>
+    <span class="prd-tag">👀 Near-Miss</span>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="panel-divider">Before</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-002</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">entity</span>: <span class="y-val">purchase</span>
+    <span class="y-key">field</span>: <span class="y-val">stamps</span>
+    <span class="y-key">operation</span>: <span class="y-val">earn</span>
+  - <span class="y-key">id</span>: <span class="y-id">RULE-O-001</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">entity</span>: <span class="y-val">order</span>
+    <span class="y-key">field</span>: <span class="y-val">redemption</span>
+    <span class="y-key">operation</span>: <span class="y-val">apply</span>
+    <span class="y-comment">    # No expiry rules exist yet</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-002</td><td>2 stamps (wknd) / 1 stamp (wkday)</td><td><span class="badge b-active">active</span></td><td>#2</td></tr>
+        <tr><td class="rule-id">RULE-O-001</td><td>10 stamps = 1 free coffee</td><td><span class="badge b-active">active</span></td><td>#3</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+    <div class="steps-title">Step flow</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-skill">/grill-me</div>
+          <div class="step-quote">"Stamps expire if unused for 12 months."</div>
+          <div class="rule-inline ri-draft">RULE-004 [draft] &nbsp;|&nbsp; stamp.balance.<strong>expire</strong><br>
+"Stamps older than 12 months are zeroed"</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-skill">/validate-knowledge</div>
+          <div class="gate-box g-clean"><strong>✅ CLEAN — different conflict key</strong>
+Incoming: stamp.balance.<strong>expire</strong><br>
+Existing: purchase.stamps.earn &amp; order.redemption.apply<br>
+Different entities and operations — no structural conflict. Proceed.</div>
+          <div class="gate-box g-notice" style="margin-top:8px;"><strong>⚠️ HUMAN NOTICE — semantic interaction detected</strong>
+RULE-O-001 allows redemption of stamps. RULE-004 can zero the balance.<br>
+If stamps expire mid-redemption flow, customer may see INSUFFICIENT_STAMPS.<br>
+Gate cannot block this (different conflict key) — flagged for human review.<br>
+<span style="color:#1d4ed8;font-size:0.8rem;">→ Human confirms: "Expiry runs nightly. Redemption checks live balance. Acceptable."</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-skill">/tdd + /ship-feature</div>
+          <div class="step-desc">Expiry logic added, tested, promoted. Interaction noted in RULE-004 comment.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel-divider">After</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-004</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">entity</span>: <span class="y-val">stamp</span>
+    <span class="y-key">field</span>: <span class="y-val">balance</span>
+    <span class="y-key">operation</span>: <span class="y-val">expire</span>
+    <span class="y-key">rule</span>: <span class="y-str">"Stamps unused for 12 months are zeroed"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">5</span>
+    <span class="y-key">notes</span>: <span class="y-str">"Interacts with RULE-O-001 — expiry may cause INSUFFICIENT_STAMPS on redemption. Accepted behaviour."</span>
+    <span class="y-key">test_cases</span>:
+      - expire(13mo unused) → balance = 0 ✓
+      - expire(11mo unused) → balance unchanged ✓</div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-002</td><td>2 stamps (wknd) / 1 stamp (wkday)</td><td><span class="badge b-active">active</span></td><td>#2</td></tr>
+        <tr><td class="rule-id">RULE-004</td><td>Stamps expire after 12 months of inactivity</td><td><span class="badge b-active">active</span></td><td>#5</td></tr>
+        <tr><td class="rule-id">RULE-O-001</td><td>10 stamps = 1 free coffee</td><td><span class="badge b-active">active</span></td><td>#3</td></tr>
+      </table>
+      <p style="font-size:0.72rem;color:#aaa;margin-top:6px;">Note: RULE-004 and RULE-O-001 interact — see RULE-004 notes field.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRD 6 — TRUE CONFLICT + HUMAN REJECTS
+════════════════════════════════════════════════════════════════ -->
+<div class="prd t-conflict">
+  <div class="prd-header">
+    <div class="prd-num">6</div>
+    <div>
+      <div class="prd-title">Proposed: No Stamps on Discounted Items</div>
+      <div class="prd-sub">True conflict with existing rule — gate halts — human reviews and <strong>rejects</strong> the incoming change</div>
+    </div>
+    <span class="prd-tag">🛑 Conflict → Rejected</span>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="panel-divider">Before</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-002</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">rule</span>: <span class="y-str">"2 stamps weekend / 1 stamp weekday (all purchases)"</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-002</td><td>Stamps earned on ALL purchases</td><td><span class="badge b-active">active</span></td><td>#2</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+    <div class="steps-title">Step flow</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-skill">/grill-me — marketing proposal</div>
+          <div class="step-quote">"Discounted coffees should not earn stamps. It's too generous."</div>
+          <div class="rule-inline ri-draft">RULE-005 [draft] &nbsp;|&nbsp; purchase.stamps.earn<br>
+"No stamps on discounted purchases"</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-skill">/validate-knowledge — CONFLICT</div>
+          <div class="gate-box g-halt">
+            <strong>🛑 CONFLICT — halted</strong>
+            Conflict key: purchase.stamps.earn — same as RULE-002.
+            <div class="diff-block"><span class="diff-ctx">RULE-002 (active):</span>
+<span class="diff-rm">- "all purchases earn stamps (no exceptions)"</span>
+<span class="diff-add">+ RULE-005: "discounted purchases earn 0 stamps"</span></div>
+            These directly contradict. Human must decide: approve supersede or reject?
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-skill">Human decision — REJECT</div>
+          <div class="step-quote">"No — customers already feel stamps are hard to earn. Keep earning on discounts. Close this PRD."</div>
+          <div class="gate-box g-approved"><strong>✅ Decision recorded — incoming rule rejected</strong>
+RULE-005 draft deleted. RULE-002 unchanged. PRD #6 closed as rejected.<br>
+Decision logged: "Marketing proposal rejected by ops — customer experience concern."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel-divider">After — no change (rejection recorded in PRD, not in YAML)</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-002</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>   <span class="y-comment"># unchanged</span>
+    <span class="y-key">rule</span>: <span class="y-str">"2 stamps weekend / 1 stamp weekday (all purchases)"</span>
+
+<span class="y-comment"># RULE-005 draft was deleted — rejected at validation gate.
+# Decision recorded in closed PRD #6, not in domain-rules.yaml.</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-002</td><td>Stamps earned on ALL purchases (unchanged)</td><td><span class="badge b-active">active</span></td><td>#2</td></tr>
+      </table>
+      <p style="font-size:0.72rem;color:#aaa;margin-top:6px;">
+        Rejection trail: PRD #6 closed with label "rejected". No YAML change — the doc accurately reflects reality.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRD 7 — DRAFT COLLISION
+════════════════════════════════════════════════════════════════ -->
+<div class="prd t-collision">
+  <div class="prd-header">
+    <div class="prd-num">7</div>
+    <div>
+      <div class="prd-title">Two Engineers, Same Rule, Same Week</div>
+      <div class="prd-sub">Engineer A and Engineer B both draft rules covering the same conflict key — gate catches it before either ships</div>
+    </div>
+    <span class="prd-tag">💥 Draft Collision</span>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="panel-divider">Before — two drafts in flight simultaneously</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span> — Engineer A's branch</div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-006</span>
+    <span class="y-key">status</span>: <span class="y-draft">draft</span>
+    <span class="y-key">entity</span>: <span class="y-val">purchase</span>
+    <span class="y-key">field</span>: <span class="y-val">stamps</span>
+    <span class="y-key">operation</span>: <span class="y-val">cap</span>
+    <span class="y-key">rule</span>: <span class="y-str">"Max 10 stamps per transaction"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">7a</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span> — Engineer B's branch</div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-007</span>
+    <span class="y-key">status</span>: <span class="y-draft">draft</span>
+    <span class="y-key">entity</span>: <span class="y-val">purchase</span>
+    <span class="y-key">field</span>: <span class="y-val">stamps</span>
+    <span class="y-key">operation</span>: <span class="y-val">cap</span>
+    <span class="y-key">rule</span>: <span class="y-str">"Max 5 stamps per transaction"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">7b</span></div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+    <div class="steps-title">Step flow — collision detected on merge</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-skill">/validate-knowledge — run on PR merge</div>
+          <div class="gate-box g-collision">
+            <strong>💥 DRAFT COLLISION — two drafts, same conflict key</strong>
+            Conflict key: purchase.stamps.cap<br>
+            &nbsp;RULE-006 [draft] — "Max 10 stamps" (PRD #7a)<br>
+            &nbsp;RULE-007 [draft] — "Max 5 stamps" (PRD #7b)<br>
+            <div class="diff-block"><span class="diff-rm">- RULE-006: max = 10 stamps per transaction</span>
+<span class="diff-add">+ RULE-007: max = 5 stamps per transaction</span></div>
+            Both are draft. One must be withdrawn before either proceeds.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-skill">Human resolution — engineers align</div>
+          <div class="step-quote">"We agreed: cap is 5 on regular days, 10 on weekends. One rule, two conditions."</div>
+          <div class="step-desc">Engineer B's PRD is closed. Engineer A's PRD is updated with the merged cap logic.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-skill">/tdd + /ship-feature — merged rule promoted</div>
+          <div class="rule-inline ri-active">RULE-006 [active] &nbsp;|&nbsp; "Max 5 stamps (weekday) / 10 stamps (weekend)" &nbsp;|&nbsp; test_cases: ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel-divider">After — one rule, collision resolved</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-006</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">entity</span>: <span class="y-val">purchase</span>
+    <span class="y-key">field</span>: <span class="y-val">stamps</span>
+    <span class="y-key">operation</span>: <span class="y-val">cap</span>
+    <span class="y-key">rule</span>: <span class="y-str">"Max 5 stamps (weekday) / 10 stamps (weekend) per transaction"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">7a</span>
+    <span class="y-key">notes</span>: <span class="y-str">"Merged with PRD #7b (RULE-007 withdrawn)"</span>
+<span class="y-comment">    # RULE-007 withdrawn — draft collision resolved by human</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-002</td><td>2 stamps (wknd) / 1 stamp (wkday)</td><td><span class="badge b-active">active</span></td><td>#2</td></tr>
+        <tr><td class="rule-id">RULE-004</td><td>Stamps expire after 12 months</td><td><span class="badge b-active">active</span></td><td>#5</td></tr>
+        <tr><td class="rule-id">RULE-006</td><td>Cap: 5/10 stamps per transaction (wkday/wknd)</td><td><span class="badge b-active">active</span></td><td>#7a</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRD 8 — REVERT
+════════════════════════════════════════════════════════════════ -->
+<div class="prd t-revert">
+  <div class="prd-header">
+    <div class="prd-num">8</div>
+    <div>
+      <div class="prd-title">Revert: Remove Weekend Double Stamps</div>
+      <div class="prd-sub">A previous change caused customer confusion — rolling back. Old rule is NOT restored; a new rule is created with the same content.</div>
+    </div>
+    <span class="prd-tag">↩ Revert</span>
+  </div>
+
+  <!-- BEFORE -->
+  <div class="panel-divider">Before — the rule we want to roll back</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-001</span>
+    <span class="y-key">status</span>: <span class="y-super">superseded</span>
+    <span class="y-key">rule</span>: <span class="y-str">"1 stamp per coffee (flat)"</span>
+    <span class="y-key">superseded_by</span>: <span class="y-val">RULE-002</span>
+
+  - <span class="y-key">id</span>: <span class="y-id">RULE-002</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>   <span class="y-comment"># ← to be superseded</span>
+    <span class="y-key">rule</span>: <span class="y-str">"2 stamps weekend / 1 stamp weekday"</span></div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-002</td><td>2 stamps (wknd) / 1 stamp (wkday)</td><td><span class="badge b-active">active</span></td><td>#2</td></tr>
+        <tr style="opacity:.5"><td class="rule-id">RULE-001</td><td>1 stamp flat ← superseded</td><td><span class="badge b-superseded">superseded</span></td><td>#1</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+    <div class="steps-title">Step flow</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-skill">/grill-me</div>
+          <div class="step-quote">"Weekend double stamps confused customers who come every day. Reverting to flat 1 stamp for everyone."</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-skill">Why not restore RULE-001?</div>
+          <div class="gate-box g-notice"><strong>ℹ️ Revert ≠ Restore</strong>
+RULE-001 has its own history — it was correct at PRD #1, then replaced at PRD #2.
+Restoring it would erase that history. Instead: create RULE-008 with the same behaviour.
+RULE-008 has its own PRD link, its own reason, its own test cases. Full audit trail preserved.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-skill">/validate-knowledge</div>
+          <div class="gate-box g-conflict"><strong>⚠️ CONFLICT — same conflict key as RULE-002</strong>
+Both cover purchase.stamps.earn. Showing diff for human approval.
+            <div class="diff-block"><span class="diff-rm">- RULE-002: "2 stamps weekend / 1 stamp weekday"</span>
+<span class="diff-add">+ RULE-008: "1 stamp per coffee (flat, all days)"</span></div></div>
+          <div class="step-desc" style="color:#666;font-size:0.82rem;margin-top:6px;">
+            <strong>Human approves:</strong> <em>"Yes — supersede RULE-002. This is the intended revert."</em>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">4</div>
+        <div class="step-content">
+          <div class="step-skill">/tdd + /ship-feature</div>
+          <div class="supersede-flow">
+            <div class="rule-inline ri-superseded" style="width:auto;display:inline-block;">RULE-002 → superseded_by: RULE-008</div>
+            <span class="arrow">→</span>
+            <div class="rule-inline ri-active" style="width:auto;display:inline-block;">RULE-008 active, revert_of: RULE-001 content, supersedes: RULE-002</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="panel-divider">After — complete lineage: 001 → 002 → 008</div>
+  <div class="file-panels">
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">domain-rules.yaml</span></div>
+      <div class="yaml-block">  - <span class="y-key">id</span>: <span class="y-id">RULE-001</span>
+    <span class="y-key">status</span>: <span class="y-super">superseded</span> → <span class="y-val">RULE-002</span>
+    <span class="y-key">rule</span>: <span class="y-str">"1 stamp per coffee (flat)"</span>
+
+  - <span class="y-key">id</span>: <span class="y-id">RULE-002</span>
+    <span class="y-key">status</span>: <span class="y-super">superseded</span> → <span class="y-val">RULE-008</span>
+    <span class="y-key">rule</span>: <span class="y-str">"2 stamps weekend / 1 stamp weekday"</span>
+
+  - <span class="y-key">id</span>: <span class="y-id">RULE-008</span>
+    <span class="y-key">status</span>: <span class="y-active">active</span>
+    <span class="y-key">rule</span>: <span class="y-str">"1 stamp per coffee (flat, all days)"</span>
+    <span class="y-key">supersedes</span>: <span class="y-val">RULE-002</span>
+    <span class="y-key">revert_reason</span>: <span class="y-str">"Weekend logic caused confusion — reverted PRD #8"</span>
+    <span class="y-key">introduced_prd</span>: <span class="y-val">8</span>
+    <span class="y-key">test_cases</span>:
+      - earn(any day) → 1 stamp ✓</div>
+    </div>
+    <div class="file-panel">
+      <div class="file-panel-label"><span class="fname">DOMAIN_BUSINESS.md</span> — rules table</div>
+      <table class="biz-table">
+        <tr><th>Rule ID</th><th>Summary</th><th>Status</th><th>PRD</th></tr>
+        <tr><td class="rule-id">RULE-008</td><td>1 stamp per coffee, flat, all days</td><td><span class="badge b-active">active</span></td><td>#8</td></tr>
+        <tr><td class="rule-id">RULE-004</td><td>Stamps expire after 12 months</td><td><span class="badge b-active">active</span></td><td>#5</td></tr>
+        <tr><td class="rule-id">RULE-006</td><td>Cap: 5/10 stamps per tx (wkday/wknd)</td><td><span class="badge b-active">active</span></td><td>#7a</td></tr>
+        <tr style="opacity:.4"><td class="rule-id">RULE-002</td><td>Weekend double ← superseded</td><td><span class="badge b-superseded">superseded</span></td><td>#2</td></tr>
+        <tr style="opacity:.4"><td class="rule-id">RULE-001</td><td>Flat 1 stamp ← superseded</td><td><span class="badge b-superseded">superseded</span></td><td>#1</td></tr>
+      </table>
+      <p style="font-size:0.72rem;color:#aaa;margin-top:6px;">
+        Complete lineage: RULE-001 was flat → RULE-002 added weekends → RULE-008 reverted flat. Every decision traceable.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     SUMMARY
+════════════════════════════════════════════════════════════════ -->
+<h2>All 8 Scenarios at a Glance</h2>
+
+<div class="summary-grid">
+  <div class="sum-card" style="border-top:3px solid #3b82f6;">
+    <div class="num" style="color:#3b82f6;">🆕</div>
+    <div class="lbl">Create</div>
+    <p style="font-size:0.78rem;color:#666;margin-top:6px;">New rule, no existing coverage. Gate: CLEAN. Draft → active on ship.</p>
+  </div>
+  <div class="sum-card" style="border-top:3px solid #f59e0b;">
+    <div class="num" style="color:#f59e0b;">✏️</div>
+    <div class="lbl">Update</div>
+    <p style="font-size:0.78rem;color:#666;margin-top:6px;">Same conflict key. Gate: CONFLICT. Human approves supersede. Old rule kept as history.</p>
+  </div>
+  <div class="sum-card" style="border-top:3px solid #22c55e;">
+    <div class="num" style="color:#22c55e;">🔗</div>
+    <div class="lbl">Cross-Domain</div>
+    <p style="font-size:0.78rem;color:#666;margin-top:6px;">New key, different domain. Gate: CLEAN + dep notice. depends_on field tracked.</p>
+  </div>
+  <div class="sum-card" style="border-top:3px solid #ef4444;">
+    <div class="num" style="color:#ef4444;">🗑</div>
+    <div class="lbl">Retire</div>
+    <p style="font-size:0.78rem;color:#666;margin-top:6px;">Feature removed. Rule status → retired. Never deleted. Dep scan first.</p>
+  </div>
+  <div class="sum-card" style="border-top:3px solid #a855f7;">
+    <div class="num" style="color:#a855f7;">👀</div>
+    <div class="lbl">Near-Miss</div>
+    <p style="font-size:0.78rem;color:#666;margin-top:6px;">Different key → CLEAN, but semantic interaction noticed. Human informed, confirms acceptable.</p>
+  </div>
+  <div class="sum-card" style="border-top:3px solid #f97316;">
+    <div class="num" style="color:#f97316;">🛑</div>
+    <div class="lbl">Conflict→Rejected</div>
+    <p style="font-size:0.78rem;color:#666;margin-top:6px;">True conflict. Gate halts. Human reviews diff. Rejects. YAML unchanged. Trail in closed PRD.</p>
+  </div>
+  <div class="sum-card" style="border-top:3px solid #7c3aed;">
+    <div class="num" style="color:#7c3aed;">💥</div>
+    <div class="lbl">Draft Collision</div>
+    <p style="font-size:0.78rem;color:#666;margin-top:6px;">Two drafts, same key. Gate catches on merge. Engineers align. One rule ships.</p>
+  </div>
+  <div class="sum-card" style="border-top:3px solid #10b981;">
+    <div class="num" style="color:#10b981;">↩</div>
+    <div class="lbl">Revert</div>
+    <p style="font-size:0.78rem;color:#666;margin-top:6px;">New rule replaces old one with original intent. Old IDs preserved. Full lineage maintained.</p>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     CLOSING
+════════════════════════════════════════════════════════════════ -->
+<div class="closing">
+  <p>After 8 PRDs, a new Claude reading <span class="rule">DOMAIN_BUSINESS.md</span> sees exactly 3 active rules —
+  <strong>no contradictions, no stale entries, no guessing.</strong></p>
+  <br>
+  <p>The YAML is the single source of truth. The doc is generated from it.
+  The gate is deterministic. <strong>Human judgment is required for exactly one thing: reading the diff and saying yes or no.</strong>
+  Everything else — conflict detection, dep scanning, promotion gating, doc regeneration — is automated.</p>
+  <br>
+  <p>The LLM's job on PRD #100 is identical to PRD #1: look up the rule by ID, apply the declared change, show the diff. No inference about what other rules mean. No guessing what's current. The structure does the heavy lifting.</p>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     FILE MAP — WHERE RULE IDs LIVE
+════════════════════════════════════════════════════════════════ -->
+<h2>Where Does a Rule ID Live? <span>every file that touches RULE-001</span></h2>
+
+<p style="margin-bottom:20px;color:#555;font-size:0.88rem;">
+  When you add or change a rule, these are every file that contains a reference to it — what kind of reference, who owns it, and whether it's generated or hand-written.
+</p>
+
+<!-- legend -->
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+  <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:600;">
+    <span style="width:12px;height:12px;border-radius:2px;background:#fee2e2;border:1px solid #fca5a5;display:inline-block;"></span>Source of truth — surgically edited, other files derive from this
+  </span>
+  <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:600;">
+    <span style="width:12px;height:12px;border-radius:2px;background:#dbeafe;border:1px solid #93c5fd;display:inline-block;"></span>Generated from YAML — wholesale overwritten on every /ship-feature
+  </span>
+  <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:600;">
+    <span style="width:12px;height:12px;border-radius:2px;background:#dcfce7;border:1px solid #86efac;display:inline-block;"></span>Inline comment — mentions rule ID in context
+  </span>
+  <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:600;">
+    <span style="width:12px;height:12px;border-radius:2px;background:#f3f4f6;border:1px solid #d1d5db;display:inline-block;"></span>No rule IDs — describes behaviour without ID
+  </span>
+</div>
+
+<style>
+/* ── file map ── */
+.filemap { display: flex; flex-direction: column; gap: 24px; margin-bottom: 40px; }
+
+.folder-block {
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+.folder-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.folder-header .icon { font-size: 1rem; }
+.folder-header .path { color: #89b4fa; }
+.folder-header .desc { color: #6c7086; font-weight: 400; margin-left: auto; font-size: 0.72rem; }
+
+.file-row {
+  display: grid;
+  grid-template-columns: 240px 90px 1fr;
+  gap: 0;
+  border-top: 1px solid #f0f0f0;
+  align-items: start;
+}
+.file-row:hover { background: #fafafa; }
+.file-cell {
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  border-right: 1px solid #f0f0f0;
+}
+.file-cell:last-child { border-right: none; }
+.file-name {
+  font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: block;
+  margin-bottom: 2px;
+}
+.file-role { font-size: 0.7rem; color: #999; }
+
+.ref-pill {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.rp-source  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.rp-gen     { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+.rp-comment { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+.rp-none    { background: #f3f4f6; color: #9ca3af; border: 1px solid #d1d5db; }
+
+.file-explain {
+  font-size: 0.78rem;
+  color: #444;
+  line-height: 1.55;
+}
+.file-explain .rule-ref {
+  font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 0.72rem;
+  background: #f1f5f9;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #475569;
+}
+.file-explain .highlight {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.col-header {
+  display: grid;
+  grid-template-columns: 240px 90px 1fr;
+  background: #f8f8f8;
+  border-top: 1px solid #f0f0f0;
+}
+.col-header div {
+  padding: 7px 14px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #aaa;
+  border-right: 1px solid #f0f0f0;
+}
+.col-header div:last-child { border-right: none; }
+
+/* flow diagram */
+.rule-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 24px 0 8px;
+  flex-wrap: wrap;
+}
+.rf-step {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.rf-box {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border: 1px solid;
+  text-align: center;
+  white-space: nowrap;
+}
+.rf-arrow {
+  font-size: 1rem;
+  color: #94a3b8;
+  padding: 0 4px;
+}
+.rf-source  { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+.rf-gen     { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; }
+.rf-comment { background: #dcfce7; border-color: #86efac; color: #15803d; }
+.rf-none    { background: #f3f4f6; border-color: #d1d5db; color: #9ca3af; }
+</style>
+
+<!-- Flow: how a rule propagates -->
+<div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:20px 24px;margin-bottom:28px;">
+  <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;margin-bottom:12px;">How RULE-001 propagates across files</div>
+  <div class="rule-flow">
+    <div class="rf-step">
+      <div class="rf-box rf-source">domain-rules.yaml<br><span style="font-weight:400;font-size:0.7rem;">source of truth</span></div>
+      <div class="rf-arrow">→</div>
+    </div>
+    <div class="rf-step">
+      <div class="rf-box rf-gen">DOMAIN_BUSINESS.md<br><span style="font-weight:400;font-size:0.7rem;">generated table</span></div>
+      <div class="rf-arrow">→</div>
+    </div>
+    <div class="rf-step">
+      <div class="rf-box rf-comment">DOMAIN_API.md<br><span style="font-weight:400;font-size:0.7rem;">inline comment</span></div>
+      <div class="rf-arrow">→</div>
+    </div>
+    <div class="rf-step">
+      <div class="rf-box rf-comment">service / router .ts<br><span style="font-weight:400;font-size:0.7rem;">code comment</span></div>
+      <div class="rf-arrow">→</div>
+    </div>
+    <div class="rf-step">
+      <div class="rf-box rf-comment">test files<br><span style="font-weight:400;font-size:0.7rem;">describe block</span></div>
+      <div class="rf-arrow">→</div>
+    </div>
+    <div class="rf-step">
+      <div class="rf-box rf-comment">PRD GitHub issue<br><span style="font-weight:400;font-size:0.7rem;">introduced_prd link</span></div>
+    </div>
+  </div>
+  <p style="font-size:0.76rem;color:#888;margin-top:10px;">
+    Rule ID originates in YAML. The generated docs (<span style="color:#1d4ed8;">blue</span>) are wholesale overwritten by /ship-feature on every run — editing them directly does nothing, it will be gone next run.
+    Inline mentions (<span style="color:#15803d;">green</span>) are written by Claude during TDD and stay in sync through targeted edits, not automation.
+  </p>
+</div>
+
+<!-- FILE MAP -->
+<div class="filemap">
+
+  <!-- DOMAIN DOCS -->
+  <div class="folder-block">
+    <div class="folder-header">
+      <span class="icon">📁</span>
+      <span class="path">backend/src/domains/loyalty/docs/</span>
+      <span class="desc">knowledge layer — all docs for one domain</span>
+    </div>
+    <div class="col-header">
+      <div>File</div><div>Rule IDs?</div><div>What it contains + example</div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">domain-rules.yaml</span>
+        <span class="file-role">Source of truth — surgically edited by skills</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-source">Source</span></div>
+      <div class="file-cell file-explain">
+        The only place a rule is <span class="highlight">defined</span>. Contains the full rule object: ID, status, conflict key, rule text, introduced_prd, test_cases, depends_on, supersedes. Every other file derives from this.
+        <br><br>
+        Written by Claude during <code class="rule-ref">/write-domain-business</code> (draft) and promoted by <code class="rule-ref">/generate-domain-docs</code> (active). Each change is a <span class="highlight">surgical edit</span> to a specific rule block — not a wholesale regeneration. This is what makes it the source: it is never fully overwritten, only precisely updated.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">DOMAIN_BUSINESS.md</span>
+        <span class="file-role">Generated by /ship-feature</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-gen">Generated</span></div>
+      <div class="file-cell file-explain">
+        Contains a <code class="rule-ref">&lt;!-- GENERATED --&gt;</code> rules table regenerated from domain-rules.yaml on every /ship-feature run. Shows active rules only. Superseded rules appear greyed out. <span class="highlight">Never hand-edit this table</span> — it will be overwritten.
+        <br><br>
+        Rule IDs appear as: <span class="rule-ref">| RULE-001 | 1 stamp per coffee | active | PRD #1 |</span>
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">DOMAIN_API.md</span>
+        <span class="file-role">Generated by /generate-domain-docs</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        Each endpoint lists the business rules it enforces. Rule IDs appear as inline references in the "Business rules applied" section — e.g. <span class="rule-ref">(RULE-001)</span> after a bullet point. <span class="highlight">Not a complete list of all rules</span> — only the rules relevant to that endpoint.
+        <br><br>
+        Updated by /generate-domain-docs when code changes. If a rule is superseded, the old ID is replaced with the new one in this file.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">DOMAIN_BACKEND_ARCHITECTURE.md</span>
+        <span class="file-role">Generated by /generate-domain-docs</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        The data flow section may cite rule IDs inline next to the step they enforce — e.g. <span class="rule-ref">check balance ≥ redemption (RULE-001)</span>. Useful for tracing which line of the flow each rule governs.
+        <br><br>
+        Patterns section may list rules that define a constraint. Not exhaustive — only cited where the architecture comment would otherwise be unclear without the rule reference.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">DOMAIN_DATA.md</span>
+        <span class="file-role">Generated by /generate-domain-docs</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        Describes tables, columns, types, constraints, and migrations. Does <span class="highlight">not</span> reference rule IDs — it describes structure, not behaviour. A column like <code class="rule-ref">loyaltyPoints INT DEFAULT 0</code> is documented here, but the rule that says "starts at zero" (RULE-002) lives only in domain-rules.yaml and DOMAIN_BUSINESS.md.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">UBIQUITOUS_LANGUAGE.md</span>
+        <span class="file-role">Written by /grill-me + /ubiquitous-language in Phase 1</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        Defines terms used in this domain ("Stamp", "Redemption", "Earn Rate"). Written before rules have IDs assigned. Does not reference rule IDs — it's the vocabulary layer, not the rule layer. Rules reference terms from here, not the other way around.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">AGENT_CONTEXT.md</span>
+        <span class="file-role">Written by /scaffold-domain at project start</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        The entry point for any agent working in this domain. Reading order, common tasks, active seams, do-not-touch list. Describes the domain at a structural level — no individual rule IDs.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">openapi.yaml</span>
+        <span class="file-role">Generated by /generate-domain-docs</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        Machine-readable API spec — request/response shapes, error codes, types. No rule IDs. Business rules are described in DOMAIN_API.md (human-readable); this file is for tooling only.
+      </div>
+    </div>
+  </div>
+
+  <!-- SOURCE CODE -->
+  <div class="folder-block">
+    <div class="folder-header">
+      <span class="icon">📁</span>
+      <span class="path">backend/src/domains/loyalty/</span>
+      <span class="desc">service, repository, router — implementation layer</span>
+    </div>
+    <div class="col-header">
+      <div>File</div><div>Rule IDs?</div><div>What it contains + example</div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">service/loyalty.service.ts</span>
+        <span class="file-role">Written by Claude during /tdd</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        Rule IDs appear as inline code comments next to the line that implements them.
+        <br><br>
+        <span class="rule-ref">// Best-effort: order never blocked by points failure (RULE-004)</span>
+        <br><br>
+        This is convention, not enforcement. The comment helps a future developer understand <em>why</em> a line exists. When a rule is superseded, the developer updates the comment ID — the gate does not check this automatically.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">router/loyalty.router.ts</span>
+        <span class="file-role">Written by Claude during /tdd</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        Same convention as the service — rule IDs cited in comments where the router enforces a rule directly (e.g. error code mapping, cap enforcement). Not every line needs a rule ID, only lines where the behaviour would be confusing without the reference.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">repository/loyalty.repository.ts</span>
+        <span class="file-role">Written by Claude during /tdd</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        Pure data access — Prisma queries, no business logic. Rule IDs do not belong here. If you see a rule ID in a repository file, that's a smell that business logic leaked into the data layer.
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTS -->
+  <div class="folder-block">
+    <div class="folder-header">
+      <span class="icon">📁</span>
+      <span class="path">backend/src/domains/loyalty/ (test files)</span>
+      <span class="desc">test suite — the only automated enforcement layer</span>
+    </div>
+    <div class="col-header">
+      <div>File</div><div>Rule IDs?</div><div>What it contains + example</div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">loyalty.service.unit.test.ts</span>
+        <span class="file-role">Written by Claude during /tdd</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        Rule IDs appear in <code class="rule-ref">describe()</code> blocks to name which rule the test group covers.
+        <br><br>
+        <span class="rule-ref">describe("earn stamps (RULE-001, RULE-002)", () =&gt; { ... })</span>
+        <br><br>
+        This is the <span class="highlight">strongest link</span> in the chain — a failing test here means the code contradicts the rule. This is the CI enforcement layer. When RULE-001 is superseded, its test cases stop running (status: superseded → excluded from CI). The new rule's tests take over.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">loyalty.router.integration.test.ts</span>
+        <span class="file-role">Written by Claude during /tdd</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        Same convention — describe blocks name the rule being tested end-to-end. These run against a real test database so they verify the full stack, not just the service layer in isolation.
+      </div>
+    </div>
+  </div>
+
+  <!-- SEAM CONTRACTS -->
+  <div class="folder-block">
+    <div class="folder-header">
+      <span class="icon">📁</span>
+      <span class="path">docs/contracts/orders→loyalty/</span>
+      <span class="desc">cross-domain seam contracts — written once, updated when boundary changes</span>
+    </div>
+    <div class="col-header">
+      <div>File</div><div>Rule IDs?</div><div>What it contains + example</div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">FUNCTIONAL.md</span>
+        <span class="file-role">Written by /define-seam-contract</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        Describes the business reason for the seam and what rules govern the boundary. Rule IDs cited where a rule determines what crosses the boundary — e.g. <span class="rule-ref">"redemption requires customerId (RULE-O-001)"</span>. Updated when a boundary rule is superseded.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">ARCHITECTURE.md</span>
+        <span class="file-role">Written by /define-seam-contract</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        Integration method, request/response shapes, versioning protocol. Structural, not business-rule driven. No rule IDs — describes the HTTP/event contract, not the why.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">DATA.md</span>
+        <span class="file-role">Written by /define-seam-contract</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        Exact fields crossing the boundary, types, required vs optional, source of truth per field. Like DOMAIN_DATA.md — structural, not rule-driven.
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM / PROCESS -->
+  <div class="folder-block">
+    <div class="folder-header">
+      <span class="icon">📁</span>
+      <span class="path">/ (root) &nbsp;&amp;&nbsp; docs/</span>
+      <span class="desc">platform-level docs — no rule IDs</span>
+    </div>
+    <div class="col-header">
+      <div>File</div><div>Rule IDs?</div><div>What it contains + example</div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">PLATFORM_CONTEXT.md</span>
+        <span class="file-role">Updated by /ship-feature</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        Platform-level capabilities ("Loyalty: basic earning — Live PRD #1"). References PRD numbers, not rule IDs. Too high a level for individual rules.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">docs/PROCESS_LOG.md</span>
+        <span class="file-role">Updated after every step</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        Step entries mention rule IDs when logging what was promoted or superseded — e.g. <span class="rule-ref">"RULE-001 superseded → RULE-002 promoted to active"</span>. Audit trail only — not used for lookups.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">business/product/FEATURES.md</span>
+        <span class="file-role">Updated by /ship-feature</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-none">None</span></div>
+      <div class="file-cell file-explain">
+        Feature index — one row per shipped feature with PRD link and date. Feature-level, not rule-level.
+      </div>
+    </div>
+
+    <div class="file-row">
+      <div class="file-cell">
+        <span class="file-name">GitHub issue (PRD)</span>
+        <span class="file-role">Written by /write-a-prd</span>
+      </div>
+      <div class="file-cell"><span class="ref-pill rp-comment">Inline</span></div>
+      <div class="file-cell file-explain">
+        The PRD contains a "Business Rules Affected" section listing exact rule IDs being introduced, changed, or superseded. This is what /validate-knowledge reads to know which rules to check. The <code class="rule-ref">introduced_prd</code> field in YAML points back to this issue number, completing the two-way link.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /filemap -->
+
+<!-- QUICK REFERENCE TABLE -->
+<div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;overflow:hidden;margin-bottom:40px;">
+  <div style="padding:14px 18px;background:#1e1e2e;color:#cdd6f4;font-size:0.8rem;font-weight:600;font-family:'SF Mono','Fira Code',monospace;">
+    Quick reference — "I changed RULE-001, what do I need to update?"
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+    <tr style="background:#f8f8f8;">
+      <th style="padding:8px 14px;text-align:left;border-bottom:1px solid #ebebeb;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;color:#888;font-weight:700;">File</th>
+      <th style="padding:8px 14px;text-align:left;border-bottom:1px solid #ebebeb;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;color:#888;font-weight:700;">Who updates it</th>
+      <th style="padding:8px 14px;text-align:left;border-bottom:1px solid #ebebeb;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;color:#888;font-weight:700;">When</th>
+      <th style="padding:8px 14px;text-align:left;border-bottom:1px solid #ebebeb;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;color:#888;font-weight:700;">How</th>
+    </tr>
+    <tr style="border-bottom:1px solid #f0f0f0;">
+      <td style="padding:9px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;">domain-rules.yaml</td>
+      <td style="padding:9px 14px;">Claude via /generate-domain-docs or /ship-feature</td>
+      <td style="padding:9px 14px;">When rule status changes</td>
+      <td style="padding:9px 14px;color:#991b1b;font-weight:600;">Always — this is the edit that triggers everything else</td>
+    </tr>
+    <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa;">
+      <td style="padding:9px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;">DOMAIN_BUSINESS.md (table)</td>
+      <td style="padding:9px 14px;">/ship-feature (automated)</td>
+      <td style="padding:9px 14px;">On every ship</td>
+      <td style="padding:9px 14px;color:#1d4ed8;font-weight:600;">Regenerated from YAML — never hand-edit</td>
+    </tr>
+    <tr style="border-bottom:1px solid #f0f0f0;">
+      <td style="padding:9px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;">DOMAIN_API.md</td>
+      <td style="padding:9px 14px;">/generate-domain-docs</td>
+      <td style="padding:9px 14px;">After TDD, before ship</td>
+      <td style="padding:9px 14px;">Update inline rule ID references in endpoint descriptions</td>
+    </tr>
+    <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa;">
+      <td style="padding:9px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;">DOMAIN_BACKEND_ARCHITECTURE.md</td>
+      <td style="padding:9px 14px;">/generate-domain-docs</td>
+      <td style="padding:9px 14px;">After TDD, before ship</td>
+      <td style="padding:9px 14px;">Update inline comments in data flow section</td>
+    </tr>
+    <tr style="border-bottom:1px solid #f0f0f0;">
+      <td style="padding:9px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;">service.ts / router.ts</td>
+      <td style="padding:9px 14px;">Claude (during /tdd)</td>
+      <td style="padding:9px 14px;">During TDD (write code)</td>
+      <td style="padding:9px 14px;">Update inline comments — <code style="background:#f1f5f9;padding:1px 4px;border-radius:3px;font-size:0.72rem;">// (RULE-001)</code> next to relevant lines</td>
+    </tr>
+    <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa;">
+      <td style="padding:9px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;">*.test.ts files</td>
+      <td style="padding:9px 14px;">Claude (during /tdd)</td>
+      <td style="padding:9px 14px;">During TDD (write tests first)</td>
+      <td style="padding:9px 14px;">Update describe() block names. Remove tests for superseded rules. Add tests for new rules.</td>
+    </tr>
+    <tr style="border-bottom:1px solid #f0f0f0;">
+      <td style="padding:9px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;">contracts/FUNCTIONAL.md</td>
+      <td style="padding:9px 14px;">Claude (during /tdd)</td>
+      <td style="padding:9px 14px;">Only if boundary rule changes</td>
+      <td style="padding:9px 14px;">Update rule ID reference in affected sentence. Most rule changes don't touch contracts.</td>
+    </tr>
+    <tr style="background:#fafafa;">
+      <td style="padding:9px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;">DOMAIN_DATA.md, openapi.yaml, AGENT_CONTEXT.md, UBIQUITOUS_LANGUAGE.md</td>
+      <td style="padding:9px 14px;">—</td>
+      <td style="padding:9px 14px;">Never for rule changes</td>
+      <td style="padding:9px 14px;color:#9ca3af;">These files don't contain rule IDs. A rule change does not touch them.</td>
+    </tr>
+  </table>
+</div>
+
+
+<!-- ── Related reading ── -->
+<div style="margin:60px 0 0; padding:32px; background:#fff; border:1px solid #e0e0e0; border-radius:10px;">
+  <h2 style="margin:0 0 12px; font-size:1rem; font-weight:700; color:#111; border:none; padding:0;">Related reading</h2>
+  <p style="color:#555; font-size:0.9rem; margin-bottom:18px;">
+    The knowledge loop exists because keeping docs consistent across 200+ PRDs is a hard problem. Five industry patterns were evaluated before this approach was chosen — including ADR, database migrations, event sourcing, and knowledge graphs.
+  </p>
+  <a href="experiment-summary.html"
+     style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:#1a1a1a;color:#fff;text-decoration:none;border-radius:8px;font-size:0.88rem;font-weight:600;">
+    <span style="font-size:1.1rem;">→</span>
+    Why this approach? — Pattern comparison &amp; decision record
+  </a>
+  <p style="color:#9ca3af; font-size:0.8rem; margin-top:10px;">
+    Covers: ADR approach, database migration pattern, event sourcing, knowledge graphs, structured YAML — trade-offs, failure modes, and why the four-layer architecture was chosen over each.
+  </p>
+</div>
+
+</div><!-- /content -->
+</body>
+</html>
