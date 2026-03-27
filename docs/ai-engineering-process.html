@@ -1496,32 +1496,40 @@ Slice 5: Validation — all error states hardened front-to-back</pre>
     operation: calculate
     rule: "amount = customer_spend * 100"
     introduced_prd: 100
+    depends_on: []
     test_cases:
       - input: { customer_spend: 100 }
         expected: { amount: 10000 }</pre>
 
 <p>Conflict detection is a deterministic lookup: same <code>entity + field + operation</code> = same slot. No LLM semantic matching needed. Rules are never deleted — <code>status: superseded</code> preserves history. An agent reading the doc reads only <code>status: active</code> rules.</p>
 
+<p><strong><code>depends_on</code></strong> — optional field listing rule IDs from <em>any domain</em> that this rule relies on. When a rule in domain A is superseded, <span class="skill">/validate-knowledge</span> scans all domains for <code>depends_on</code> references to that rule and surfaces them as a dependency notice. Orders rules that depend on catalog rules are tracked here.</p>
+
 <h3>Rule lifecycle</h3>
 
 <ol>
-  <li><strong>draft</strong> — seeded in <code>domain-rules.yaml</code> by <span class="skill">/write-domain-business</span> after Phase 1. Rule is declared but code not yet written.</li>
-  <li><strong>active</strong> — promoted by <span class="skill">/ship-feature</span> after TDD confirms code matches rule. Test cases added.</li>
-  <li><strong>superseded</strong> — marked when a later PRD replaces the rule. Old rule stays in file with <code>superseded_by</code> link. New rule added as active.</li>
+  <li><strong>draft</strong> — seeded by <span class="skill">/write-domain-business</span> after Phase 1. ID auto-assigned (count of all existing rules + 1). <code>introduced_prd: TBD</code> at this stage.</li>
+  <li><strong>introduced_prd set</strong> — filled immediately by <span class="skill">/write-a-prd</span> after the GitHub issue is submitted. PRD ↔ rule are bidirectionally linked from this point.</li>
+  <li><strong>active</strong> — promoted by <span class="skill">/generate-domain-docs</span> only when: (a) <code>introduced_prd</code> is a real issue number, (b) <code>test_cases</code> has at least one entry, (c) the referenced test is GREEN. Hard gate — no exceptions.</li>
+  <li><strong>superseded</strong> — marked when a later PRD replaces the rule. Old rule stays with <code>superseded_by</code> link. New rule added as active.</li>
 </ol>
 
 <h3>/validate-knowledge — the conflict gate</h3>
 
 <p>Run before any knowledge doc write. The gate:</p>
 <ol>
-  <li>Reads the target knowledge doc and <code>domain-rules.yaml</code></li>
+  <li>Reads <code>domain-rules.yaml</code> for the domain</li>
   <li>Extracts the conflict key for each incoming rule (entity + field + operation)</li>
-  <li>Looks up active rules with that key — deterministic, no semantic matching</li>
-  <li>If no conflict: shows diff, waits for human "yes" before writing</li>
-  <li>If conflict and no declared supersede: <strong>BLOCKED</strong> — surfaces conflict side-by-side, presents resolution options, does not proceed until human chooses</li>
+  <li>Looks up <strong>active AND draft</strong> rules with that key — draft rules are not invisible</li>
+  <li>If a draft rule exists for the same slot: <strong>BLOCKED — draft collision</strong></li>
+  <li>If an active rule exists and no supersede declared: <strong>BLOCKED — conflict</strong></li>
+  <li>If a rule is being superseded: scans all domain-rules.yaml files in the repo for <code>depends_on</code> references → surfaces as dependency notice</li>
+  <li>If clean or valid supersede: shows exact diff, waits for human "yes" before writing</li>
 </ol>
 
-<p>The human is the semantic validator at this layer. Everything else is deterministic.</p>
+<p><span class="skill">/ship-feature</span> runs a pre-flight check before any writes: all rules being shipped must have <code>introduced_prd</code> set (not TBD) and at least one test case. If either check fails, the skill halts and reports which rule is blocking.</p>
+
+<p>The human is the semantic validator. Everything else is deterministic.</p>
 
 <hr>
 
