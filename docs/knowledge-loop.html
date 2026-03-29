@@ -448,6 +448,56 @@ pre {
 .callout.warn   { background: #fff8e1; border-left: 4px solid #f59e0b; }
 .callout.danger { background: #fff0f0; border-left: 4px solid #ef4444; }
 .callout strong { font-weight: 700; }
+
+/* ── Skill modal ── */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+  z-index:1000; align-items:center; justify-content:center; padding:20px;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:#fff; border-radius:12px; max-width:740px; width:100%;
+  max-height:85vh; display:flex; flex-direction:column;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.modal-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px; border-bottom:1px solid #e5e7eb; flex-shrink:0;
+}
+.modal-title { font-size:1rem; font-weight:700; color:#111; font-family:monospace; }
+.modal-close {
+  background:none; border:1px solid #e5e7eb; border-radius:6px;
+  cursor:pointer; font-size:1.1rem; color:#6b7280; width:32px; height:32px;
+  display:flex; align-items:center; justify-content:center;
+}
+.modal-close:hover { background:#f3f4f6; color:#111; }
+.modal-body {
+  padding:20px 24px; overflow-y:auto; font-size:0.875rem;
+  color:#374151; line-height:1.7;
+}
+.modal-body h2 { font-size:1rem; font-weight:700; margin:20px 0 6px; color:#111; }
+.modal-body h3 { font-size:0.9rem; font-weight:700; margin:16px 0 4px; color:#111; }
+.modal-body h4 { font-size:0.85rem; font-weight:600; margin:12px 0 4px; color:#374151; }
+.modal-body h5 { font-size:0.82rem; font-weight:600; margin:10px 0 3px; color:#374151; }
+.modal-body p { margin:0 0 10px; }
+.modal-body ul, .modal-body ol { margin:6px 0 10px 20px; }
+.modal-body li { margin-bottom:3px; }
+.modal-body pre {
+  background:#1e293b; color:#e2e8f0; border-radius:8px;
+  padding:12px 16px; overflow-x:auto; font-size:0.78rem;
+  line-height:1.6; margin:10px 0;
+}
+.modal-body code { background:#f1f5f9; border-radius:3px; padding:1px 5px; font-size:0.83em; }
+.modal-body pre code { background:none; padding:0; color:inherit; }
+.modal-body blockquote {
+  border-left:3px solid #6b21a8; padding:4px 12px;
+  margin:10px 0; color:#6b7280; font-style:italic;
+}
+.modal-body strong { color:#111; }
+.modal-body table { border-collapse:collapse; width:100%; margin:10px 0; font-size:0.82rem; }
+.modal-body th { background:#f8fafc; padding:6px 10px; text-align:left; border:1px solid #e5e7eb; }
+.modal-body td { padding:6px 10px; border:1px solid #e5e7eb; }
+
 </style>
 </head>
 <body>
@@ -515,6 +565,11 @@ pre {
     <div class="prog-num" style="color:#ca8a04;">⊟</div>
     <div class="prog-label">Files</div>
     <div class="prog-desc">Structure</div>
+  </div>
+  <div id="prog-12" class="prog-step" style="background:#f3e8ff;" onclick="goCh(12)">
+    <div class="prog-num" style="color:#6b21a8;">⊕</div>
+    <div class="prog-label">Skills</div>
+    <div class="prog-desc">All skills ref</div>
   </div>
 </div>
 </nav>
@@ -1690,8 +1745,8 @@ pre {
   <div class="chapter-header" onclick="goCh(9)">
     <div class="ch-num" style="background:#e0e7ff;color:#3730a3;width:48px;height:48px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;">§</div>
     <div>
-      <div class="ch-title">Methodology — validate-knowledge reference guide</div>
-      <div class="ch-desc">How the system decides what to auto-execute and when to involve a human. All outcome codes, the YAML-first rationale, PRD fallback strategy, token cost model, industry parallels, and key learnings from this design exercise.</div>
+      <div class="ch-title">Methodology — development workflow &amp; validate-knowledge reference</div>
+      <div class="ch-desc">Full skill-by-skill development workflow, then the validate-knowledge decision engine: outcome codes, YAML-first rationale, PRD fallback strategy, token cost model, industry parallels, and key learnings.</div>
     </div>
     <span class="ch-tag" style="background:#e0e7ff;color:#3730a3;">Reference</span>
     <span class="ch-chevron">▾</span>
@@ -1699,7 +1754,99 @@ pre {
 
   <div class="chapter-body">
 
+
+
+  <!-- ── WORKFLOW FLOWCHART ── -->
+  <div class="meth-section">
+    <h3>0 — Full development workflow — every skill mapped</h3>
+    <p style="color:#94a3b8;margin-bottom:4px;font-size:0.82rem;">Every step has a skill. Click any skill name to view its source. <span style="color:#4ade80;font-weight:700;">+</span> creates file &nbsp; <span style="color:#fbbf24;font-weight:700;">~</span> updates file &nbsp; <span style="color:#60a5fa;font-weight:700;">⊙</span> GitHub issue &nbsp; <span style="color:#94a3b8;font-weight:700;">⌥</span> git commit</p>
+
+    <div style="display:grid;grid-template-columns:1fr 230px;gap:18px;align-items:start;margin-top:14px;color:#e2e8f0;">
+
+      <!-- ── MAIN FLOW ── -->
+      <div>
+
+    <div style="border:1.5px solid #6366f1;border-radius:8px;overflow:hidden;margin-bottom:10px;">
+      <div style="background:#312e81;color:#c7d2fe;padding:6px 14px;font-size:0.71rem;font-weight:700;letter-spacing:0.07em;">PHASE 0 — SETUP · once per project, before any feature work</div>
+      <div style="padding:12px 14px;background:#1e1b4b;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
+        <div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('initialize-knowledge-loop');return false;" style="display:inline-block;background:#1e1b4b;color:#c7d2fe;border:1.5px solid #6366f1;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/initialize-knowledge-loop</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">docs/PROCESS_LOG.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">docs/UNKNOWNS.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">docs/system-architecture.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">PLATFORM_CONTEXT.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">business/product/FEATURES.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#94a3b8;font-weight:700;">⌥</span> <span style="color:#cbd5e1;font-size:0.67rem;">git commit</span></span></div></div><div style="text-align:left;color:#4f46e5;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('design-system-architecture');return false;" style="display:inline-block;background:#1e1b4b;color:#c7d2fe;border:1.5px solid #6366f1;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/design-system-architecture</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">docs/system-architecture.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">PLATFORM_CONTEXT.md</span></span></div></div><div style="text-align:left;color:#4f46e5;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('scaffold-domain');return false;" style="display:inline-block;background:#1e1b4b;color:#c7d2fe;border:1.5px solid #6366f1;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/scaffold-domain</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">AGENT_CONTEXT.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_BUSINESS.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">domain-rules.yaml</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">openapi.yaml</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_API.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_BACKEND_ARCHITECTURE.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_DATA.md</span></span></div></div><div style="text-align:left;color:#4f46e5;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap;"><span style="margin-right:6px;"><div style="display:inline-block;border:1.5px dashed #818cf8;color:#818cf8;border-radius:4px;padding:3px 10px;font-size:0.72rem;font-weight:600;font-family:monospace;background:transparent;">◇ cross-domain seam?</div></span><span style="margin-right:6px;color:#94a3b8;">─ if yes ─►</span><span style="margin-right:6px;"><div><a href="#" onclick="openSkillModal('define-seam-contract');return false;" style="display:inline-block;background:#1e1b4b;color:#c7d2fe;border:1.5px solid #6366f1;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/define-seam-contract</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">contracts/&lt;p&gt;-to-&lt;c&gt;/FUNCTIONAL.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">ARCHITECTURE.md + DATA.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">PLATFORM_CONTEXT.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">AGENT_CONTEXT.md</span></span></div></div></span></div>
+      </div>
+    </div>
+    <div style="border:1.5px solid #16a34a;border-radius:8px;overflow:hidden;margin-bottom:10px;">
+      <div style="background:#14532d;color:#86efac;padding:6px 14px;font-size:0.71rem;font-weight:700;letter-spacing:0.07em;">PHASE 1 — IDEA · explore the feature before any writing</div>
+      <div style="padding:12px 14px;background:#052e16;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
+        <div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('grill-me');return false;" style="display:inline-block;background:#052e16;color:#86efac;border:1.5px solid #16a34a;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/grill-me</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">docs/grill-me/<feature-slug>.md</span></span></div></div><div style="text-align:left;color:#16a34a;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('ubiquitous-language');return false;" style="display:inline-block;background:#052e16;color:#86efac;border:1.5px solid #16a34a;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/ubiquitous-language</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">UBIQUITOUS_LANGUAGE.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">(re-run: updates terms)</span></span></div></div><div style="text-align:left;color:#16a34a;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('write-domain-business');return false;" style="display:inline-block;background:#052e16;color:#86efac;border:1.5px solid #16a34a;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/write-domain-business</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">domain-rules.yaml</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_BUSINESS.md</span></span></div></div>
+      </div>
+    </div>
+    <div style="border:1.5px solid #d97706;border-radius:8px;overflow:hidden;margin-bottom:10px;">
+      <div style="background:#78350f;color:#fcd34d;padding:6px 14px;font-size:0.71rem;font-weight:700;letter-spacing:0.07em;">PHASE 2–3 — PLAN · write the spec and break it into work</div>
+      <div style="padding:12px 14px;background:#2d1700;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
+        <div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('write-a-prd');return false;" style="display:inline-block;background:#2d1700;color:#fcd34d;border:1.5px solid #d97706;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/write-a-prd</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#60a5fa;font-weight:700;">⊙</span> <span style="color:#93c5fd;font-size:0.67rem;">GitHub issue (PRD)</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">domain-rules.yaml (introduced_prd)</span></span></div></div><div style="text-align:left;color:#d97706;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap;"><span style="margin-right:6px;"><div style="display:inline-block;border:1.5px dashed #f59e0b;color:#f59e0b;border-radius:4px;padding:3px 10px;font-size:0.72rem;font-weight:600;font-family:monospace;background:transparent;">◇ breakdown style?</div></span><span style="margin-right:6px;color:#475569;">&nbsp;</span><span style="margin-right:6px;"><div><a href="#" onclick="openSkillModal('prd-to-issues');return false;" style="display:inline-block;background:#2d1700;color:#fcd34d;border:1.5px solid #d97706;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/prd-to-issues</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#60a5fa;font-weight:700;">⊙</span> <span style="color:#93c5fd;font-size:0.67rem;">GitHub child issues (one per slice)</span></span></div></div></span><span style="margin-right:6px;"><span style="color:#fcd34d;font-size:0.72rem;padding:4px;">or</span></span><span style="margin-right:6px;"><div><a href="#" onclick="openSkillModal('prd-to-plan');return false;" style="display:inline-block;background:#2d1700;color:#fcd34d;border:1.5px solid #d97706;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/prd-to-plan</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">plans/<feature>.md</span></span></div></div></span></div>
+      </div>
+    </div>
+    <div style="border:1.5px solid #64748b;border-radius:8px;overflow:hidden;margin-bottom:10px;">
+      <div style="background:#1e293b;color:#cbd5e1;padding:6px 14px;font-size:0.71rem;font-weight:700;letter-spacing:0.07em;">PHASE 4 — DEV SETUP · once per project, before first TDD session</div>
+      <div style="padding:12px 14px;background:#0f172a;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
+        <div style="display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap;"><span style="margin-right:6px;"><div><a href="#" onclick="openSkillModal('setup-pre-commit');return false;" style="display:inline-block;background:#0f172a;color:#cbd5e1;border:1.5px solid #64748b;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/setup-pre-commit</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">package.json</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">.husky/ hooks</span></span></div></div></span><span style="margin-right:6px;"><span style="color:#64748b;padding:4px;">·</span></span><span style="margin-right:6px;"><div><a href="#" onclick="openSkillModal('git-guardrails-claude-code');return false;" style="display:inline-block;background:#0f172a;color:#cbd5e1;border:1.5px solid #64748b;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/git-guardrails-claude-code</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">.claude/hooks/PreToolUse/ script</span></span></div></div></span></div>
+      </div>
+    </div>
+    <div style="border:1.5px solid #7c3aed;border-radius:8px;overflow:hidden;margin-bottom:10px;">
+      <div style="background:#2e1065;color:#d8b4fe;padding:6px 14px;font-size:0.71rem;font-weight:700;letter-spacing:0.07em;">PHASE 6 — EXECUTION · TDD loop, then generate docs and promote rules</div>
+      <div style="padding:12px 14px;background:#1a0533;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
+        <div style="display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap;"><span style="margin-right:6px;"><div style="display:inline-block;border:1.5px dashed #a78bfa;color:#a78bfa;border-radius:4px;padding:3px 10px;font-size:0.72rem;font-weight:600;font-family:monospace;background:transparent;">◇ interface unclear?</div></span><span style="margin-right:6px;color:#94a3b8;">─ if yes ─►</span><span style="margin-right:6px;"><div><a href="#" onclick="openSkillModal('design-an-interface');return false;" style="display:inline-block;background:#2e1065;color:#d8b4fe;border:1.5px solid #7c3aed;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/design-an-interface</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">design discussed inline — no file</span></span></div></div></span></div><div style="text-align:left;color:#7c3aed;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('tdd');return false;" style="display:inline-block;background:#2e1065;color:#d8b4fe;border:1.5px solid #7c3aed;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/tdd</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">test files</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">source files</span></span></div></div><div style="text-align:left;color:#7c3aed;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('generate-domain-docs');return false;" style="display:inline-block;background:#2e1065;color:#d8b4fe;border:1.5px solid #7c3aed;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/generate-domain-docs</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_DATA.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">openapi.yaml</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_API.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_BACKEND_ARCHITECTURE.md</span></span></div></div><div style="text-align:left;color:#7c3aed;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('promote-rules');return false;" style="display:inline-block;background:#2e1065;color:#d8b4fe;border:1.5px solid #7c3aed;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/promote-rules</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">domain-rules.yaml (draft → active, test_cases filled)</span></span></div></div>
+      </div>
+    </div>
+    <div style="border:1.5px solid #0d9488;border-radius:8px;overflow:hidden;margin-bottom:10px;">
+      <div style="background:#134e4a;color:#5eead4;padding:6px 14px;font-size:0.71rem;font-weight:700;letter-spacing:0.07em;">PHASE 7 — SHIP · QA, triage bugs, then close the knowledge loop</div>
+      <div style="padding:12px 14px;background:#022c22;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
+        <div style="display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap;"><span style="margin-right:6px;"><div style="display:inline-block;border:1.5px dashed #2dd4bf;color:#2dd4bf;border-radius:4px;padding:3px 10px;font-size:0.72rem;font-weight:600;font-family:monospace;background:transparent;">◇ bugs found?</div></span><span style="margin-right:6px;color:#94a3b8;">─ if yes ─►</span><span style="margin-right:6px;"><div><a href="#" onclick="openSkillModal('triage-issue');return false;" style="display:inline-block;background:#022c22;color:#5eead4;border:1.5px solid #0d9488;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/triage-issue</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#60a5fa;font-weight:700;">⊙</span> <span style="color:#93c5fd;font-size:0.67rem;">GitHub issue (bug + TDD fix plan)</span></span></div></div></span><span style="margin-right:6px;"><span style="color:#5eead4;font-size:0.71rem;padding:4px;">(fix → back to Phase 6)</span></span></div><div style="text-align:left;color:#0d9488;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="margin-bottom:2px;"><a href="#" onclick="openSkillModal('ship-feature');return false;" style="display:inline-block;background:#022c22;color:#5eead4;border:1.5px solid #0d9488;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/ship-feature</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">PROCESS_LOG.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">UNKNOWNS.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">domain-rules.yaml</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">DOMAIN_BUSINESS.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">PLATFORM_CONTEXT.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">FEATURES.md</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#60a5fa;font-weight:700;">⊙</span> <span style="color:#93c5fd;font-size:0.67rem;">closes GitHub PRD issue</span></span><span style="white-space:nowrap;margin-right:8px;"><span style="color:#94a3b8;font-weight:700;">⌥</span> <span style="color:#cbd5e1;font-size:0.67rem;">git commit</span></span></div></div><div style="text-align:left;color:#0d9488;font-size:1rem;line-height:1.4;margin:1px 0;padding-left:12px;">↓</div><div style="color:#0d9488;font-size:0.72rem;font-weight:600;padding:2px 0;">↻ loop back to Phase 1 for next feature</div>
+      </div>
+    </div>
+      </div>
+
+      <!-- ── OFF-LOOP TOOLS ── -->
+      <div style="position:sticky;top:20px;">
+        <div style="border:1.5px solid #374151;border-radius:8px;overflow:hidden;">
+          <div style="background:#1f2937;color:#9ca3af;padding:6px 12px;font-size:0.71rem;font-weight:700;letter-spacing:0.07em;">OFF-LOOP TOOLS</div>
+          <div style="padding:12px;background:#111827;display:flex;flex-direction:column;gap:10px;">
+
+            <div>
+              <div style="color:#cbd5e1;font-size:0.67rem;font-weight:600;letter-spacing:0.06em;margin-bottom:4px;">INTERNAL GATE</div>
+<a href="#" onclick="openSkillModal('validate-knowledge');return false;" style="display:inline-block;background:#111827;color:#d1d5db;border:1.5px solid #4b5563;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/validate-knowledge</a>
+              <div style="color:#9ca3af;font-size:0.67rem;margin-top:3px;"><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">domain-rules.yaml (on approval)</span></span></div>called by other skills before any write to domain-rules.yaml</div>
+            </div>
+
+            <div style="border-top:1px solid #1f2937;padding-top:8px;">
+              <div style="color:#cbd5e1;font-size:0.67rem;font-weight:600;letter-spacing:0.06em;margin-bottom:6px;">ARCHITECTURE</div>
+<a href="#" onclick="openSkillModal('improve-codebase-architecture');return false;" style="display:inline-block;background:#111827;color:#d1d5db;border:1.5px solid #4b5563;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/improve-codebase-architecture</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#60a5fa;font-weight:700;">⊙</span> <span style="color:#93c5fd;font-size:0.67rem;">GitHub RFC issue</span></span></div>
+              <div style="color:#9ca3af;font-size:0.67rem;margin-bottom:6px;">deep module discovery</div>
+<a href="#" onclick="openSkillModal('request-refactor-plan');return false;" style="display:inline-block;background:#111827;color:#d1d5db;border:1.5px solid #4b5563;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/request-refactor-plan</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">conversation output — plan inline</span></span></div>
+              <div style="color:#9ca3af;font-size:0.67rem;">interview + tiny-commit plan</div>
+            </div>
+
+            <div style="border-top:1px solid #1f2937;padding-top:8px;">
+              <div style="color:#cbd5e1;font-size:0.67rem;font-weight:600;letter-spacing:0.06em;margin-bottom:6px;">TOOLING</div>
+<a href="#" onclick="openSkillModal('migrate-to-shoehorn');return false;" style="display:inline-block;background:#111827;color:#d1d5db;border:1.5px solid #4b5563;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/migrate-to-shoehorn</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">test files (removes unsafe as)</span></span></div>
+              <div style="color:#9ca3af;font-size:0.67rem;margin-bottom:6px;"></div>
+<a href="#" onclick="openSkillModal('scaffold-exercises');return false;" style="display:inline-block;background:#111827;color:#d1d5db;border:1.5px solid #4b5563;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/scaffold-exercises</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">exercise directory structure</span></span></div>
+            </div>
+
+            <div style="border-top:1px solid #1f2937;padding-top:8px;">
+              <div style="color:#cbd5e1;font-size:0.67rem;font-weight:600;letter-spacing:0.06em;margin-bottom:6px;">META</div>
+<a href="#" onclick="openSkillModal('write-a-skill');return false;" style="display:inline-block;background:#111827;color:#d1d5db;border:1.5px solid #4b5563;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/write-a-skill</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#4ade80;font-weight:700;">+</span> <span style="color:#cbd5e1;font-size:0.67rem;">~/.claude/skills/<name>.md</span></span></div>
+              <div style="color:#9ca3af;font-size:0.67rem;margin-bottom:6px;"></div>
+<a href="#" onclick="openSkillModal('edit-article');return false;" style="display:inline-block;background:#111827;color:#d1d5db;border:1.5px solid #4b5563;border-radius:5px;padding:4px 10px;font-size:0.77rem;font-weight:700;font-family:monospace;text-decoration:none;white-space:nowrap;cursor:pointer;">/edit-article</a><div style="margin-top:5px;line-height:1.9;"><span style="white-space:nowrap;margin-right:8px;"><span style="color:#fbbf24;font-weight:700;">~</span> <span style="color:#cbd5e1;font-size:0.67rem;">the article/doc file being edited</span></span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ── Section 1: Decision framework ── -->
+
   <div class="meth-section">
     <h3>1 — When does validate-knowledge involve a human?</h3>
     <p>Conflict detection uses <strong>cheap LLM text comparison against rule text cached in YAML</strong> — not key matching. The YAML file is the cache: instead of re-reading all previous PRDs to understand what rules exist, validate-knowledge reads one compact file. Full PRD fetches happen only when overlap is found and intent needs clarification.</p>
@@ -2351,7 +2498,7 @@ pre {
       <colgroup>
         <col style="width:210px">
         <col style="width:100px">
-        <col style="width:190px">
+        <col style="width:260px">
         <col>
       </colgroup>
       <thead>
@@ -2366,126 +2513,126 @@ pre {
         <tr>
           <td class="code-cell" style="vertical-align:top;">domain-rules.yaml</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Incremental</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Every PRD that adds, supersedes, or retires a rule</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('scaffold-domain');return false;">scaffold-domain</a> — creates empty stub</li><li><a href="#" onclick="goSkill('write-domain-business');return false;">write-domain-business</a> — seeds initial draft rules after Phase 1</li><li><a href="#" onclick="goSkill('write-a-prd');return false;">write-a-prd</a> — links rule IDs to PRD number on submit</li><li><a href="#" onclick="goSkill('promote-rules');return false;">promote-rules</a> — promotes rules draft → active after Phase 6</li><li><a href="#" onclick="goSkill('ship-feature');return false;">ship-feature</a> (via <a href="#" onclick="goSkill('validate-knowledge');return false;">validate-knowledge</a>) — supersedes or retires rules</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>All business rules for the domain, one entry per rule</li>
-            <li>Rule ID, status, formula, plain_english, why, introduced_prd</li>
-            <li>Supersede lineage — supersedes / superseded_by links</li>
-            <li>Composition metadata — composes_with, composition_order, modifier_type</li>
-            <li>Scope fields — scope name and scope_condition expression</li>
-            <li>Dependency links — depends_on array (triggers CHAIN-IMPACT)</li>
-            <li>Retirement fields — retired_prd, retire_reason</li>
-            <li>test_cases for every active rule (verified by CI)</li>
-            <li>Full immutable history — superseded rules stay, never deleted</li>
-            <li>Modification attribution — modified_prd, modified_by for retroactive changes</li>
+            <li>All business rules for the domain, one entry per rule <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('write-domain-business')">/write-domain-business</span></li>
+            <li>Rule ID, status, formula, plain_english, why, introduced_prd <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('write-domain-business')">/write-domain-business</span></li>
+            <li>Supersede lineage — supersedes / superseded_by links <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
+            <li>Composition metadata — composes_with, composition_order, modifier_type <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
+            <li>Scope fields — scope name and scope_condition expression <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
+            <li>Dependency links — depends_on array (triggers CHAIN-IMPACT) <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
+            <li>Retirement fields — retired_prd, retire_reason <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
+            <li>test_cases for every active rule (verified by CI) <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('promote-rules')">/promote-rules</span></li>
+            <li>Full immutable history — superseded rules stay, never deleted <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
+            <li>Modification attribution — modified_prd, modified_by for retroactive changes <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">DOMAIN_BUSINESS.md</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Incremental</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 1 (grill-me) creates it. Each shipped PRD promotes new use cases and rule references into it — only live features appear here, not planned ones</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('scaffold-domain');return false;">scaffold-domain</a> — creates empty stub</li><li><a href="#" onclick="goSkill('write-domain-business');return false;">write-domain-business</a> — populates use cases, rules summary, domain language</li><li><a href="#" onclick="goSkill('ship-feature');return false;">ship-feature</a> — regenerates rules summary table on each shipped PRD</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Plain-language description of what the domain does — for PM and business audience</li>
-            <li>All live use cases — one entry per shipped user story, in business language</li>
-            <li>Domain vocabulary — key terms and their precise meaning in this domain</li>
-            <li>What is explicitly out of scope for this domain</li>
-            <li>Use-case → rule ID reference table: maps each use case to the rule ID(s) in domain-rules.yaml that govern it — links, not duplicates</li>
-            <li>Stakeholder context — who cares about this domain and why</li>
+            <li>Plain-language description of what the domain does — for PM and business audience <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('write-domain-business')">/write-domain-business</span></li>
+            <li>All live use cases — one entry per shipped user story, in business language <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('write-domain-business')">/write-domain-business</span></li>
+            <li>Domain vocabulary — key terms and their precise meaning in this domain <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('write-domain-business')">/write-domain-business</span></li>
+            <li>What is explicitly out of scope for this domain <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('write-domain-business')">/write-domain-business</span></li>
+            <li>Use-case → rule ID reference table: maps each use case to the rule ID(s) in domain-rules.yaml that govern it — links, not duplicates <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('write-domain-business')">/write-domain-business</span></li>
+            <li>Stakeholder context — who cares about this domain and why <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('write-domain-business')">/write-domain-business</span></li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">AGENT_CONTEXT.md</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Incremental</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When new domains added or cross-domain contracts become active</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('scaffold-domain');return false;">scaffold-domain</a> — creates per domain, updates platform AGENT_CONTEXT.md</li><li><a href="#" onclick="goSkill('define-seam-contract');return false;">define-seam-contract</a> — updates active seams table on new boundary</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Prescribed reading order — which files to read first and why</li>
-            <li>Common tasks table — the 5–8 most frequent agent tasks in this domain</li>
-            <li>Do-not-touch list — files or areas that require human approval before change</li>
-            <li>Active cross-domain contracts this domain is a party to</li>
-            <li>Key invariants the agent must not violate (e.g. "never delete from orders table directly")</li>
-            <li>Current maturity phase of the domain — affects how conservative the agent should be</li>
+            <li>Prescribed reading order — which files to read first and why <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('scaffold-domain')">/scaffold-domain</span></li>
+            <li>Common tasks table — the 5–8 most frequent agent tasks in this domain <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('scaffold-domain')">/scaffold-domain</span></li>
+            <li>Do-not-touch list — files or areas that require human approval before change <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('scaffold-domain')">/scaffold-domain</span></li>
+            <li>Active cross-domain contracts this domain is a party to <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('define-seam-contract')">/define-seam-contract</span></li>
+            <li>Key invariants the agent must not violate (e.g. "never delete from orders table directly") <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('scaffold-domain')">/scaffold-domain</span></li>
+            <li>Current maturity phase of the domain — affects how conservative the agent should be <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('scaffold-domain')">/scaffold-domain</span></li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">PLATFORM_CONTEXT.md</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Incremental</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When capabilities move Planned → Live, or cross-domain contracts activate</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('ship-feature');return false;">ship-feature</a> — moves capabilities Planned → Live</li><li><a href="#" onclick="goSkill('define-seam-contract');return false;">define-seam-contract</a> — activates seam entries on new boundary</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Platform overview — what this system does in one paragraph</li>
-            <li>All domains and their current status (planned / in-progress / live)</li>
-            <li>Capabilities index — what the platform can do, with live/planned status per capability</li>
-            <li>Active cross-domain contracts — which domain pairs have established boundaries</li>
-            <li>Technology stack summary — runtime, database, deployment target</li>
-            <li>Team structure — who owns which domain</li>
-            <li>Current release stage and known constraints</li>
+            <li>Platform overview — what this system does in one paragraph <span style="background:#f3f4f6;color:#6b7280;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;white-space:nowrap;">manual</span></li>
+            <li>All domains and their current status (planned / in-progress / live) <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('ship-feature')">/ship-feature</span></li>
+            <li>Capabilities index — what the platform can do, with live/planned status per capability <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('ship-feature')">/ship-feature</span></li>
+            <li>Active cross-domain contracts — which domain pairs have established boundaries <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('define-seam-contract')">/define-seam-contract</span></li>
+            <li>Technology stack summary — runtime, database, deployment target <span style="background:#f3f4f6;color:#6b7280;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;white-space:nowrap;">manual</span></li>
+            <li>Team structure — who owns which domain <span style="background:#f3f4f6;color:#6b7280;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;white-space:nowrap;">manual</span></li>
+            <li>Current release stage and known constraints <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('ship-feature')">/ship-feature</span></li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">openapi.yaml</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Rewritten</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for any API-touching PRD</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('scaffold-domain');return false;">scaffold-domain</a> — creates empty stub</li><li><a href="#" onclick="goSkill('generate-domain-docs');return false;">generate-domain-docs</a> — regenerates from router code after Phase 6</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>OpenAPI 3.x machine-readable spec generated from router code</li>
-            <li>All endpoints — path, method, description</li>
-            <li>Request shapes — required and optional fields, types, validation rules</li>
-            <li>Response shapes — success and error schemas</li>
-            <li>Authentication requirements per endpoint</li>
-            <li>Example request/response pairs</li>
-            <li>Versioning information — current version, deprecated endpoints</li>
+            <li>OpenAPI 3.x machine-readable spec generated from router code <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>All endpoints — path, method, description <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Request shapes — required and optional fields, types, validation rules <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Response shapes — success and error schemas <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Authentication requirements per endpoint <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Example request/response pairs <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Versioning information — current version, deprecated endpoints <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">DOMAIN_API.md <span style="font-size:0.75rem;color:#9ca3af;font-weight:400;">(optional)</span></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Rewritten</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for any API-touching PRD</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('scaffold-domain');return false;">scaffold-domain</a> — creates empty stub</li><li><a href="#" onclick="goSkill('generate-domain-docs');return false;">generate-domain-docs</a> — rewrites from openapi.yaml after Phase 6</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Human-readable companion to openapi.yaml — skip if team is comfortable reading the spec directly</li>
-            <li>Business-language description of what each endpoint does and why it exists</li>
-            <li>Business rules enforced at each endpoint — described in prose, not rule IDs</li>
-            <li>Error codes and their business meaning (not just HTTP status)</li>
-            <li>Rate limits, pagination conventions, and caching guidance</li>
-            <li>Breaking change history — what changed between versions and why</li>
+            <li>Human-readable companion to openapi.yaml — skip if team is comfortable reading the spec directly <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Business-language description of what each endpoint does and why it exists <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Business rules enforced at each endpoint — described in prose, not rule IDs <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Error codes and their business meaning (not just HTTP status) <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Rate limits, pagination conventions, and caching guidance <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Breaking change history — what changed between versions and why <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">DOMAIN_BACKEND_ARCHITECTURE.md</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Rewritten</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for structural changes</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('scaffold-domain');return false;">scaffold-domain</a> — creates empty stub</li><li><a href="#" onclick="goSkill('generate-domain-docs');return false;">generate-domain-docs</a> — rewrites from source files after Phase 6</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Module map — one line per file with its responsibility</li>
-            <li>Data flow for the key operation (e.g. "how an order is placed")</li>
-            <li>Architectural patterns used — service layer, repository, event bus, etc.</li>
-            <li>External dependencies — third-party services, queues, caches</li>
-            <li>Known technical debt with estimated impact</li>
-            <li>Invariants the code must preserve (e.g. idempotency guarantees)</li>
-            <li>Test strategy — unit vs integration split, what is mocked and what is not</li>
+            <li>Module map — one line per file with its responsibility <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Data flow for the key operation (e.g. "how an order is placed") <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Architectural patterns used — service layer, repository, event bus, etc. <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>External dependencies — third-party services, queues, caches <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Known technical debt with estimated impact <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Invariants the code must preserve (e.g. idempotency guarantees) <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Test strategy — unit vs integration split, what is mocked and what is not <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">DOMAIN_DATABASE.md</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Rewritten</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After any PRD that changes schema or migration</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('scaffold-domain');return false;">scaffold-domain</a> — creates empty stub</li><li><a href="#" onclick="goSkill('generate-domain-docs');return false;">generate-domain-docs</a> — regenerates from schema and migrations after Phase 6</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Tables owned by this domain — names and business purpose</li>
-            <li>Column-level reference — name, type, nullable, constraints, default</li>
-            <li>Indexes — which columns are indexed and why</li>
-            <li>Migration history — ordered list of all migrations with dates</li>
-            <li>Data ownership rules — which domain is the source of truth for shared entities</li>
-            <li>Test data strategy — how test fixtures are generated for this domain</li>
-            <li>Volume and growth expectations — important for index and query planning</li>
+            <li>Tables owned by this domain — names and business purpose <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Column-level reference — name, type, nullable, constraints, default <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Indexes — which columns are indexed and why <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Migration history — ordered list of all migrations with dates <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Data ownership rules — which domain is the source of truth for shared entities <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Test data strategy — how test fixtures are generated for this domain <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
+            <li>Volume and growth expectations — important for index and query planning <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('generate-domain-docs')">/generate-domain-docs</span></li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">cross-domain/* <span style="font-size:0.75rem;color:#9ca3af;font-weight:400;">(conditional)</span></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#f3f4f6;color:#374151;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Written once</span></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Written once per boundary before first cross-domain PRD</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:14px;line-height:2.1;"><li><a href="#" onclick="goSkill('define-seam-contract');return false;">define-seam-contract</a> — creates FUNCTIONAL.md, ARCHITECTURE.md, DATA.md once per boundary</li></ul></td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Only created when two domains share a boundary — skip entirely for single-domain projects</li>
-            <li>FUNCTIONAL.md — business reason the boundary exists, what capability is consumed</li>
-            <li>FUNCTIONAL.md — user experience impact if the provider is unavailable</li>
-            <li>ARCHITECTURE.md — integration method (HTTP / event / shared interface), versioning protocol</li>
-            <li>DATA.md — exact fields crossing the boundary with types and ownership</li>
-            <li>DATA.md — which fields the consumer may cache vs must re-fetch</li>
+            <li>FUNCTIONAL.md — business reason the boundary exists, what capability is consumed <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('define-seam-contract')">/define-seam-contract</span></li>
+            <li>FUNCTIONAL.md — user experience impact if the provider is unavailable <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('define-seam-contract')">/define-seam-contract</span></li>
+            <li>ARCHITECTURE.md — integration method (HTTP / event / shared interface), versioning protocol <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('define-seam-contract')">/define-seam-contract</span></li>
+            <li>DATA.md — exact fields crossing the boundary with types and ownership <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('define-seam-contract')">/define-seam-contract</span></li>
+            <li>DATA.md — which fields the consumer may cache vs must re-fetch <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('define-seam-contract')">/define-seam-contract</span></li>
           </ul></td>
         </tr>
       </tbody>
@@ -2509,17 +2656,483 @@ pre {
 
     <div class="chapter-nav">
       <button class="ch-nav-btn" onclick="goCh(10)">← Schema</button>
-      <span class="ch-nav-count">11 of 11</span>
-      <button class="ch-nav-btn" disabled>(end)</button>
+      <span class="ch-nav-count">11 of 12</span>
+      <button class="ch-nav-btn" onclick="goCh(12)">⊕ Skills →</button>
     </div>
   </div><!-- /chapter-body -->
 </div><!-- /chapter 11 -->
 
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 12 — SKILLS REFERENCE                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="chapter" id="ch-12">
+
+  <div class="chapter-header" onclick="goCh(12)">
+    <div class="ch-num" style="background:#f3e8ff;color:#6b21a8;width:48px;height:48px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;">⊕</div>
+    <div>
+      <div class="ch-title">Skills — what each skill does and when to call it</div>
+      <div class="ch-desc">Every Claude Code skill used in the knowledge loop: its job, its trigger moment, and its word count. Skills linked from the Files tab jump directly to their row here.</div>
+    </div>
+    <span class="ch-tag" style="background:#f3e8ff;color:#6b21a8;">Skills</span>
+    <span class="ch-chevron">▾</span>
+  </div>
+
+  <div class="chapter-body">
+  <div class="meth-section">
+
+    <table class="code-table" style="margin-top:14px;table-layout:fixed;width:100%;">
+      <colgroup>
+        <col style="width:200px">
+        <col>
+        <col style="width:220px">
+        <col style="width:60px">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Skill</th>
+          <th>What it does</th>
+          <th>When it's called</th>
+          <th>Words</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- ── Phase 0 ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">PHASE 0 — SETUP</td></tr>
+
+
+        <tr id="skill-initialize-knowledge-loop">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('initialize-knowledge-loop');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/initialize-knowledge-loop</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Asks 4 questions: project name, purpose, team size, tech stack</li>
+            <li>Creates docs/PROCESS_LOG.md, UNKNOWNS.md, system-architecture.md with correct structure</li>
+            <li>Creates business/product/FEATURES.md with header table</li>
+            <li>Creates PLATFORM_CONTEXT.md stub at project root</li>
+            <li>Creates initial git commit: "Init: knowledge-loop scaffold"</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Once only — at project start, before any domain or skill work. Entry point for the entire knowledge loop.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">408</span></td>
+        </tr>
+
+        <tr id="skill-design-system-architecture">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('design-system-architecture');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/design-system-architecture</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Interviews user to define 2–6 bounded domains (name, purpose, owned data, owner)</li>
+            <li>Identifies cross-domain seam pairs: which domain needs what from which provider</li>
+            <li>Writes domain table and seam table to docs/system-architecture.md</li>
+            <li>Updates PLATFORM_CONTEXT.md domains section and cross-domain contracts section</li>
+            <li>All seams start as "Not yet established" — activated later by /define-seam-contract</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 0 — after /initialize-knowledge-loop, before /scaffold-domain. Run once per project architecture decision.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">414</span></td>
+        </tr>
+
+        <tr id="skill-scaffold-domain">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('scaffold-domain');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/scaffold-domain</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Creates all domain stub docs for one or more domains in one pass</li>
+            <li>Writes AGENT_CONTEXT.md, DOMAIN_BUSINESS.md, domain-rules.yaml, DOMAIN_API.md, openapi.yaml, DOMAIN_BACKEND_ARCHITECTURE.md, DOMAIN_DATA.md per domain</li>
+            <li>Creates frontend AGENT_CONTEXT.md and DOMAIN_FRONTEND_ARCHITECTURE.md</li>
+            <li>Updates platform AGENT_CONTEXT.md domain map table</li>
+            <li>Skips domains that already have an AGENT_CONTEXT.md</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">At project start (all domains at once) or when a new domain is added mid-project. Run before Phase 1.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">897</span></td>
+        </tr>
+
+        <tr id="skill-define-seam-contract">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('define-seam-contract');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/define-seam-contract</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Interviews user with 10 required questions about the boundary (functional, architecture, data)</li>
+            <li>Creates docs/contracts/&lt;provider&gt;→&lt;consumer&gt;/ with FUNCTIONAL.md, ARCHITECTURE.md, DATA.md</li>
+            <li>Updates PLATFORM_CONTEXT.md seam status from "Not yet established" → "Active"</li>
+            <li>Updates platform AGENT_CONTEXT.md active seams table</li>
+            <li>Does not run if seam is already Active</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 0 — when a feature will cross a domain seam for the first time. Run once per boundary, before the first cross-domain PRD.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">785</span></td>
+        </tr>
+
+        <!-- ── Phase 1 ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">PHASE 1 — IDEA</td></tr>
+
+        <tr id="skill-grill-me">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('grill-me');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/grill-me</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Interviews relentlessly about every aspect of the plan — walks each decision branch</li>
+            <li>Asks the Workflow Actors branch: who are the actors, what do they decide, what do they escalate?</li>
+            <li>Provides a recommended answer to each question before asking</li>
+            <li>Explores codebase to answer questions it can resolve without asking the user</li>
+            <li>Surfaces agent roles that become named terms in /ubiquitous-language</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 1 — first thing, before PRD, before any writing. Run once per feature (or domain).</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">514</span></td>
+        </tr>
+
+        <tr id="skill-ubiquitous-language">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('ubiquitous-language');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/ubiquitous-language</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Extracts a DDD-style glossary from the current conversation</li>
+            <li>Flags ambiguous or conflicting terms and proposes canonical names</li>
+            <li>Saves to UBIQUITOUS_LANGUAGE.md in the domain docs folder</li>
+            <li>Run once per domain; re-run whenever new concepts are introduced</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 1 — after /grill-me, before /write-domain-business. Locks terminology before code is written.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">586</span></td>
+        </tr>
+
+        <tr id="skill-write-domain-business">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('write-domain-business');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/write-domain-business</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Translates grill-me + ubiquitous-language output into DOMAIN_BUSINESS.md</li>
+            <li>Seeds domain-rules.yaml with draft rules (IDs auto-assigned sequentially — never manually chosen)</li>
+            <li>Runs /validate-knowledge gate before any write</li>
+            <li>Adds unresolved questions to docs/UNKNOWNS.md</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 1→4 transition — after /ubiquitous-language and before /write-a-prd.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">835</span></td>
+        </tr>
+
+        <!-- ── Phase 3 ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">PHASE 3 — PROTOTYPE (optional)</td></tr>
+
+        <tr id="skill-design-an-interface">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('design-an-interface');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/design-an-interface</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Spawns 3+ parallel sub-agents, each producing a radically different interface design</li>
+            <li>Compares designs and surfaces trade-offs</li>
+            <li>Use when the right API, service boundary, or module shape is genuinely unclear</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 3 — before writing a PRD for any module where the wrong interface will cause pain later.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">465</span></td>
+        </tr>
+
+        <!-- ── Phase 4 ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">PHASE 4 — PRD</td></tr>
+
+        <tr id="skill-write-a-prd">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('write-a-prd');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/write-a-prd</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Interviews user, explores codebase, sketches modules</li>
+            <li>Writes PRD using 12-section template and submits as a GitHub issue</li>
+            <li>Immediately writes back introduced_prd to domain-rules.yaml for every rule ID in the PRD's "Business Rules Affected" section</li>
+            <li>Closes the traceability loop: PRD ↔ rules are bidirectionally linked from the moment the issue is submitted</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 4 — after /grill-me + /ubiquitous-language + /write-domain-business (and any prototyping).</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">859</span></td>
+        </tr>
+
+        <!-- ── Phase 5 ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">PHASE 5 — KANBAN</td></tr>
+
+        <tr id="skill-prd-to-plan">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('prd-to-plan');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/prd-to-plan</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Converts PRD into a multi-phase implementation plan using tracer-bullet vertical slices</li>
+            <li>Saves plan as plans/*.md</li>
+            <li>Each slice is demo-able end-to-end — no horizontal layers</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 5 — after PRD is approved, before creating GitHub issues.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">514</span></td>
+        </tr>
+
+        <tr id="skill-prd-to-issues">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('prd-to-issues');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/prd-to-issues</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Breaks the plan into independently-grabbable GitHub issues</li>
+            <li>Maps dependency relationships between issues — enables parallel agent work</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 5 — after /prd-to-plan. Preferred in teams; optional for solo work.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">460</span></td>
+        </tr>
+
+        <!-- ── Phase 6 ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">PHASE 6 — EXECUTION</td></tr>
+
+        <tr id="skill-setup-pre-commit">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('setup-pre-commit');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/setup-pre-commit</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Installs Husky with lint-staged (Prettier), TypeScript type checking, and test runner on every commit</li>
+            <li>Run once per repo — not per feature</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Once at repo creation, before any code is written.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">333</span></td>
+        </tr>
+
+        <tr id="skill-git-guardrails-claude-code">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('git-guardrails-claude-code');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/git-guardrails-claude-code</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Installs Claude Code hooks to block destructive git commands before they execute</li>
+            <li>Blocks: git push --force, reset --hard, clean -f, branch -D</li>
+            <li>Installed globally in ~/.claude/settings.json — covers all projects</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Once globally. Install before starting any project.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">265</span></td>
+        </tr>
+
+        <tr id="skill-tdd">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('tdd');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/tdd</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Enforces red→green→refactor loop — one test, one implementation, repeat</li>
+            <li>Integration-style tests through public interfaces, not implementation details</li>
+            <li>Vertical slices (tracer bullets): never write all tests first, then all code</li>
+            <li>Single highest-leverage practice for improving agent output quality</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 6 — every feature slice, every bug fix. No exceptions.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">693</span></td>
+        </tr>
+
+        <tr id="skill-validate-knowledge">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('validate-knowledge');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/validate-knowledge</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Quality gate before any write to domain-rules.yaml — never bypassed</li>
+            <li>Cheap LLM text scan for overlapping rules against all active/draft rules in YAML</li>
+            <li>Six outcomes: CLEAN · DECLARED-WRITE · INFERRED-WRITE · SCOPE-INFERRED · CHAIN-IMPACT · CONFLICT-UNRESOLVABLE</li>
+            <li>Shows exact diff and waits for explicit "yes" before any write</li>
+            <li>Chain check: scans depends_on links before every auto-write</li>
+            <li>Never auto-resolves conflicts — always surfaces to human</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Called by /write-domain-business, /generate-domain-docs, and /ship-feature before any knowledge doc write. Can also be invoked directly.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">1159</span></td>
+        </tr>
+
+        <tr id="skill-generate-domain-docs">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('generate-domain-docs');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/generate-domain-docs</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Reads Phase 6 code to generate four domain knowledge docs</li>
+            <li>DOMAIN_DATA.md — from Prisma schema and migration files</li>
+            <li>openapi.yaml — from router files (method, path, request/response shapes)</li>
+            <li>DOMAIN_API.md — human-readable companion generated from openapi.yaml</li>
+            <li>DOMAIN_BACKEND_ARCHITECTURE.md — module map and data flow from source files</li>
+            <li>Next step: run /promote-rules to promote draft rules — not done in this skill</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 TDD complete (all tests GREEN), before Phase 7 QA.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">922</span></td>
+        </tr>
+
+        <tr id="skill-promote-rules">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('promote-rules');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/promote-rules</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Pre-promotion checklist: PRD number set, test cases present, tests GREEN — halts if any check fails</li>
+            <li>Runs /validate-knowledge gate before any rule status change</li>
+            <li>Promotes draft rules to active and fills test_cases from real TDD tests</li>
+            <li>Called after /generate-domain-docs and internally by /ship-feature</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After /generate-domain-docs (all tests GREEN). Also called by /ship-feature at close-loop time.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">315</span></td>
+        </tr>
+
+        <!-- ── Phase 7 ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">PHASE 7 — QA</td></tr>
+
+        <tr id="skill-triage-issue">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('triage-issue');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/triage-issue</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Explores codebase to find root cause of a bug</li>
+            <li>Creates a GitHub issue with a TDD-based fix plan</li>
+            <li>Root cause first — never patch without triaging</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 7 QA when a bug is found, or post-launch when a bug is reported.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">734</span></td>
+        </tr>
+
+        <!-- ── Post-QA ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">POST-QA — CLOSE THE LOOP</td></tr>
+
+        <tr id="skill-ship-feature">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('ship-feature');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/ship-feature</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Pre-flight checks: halts if any rule has no PRD number, no test cases, or is still draft</li>
+            <li>Appends to PROCESS_LOG.md; resolves items in UNKNOWNS.md</li>
+            <li>Promotes rules draft → active via /validate-knowledge</li>
+            <li>Regenerates DOMAIN_BUSINESS.md rules summary table from domain-rules.yaml</li>
+            <li>Updates PLATFORM_CONTEXT.md: capabilities Planned → Live, seams to Active</li>
+            <li>Indexes feature in FEATURES.md; adds reverse sync to linked business docs</li>
+            <li>Creates git commit and marks PRD issue shipped</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 7 QA passes and feature is confirmed ready to ship.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">986</span></td>
+        </tr>
+
+        <!-- ── Maintenance ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">MAINTENANCE</td></tr>
+
+        <tr id="skill-improve-codebase-architecture">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('improve-codebase-architecture');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/improve-codebase-architecture</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Explores codebase for shallow modules, tight coupling, and AI-navigability issues</li>
+            <li>Files architectural improvement RFCs as GitHub issues</li>
+            <li>Technical debt compounds faster with agents — run on a cadence</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Recurring — weekly or after every 3–5 features shipped.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">681</span></td>
+        </tr>
+
+        <tr id="skill-request-refactor-plan">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('request-refactor-plan');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/request-refactor-plan</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>User interview → detailed refactor plan broken into tiny, safe commits</li>
+            <li>Filed as a GitHub issue RFC</li>
+            <li>Use when a module has become too large or too coupled to change safely</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When a specific module becomes painful — too large, too coupled, too hard to test.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">483</span></td>
+        </tr>
+
+        <!-- ── Other ── -->
+        <tr><td colspan="4" style="background:#f8fafc;font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.08em;padding:8px 12px;">OTHER</td></tr>
+
+        <tr id="skill-write-a-skill">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('write-a-skill');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/write-a-skill</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Creates new Claude Code skills with correct structure and progressive disclosure</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When extending the skill library with a new skill.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">487</span></td>
+        </tr>
+
+        <tr id="skill-edit-article">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('edit-article');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/edit-article</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Edits and improves articles — restructures sections, improves clarity, tightens prose</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When editing blog posts, docs, or README rewrites.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">366</span></td>
+        </tr>
+
+        <tr id="skill-migrate-to-shoehorn">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('migrate-to-shoehorn');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/migrate-to-shoehorn</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Migrates test files from <code>as</code> type assertions to @total-typescript/shoehorn</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When tests use <code>as</code> type assertions and need partial test data.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">415</span></td>
+        </tr>
+
+        <tr id="skill-scaffold-exercises">
+          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('scaffold-exercises');return false;" title="View skill source" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/scaffold-exercises</code></a></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Creates exercise directory structures with sections, problems, solutions, and explainers that pass linting</li>
+          </ul></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When setting up coding exercises or a new course section.</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">407</span></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(11)">← Files</button>
+      <span class="ch-nav-count">12 of 12</span>
+      <button class="ch-nav-btn" disabled>(end)</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 12 -->
+
+
+<!-- ── Skill Modal ── -->
+<div class="modal-overlay" id="skillModal" onclick="if(event.target===this)closeSkillModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle"></span>
+      <button class="modal-close" onclick="closeSkillModal()" title="Close (Esc)">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 </div><!-- /main-content -->
 </div><!-- /layout -->
 
+<script src="./skill-content.js"></script>
 <script>
-const TOTAL = 11;
+
+function renderMarkdown(md) {
+  const blocks = [];
+  // protect code blocks
+  md = md.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, c) => {
+    const i = blocks.push(c.replace(/</g,'&lt;').replace(/>/g,'&gt;')) - 1;
+    return '\x00B' + i + '\x00';
+  });
+  // inline code
+  md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // bold, italic
+  md = md.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  md = md.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  // headings
+  md = md.replace(/^##### (.+)$/gm, '<h5>$1</h5>');
+  md = md.replace(/^#### (.+)$/gm, '<h4>$1</h4> ');
+  md = md.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  md = md.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  md = md.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+  // blockquotes
+  md = md.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+  // checkboxes
+  md = md.replace(/- \[x\] /gi, '- ✓ ');
+  md = md.replace(/- \[ \] /g, '- ○ ');
+  // bullet lists
+  md = md.replace(/((?:^[ \t]*[-*] .+\n?)+)/gm, blk => {
+    const items = blk.trim().split('\n')
+      .map(l => '<li>' + l.replace(/^[ \t]*[-*] /, '') + '</li>').join('');
+    return '<ul>' + items + '</ul>\n';
+  });
+  // numbered lists
+  md = md.replace(/((?:^\d+\. .+\n?)+)/gm, blk => {
+    const items = blk.trim().split('\n')
+      .map(l => '<li>' + l.replace(/^\d+\. /, '') + '</li>').join('');
+    return '<ol>' + items + '</ol>\n';
+  });
+  // restore code blocks
+  md = md.replace(/\x00B(\d+)\x00/g, (_, i) => '<pre><code>' + blocks[i] + '</code></pre>');
+  // horizontal rules
+  md = md.replace(/^---+$/gm, '<hr>');
+  // simple table (| col | col |)
+  md = md.replace(/((?:^\|.+\|\n?)+)/gm, blk => {
+    const rows = blk.trim().split('\n').filter(r => !/^[\|\s\-]+$/.test(r));
+    if (!rows.length) return blk;
+    const [head, ...body] = rows;
+    const th = head.split('|').filter(c=>c.trim()).map(c=>'<th>'+c.trim()+'</th>').join('');
+    const tb = body.map(r => '<tr>' + r.split('|').filter(c=>c.trim()).map(c=>'<td>'+c.trim()+'</td>').join('') + '</tr>').join('');
+    return '<table><thead><tr>' + th + '</tr></thead><tbody>' + tb + '</tbody></table>\n';
+  });
+  // paragraphs
+  const paras = md.split(/\n{2,}/);
+  md = paras.map(p => {
+    p = p.trim();
+    if (!p) return '';
+    if (/^<(h[2-5]|ul|ol|pre|table|blockquote|hr)/.test(p)) return p;
+    return '<p>' + p.replace(/\n/g,' ') + '</p>';
+  }).join('\n');
+  return md;
+}
+
+function openSkillModal(name) {
+  const content = (typeof SKILL_DATA !== 'undefined' && SKILL_DATA[name])
+    ? SKILL_DATA[name]
+    : '<p>Skill content not available.</p>';
+  document.getElementById('modalTitle').textContent = '/' + name;
+  document.getElementById('modalBody').innerHTML = renderMarkdown(content);
+  document.getElementById('skillModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSkillModal() {
+  document.getElementById('skillModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSkillModal(); });
+
+const TOTAL = 12;
+
+function goSkill(name) {
+  goCh(12);
+  setTimeout(() => {
+    const el = document.getElementById('skill-' + name);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
 
 function goCh(n) {
   for (let i = 1; i <= TOTAL; i++) {
