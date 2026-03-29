@@ -333,6 +333,7 @@ pre {
 .prog-step.s6.active { box-shadow: inset 0 -3px 0 0 #6b7280; }
 .prog-step.s7.active { box-shadow: inset 0 -3px 0 0 #d97706; }
 .prog-step.s8.active { box-shadow: inset 0 -3px 0 0 #ef4444; }
+  .prog-step[style*="background:#1e293b"].active { box-shadow: inset 0 -3px 0 0 #818cf8; }
 
 /* hide connectors — chapter nav replaces them */
 .connector { display: none; }
@@ -511,65 +512,51 @@ pre {
 
 <nav class="left-nav">
 <div class="progress">
+  <div style="background:#0f172a;color:#f1f5f9;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;padding:5px 12px 4px;text-transform:uppercase;border-bottom:1px solid #1e293b;">Reference</div>
+  <div id="prog-9" class="prog-step" style="background:#1e293b;" onclick="goCh(9)">
+    <div class="prog-num" style="color:#818cf8;">§</div>
+    <div class="prog-label" style="color:#f1f5f9;">Methodology</div>
+  </div>
+  <div id="prog-11" class="prog-step" style="background:#1e293b;" onclick="goCh(11)">
+    <div class="prog-num" style="color:#fbbf24;">⊟</div>
+    <div class="prog-label" style="color:#f1f5f9;">Files</div>
+  </div>
+  <div id="prog-12" class="prog-step" style="background:#1e293b;" onclick="goCh(12)">
+    <div class="prog-num" style="color:#c084fc;">⊕</div>
+    <div class="prog-label" style="color:#f1f5f9;">Skills</div>
+  </div>
+  <div style="background:#f1f5f9;color:#94a3b8;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;padding:5px 12px 4px;text-transform:uppercase;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;">PRD Examples</div>
   <div id="prog-1" class="prog-step s1" onclick="goCh(1)">
     <div class="prog-num">PRD #1</div>
     <div class="prog-label">Create</div>
-    <div class="prog-desc">First rule, clean slot</div>
   </div>
   <div id="prog-2" class="prog-step s2" onclick="goCh(2)">
     <div class="prog-num">PRD #2</div>
     <div class="prog-label">Supersede</div>
-    <div class="prog-desc">Tier multipliers</div>
   </div>
   <div id="prog-3" class="prog-step s3" onclick="goCh(3)">
     <div class="prog-num">PRD #3</div>
     <div class="prog-label">Multi-rule</div>
-    <div class="prog-desc">Clean + supersede</div>
   </div>
   <div id="prog-4" class="prog-step s4" onclick="goCh(4)">
     <div class="prog-num">PRD #4</div>
     <div class="prog-label">Composition</div>
-    <div class="prog-desc">Two rules, one slot</div>
   </div>
   <div id="prog-5" class="prog-step s5" onclick="goCh(5)">
     <div class="prog-num">PRD #5</div>
-    <div class="prog-label">Scoped variant</div>
-    <div class="prog-desc">VIP carve-out</div>
+    <div class="prog-label">Scoped</div>
   </div>
   <div id="prog-6" class="prog-step s6" onclick="goCh(6)">
     <div class="prog-num">PRD #6</div>
-    <div class="prog-label">Pure retire</div>
-    <div class="prog-desc">Feature removed</div>
+    <div class="prog-label">Retire</div>
   </div>
   <div id="prog-7" class="prog-step s7" onclick="goCh(7)">
     <div class="prog-num">PRD #7</div>
-    <div class="prog-label">Chain notice</div>
-    <div class="prog-desc">Depends_on surfaced</div>
+    <div class="prog-label">Chain</div>
   </div>
   <div id="prog-8" class="prog-step s8" onclick="goCh(8)">
     <div class="prog-num">PRD #8</div>
     <div class="prog-label">Blocked</div>
-    <div class="prog-desc">Genuine conflict</div>
-  </div>
-  <div id="prog-9" class="prog-step" style="background:#f0f4ff;" onclick="goCh(9)">
-    <div class="prog-num" style="color:#4338ca;">§</div>
-    <div class="prog-label">Methodology</div>
-    <div class="prog-desc">Reference guide</div>
-  </div>
-  <div id="prog-10" class="prog-step" style="background:#f0fdf4;" onclick="goCh(10)">
-    <div class="prog-num" style="color:#16a34a;">⊞</div>
-    <div class="prog-label">Schema</div>
-    <div class="prog-desc">Field reference</div>
-  </div>
-  <div id="prog-11" class="prog-step" style="background:#fefce8;" onclick="goCh(11)">
-    <div class="prog-num" style="color:#ca8a04;">⊟</div>
-    <div class="prog-label">Files</div>
-    <div class="prog-desc">Structure</div>
-  </div>
-  <div id="prog-12" class="prog-step" style="background:#f3e8ff;" onclick="goCh(12)">
-    <div class="prog-num" style="color:#6b21a8;">⊕</div>
-    <div class="prog-label">Skills</div>
-    <div class="prog-desc">All skills ref</div>
   </div>
 </div>
 </nav>
@@ -2526,6 +2513,11 @@ pre {
             <li>Full immutable history — superseded rules stay, never deleted <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
             <li>Modification attribution — modified_prd, modified_by for retroactive changes <span style="background:#f3e8ff;color:#6b21a8;padding:1px 5px;border-radius:3px;font-size:0.71rem;font-weight:600;margin-left:5px;cursor:pointer;white-space:nowrap;" onclick="openSkillModal('validate-knowledge')">/validate-knowledge</span></li>
           </ul></td>
+        </tr>
+        <tr>
+          <td colspan="4" style="padding:3px 16px 10px;border-top:none;">
+            <a href="#" onclick="goCh(10);return false;" style="font-size:0.76rem;color:#15803d;text-decoration:none;font-weight:600;">→ domain-rules.yaml full field reference — all fields, types, constraints, lifecycle</a>
+          </td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">DOMAIN_BUSINESS.md</td>
