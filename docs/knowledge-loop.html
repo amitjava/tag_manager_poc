@@ -2331,11 +2331,11 @@ pre {
 <span class="y-comment"># Domain knowledge (one folder per domain) — REQUIRED files starred ★</span>
 <span class="y-key">backend/src/domains/&lt;name&gt;/docs/</span>
   <span class="y-key">AGENT_CONTEXT.md</span>                  <span class="y-comment"># ★ domain entry point — reading order, common tasks, do-not-touch</span>
-  <span class="y-key">DOMAIN_BUSINESS.md</span>                <span class="y-comment"># ★ use cases, domain language, out-of-scope — NO rule IDs, prose only</span>
-  <span class="y-key">domain-rules.yaml</span>                 <span class="y-comment"># ★ structured business rules registry — ONLY file that contains rule IDs</span>
-  <span class="y-key">openapi.yaml</span>                      <span class="y-comment"># ★ machine-readable API spec (generated from router code)</span>
-  <span class="y-key">DOMAIN_BACKEND_ARCHITECTURE.md</span>    <span class="y-comment"># ★ module map, data flow, patterns used, known debt</span>
-  <span class="y-key">DOMAIN_DATA.md</span>                    <span class="y-comment"># ★ tables owned, columns, constraints, migration list</span>
+  <span class="y-key">DOMAIN_BUSINESS.md</span>                <span class="y-comment"># ★ use cases, domain language, use-case→rule-ID reference table</span>
+  <span class="y-key">domain-rules.yaml</span>                 <span class="y-comment"># ★ structured rules registry — authoritative source of rule IDs and formulas</span>
+  <span class="y-key">openapi.yaml</span>                      <span class="y-comment"># ★ machine-readable API spec — consumed by code generators, CI, API gateways</span>
+  <span class="y-key">DOMAIN_BACKEND_ARCHITECTURE.md</span>    <span class="y-comment"># ★ module map, data flow, patterns, debt — rewritten from code on each change</span>
+  <span class="y-key">DOMAIN_DATABASE.md</span>                <span class="y-comment"># ★ tables, columns, constraints, migrations — rewritten from schema on each change</span>
   <span class="y-key">DOMAIN_API.md</span>                     <span class="y-comment">#   optional — human-readable companion to openapi.yaml</span>
 
 <span class="y-comment"># Frontend domain knowledge</span>
@@ -2349,13 +2349,15 @@ pre {
     <h3>File ownership — who reads it, who writes it</h3>
     <table class="code-table" style="margin-top:14px;table-layout:fixed;width:100%;">
       <colgroup>
-        <col style="width:220px">
-        <col style="width:200px">
+        <col style="width:210px">
+        <col style="width:100px">
+        <col style="width:190px">
         <col>
       </colgroup>
       <thead>
         <tr>
           <th>File</th>
+          <th>Update mode</th>
           <th>When it changes</th>
           <th>Contents</th>
         </tr>
@@ -2363,6 +2365,7 @@ pre {
       <tbody>
         <tr>
           <td class="code-cell" style="vertical-align:top;">domain-rules.yaml</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Incremental</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Every PRD that adds, supersedes, or retires a rule</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>All business rules for the domain, one entry per rule</li>
@@ -2379,18 +2382,20 @@ pre {
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">DOMAIN_BUSINESS.md</td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 1 (grill-me) and after each shipped PRD</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Incremental</span></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Phase 1 (grill-me) creates it. Each shipped PRD promotes new use cases and rule references into it — only live features appear here, not planned ones</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Plain-language description of what the domain does — written for PM and business audience</li>
-            <li>All use cases — one entry per user story, written in business language</li>
+            <li>Plain-language description of what the domain does — for PM and business audience</li>
+            <li>All live use cases — one entry per shipped user story, in business language</li>
             <li>Domain vocabulary — key terms and their precise meaning in this domain</li>
             <li>What is explicitly out of scope for this domain</li>
+            <li>Use-case → rule ID reference table: maps each use case to the rule ID(s) in domain-rules.yaml that govern it — links, not duplicates</li>
             <li>Stakeholder context — who cares about this domain and why</li>
-            <li><strong>Does NOT contain rule IDs.</strong> Prose context only — authoritative rules with IDs live in domain-rules.yaml</li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">AGENT_CONTEXT.md</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Incremental</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When new domains added or cross-domain contracts become active</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Prescribed reading order — which files to read first and why</li>
@@ -2403,6 +2408,7 @@ pre {
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">PLATFORM_CONTEXT.md</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Incremental</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When capabilities move Planned → Live, or cross-domain contracts activate</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Platform overview — what this system does in one paragraph</li>
@@ -2416,6 +2422,7 @@ pre {
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">openapi.yaml</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Rewritten</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for any API-touching PRD</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>OpenAPI 3.x machine-readable spec generated from router code</li>
@@ -2429,6 +2436,7 @@ pre {
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">DOMAIN_API.md <span style="font-size:0.75rem;color:#9ca3af;font-weight:400;">(optional)</span></td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Rewritten</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for any API-touching PRD</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Human-readable companion to openapi.yaml — skip if team is comfortable reading the spec directly</li>
@@ -2441,6 +2449,7 @@ pre {
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">DOMAIN_BACKEND_ARCHITECTURE.md</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Rewritten</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for structural changes</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Module map — one line per file with its responsibility</li>
@@ -2453,7 +2462,8 @@ pre {
           </ul></td>
         </tr>
         <tr>
-          <td class="code-cell" style="vertical-align:top;">DOMAIN_DATA.md</td>
+          <td class="code-cell" style="vertical-align:top;">DOMAIN_DATABASE.md</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Rewritten</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After any PRD that changes schema or migration</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Tables owned by this domain — names and business purpose</li>
@@ -2467,6 +2477,7 @@ pre {
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">cross-domain/* <span style="font-size:0.75rem;color:#9ca3af;font-weight:400;">(conditional)</span></td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><span style="background:#f3f4f6;color:#374151;padding:2px 7px;border-radius:4px;font-size:0.75rem;font-weight:600;">Written once</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Written once per boundary before first cross-domain PRD</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Only created when two domains share a boundary — skip entirely for single-domain projects</li>
@@ -2489,11 +2500,11 @@ pre {
       <li><code>AGENT_CONTEXT.md</code> (platform) — reading order and active cross-domain contracts</li>
       <li><code>PLATFORM_CONTEXT.md</code> — what capabilities exist and which are live</li>
       <li><code>backend/src/domains/&lt;name&gt;/docs/AGENT_CONTEXT.md</code> — domain-specific entry point</li>
-      <li><code>DOMAIN_BUSINESS.md</code> — use cases and business context (prose only, no rule IDs)</li>
-      <li><code>domain-rules.yaml</code> — active business rules with IDs (primary source of truth for decisions)</li>
+      <li><code>DOMAIN_BUSINESS.md</code> — use cases + use-case→rule-ID reference table (links into YAML)</li>
+      <li><code>domain-rules.yaml</code> — active rules with full formulas and IDs (authoritative source of truth)</li>
       <li>Any cross-domain contracts relevant to the task (<code>docs/cross-domain/</code>) — if applicable</li>
     </ol>
-    <p style="margin-top:12px;">An agent that skips <code>domain-rules.yaml</code> and relies on DOMAIN_BUSINESS.md prose alone will produce inconsistent results — the YAML is the authoritative, conflict-checked version and the only file containing rule IDs.</p>
+    <p style="margin-top:12px;">DOMAIN_BUSINESS.md and domain-rules.yaml work together: the business doc provides context and maps use cases to rule IDs; the YAML provides the authoritative formula, test cases, and lineage. Neither alone is sufficient — an agent needs both.</p>
   </div>
 
     <div class="chapter-nav">
