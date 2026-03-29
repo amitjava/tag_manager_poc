@@ -743,7 +743,7 @@ pre {
     <div class="outcome-icons">✅</div>
     <div class="outcome-body">
       <div class="outcome-code">validate-knowledge-DECLARED-WRITE</div>
-      <div class="outcome-text">The PRD author made this decision when they wrote "supersede 1.1.1" in the Business Rules Affected block. That was the human gate. validate-knowledge confirms intent via PRD fetch, then auto-executes: 1.1.1 → superseded, 1.1.2 → active.</div>
+      <div class="outcome-text">The PRD author made this decision when they wrote "this replaces the existing flat earn rate" in the PRD narrative. validate-knowledge read that prose and found the intent unambiguous — no second fetch needed. Auto-executes: 1.1.1 → superseded, 1.1.2 → active.</div>
     </div>
   </div>
 
@@ -1838,7 +1838,7 @@ pre {
       <text x="410" y="955" text-anchor="middle" fill="#22c55e" font-size="13" font-weight="700">✓ Write to domain-rules.yaml</text>
     </svg>
 
-    <p>The key insight: <strong>the human gate for DECLARED-WRITE cases is at PRD writing time, not at validate-knowledge time.</strong> When the PM writes <code>action: supersede 1.1.1</code> in Business Rules Affected, that is the human decision. validate-knowledge is executing an already-authorised instruction.</p>
+    <p>The key insight: <strong>the human gate for DECLARED-WRITE cases is at PRD writing time, not at validate-knowledge time.</strong> When the PM writes "this replaces the existing earn rate" in the PRD narrative, that is the human decision. validate-knowledge reads the prose, finds the intent unambiguous, and executes it — no structured annotation, no rule ID required from the PM.</p>
   </div>
 
   <!-- ── Section 2: All outcome codes ── -->
@@ -1911,7 +1911,7 @@ pre {
     <h4>What this approach maps to in industry</h4>
     <div class="ref-box">
       <strong>Conventional Commits + Protected Branch Rules (GitHub/GitLab)</strong>
-      <span>The pattern of declaring intent in a structured commit message (equivalent to our Business Rules Affected block) so that automation can execute it deterministically is widespread in CI/CD. GitHub branch protection rules enforce that certain changes require explicit human review before merge — the same conservative gate we apply to SCOPE-INFERRED and CHAIN-IMPACT.</span>
+      <span>The pattern of declaring intent clearly in a human-authored message so that automation can execute it without ambiguity is widespread in CI/CD — Conventional Commits (feat:, fix:, breaking change:) are exactly this. GitHub branch protection rules enforce that certain changes require explicit human review before merge — the same conservative gate we apply to SCOPE-INFERRED and CHAIN-IMPACT.</span>
     </div>
     <div class="ref-box">
       <strong>ADR (Architecture Decision Records) — Michael Nygard, 2011</strong>
@@ -1988,8 +1988,8 @@ pre {
   <div class="meth-section">
     <h3>6 — Key learnings from this design exercise</h3>
 
-    <h4>The rule_id in the PRD is the linchpin</h4>
-    <p>Everything in the DECLARED-WRITE path depends on the PM writing <code>action: supersede 1.1.1</code> in Business Rules Affected. Without that declaration, validate-knowledge falls back to PRD fetch + semantic comparison. The rule ID forces the human to be explicit at decision time — not at review time. This is the highest-leverage design choice in the whole system.</p>
+    <h4>Clear PRD prose is the linchpin</h4>
+    <p>Everything in the DECLARED-WRITE path depends on the PM writing clear intent in the PRD narrative — "this replaces the current earn rate", "this adds a modifier on top of", "this feature is being removed". No rule IDs, no structured annotation required. validate-knowledge reads that prose and determines whether it is unambiguous enough to execute without fetching the historical PRD. The PM's job is not to know rule IDs — it is to state intent clearly. That clarity, written at decision time, is the highest-leverage design choice in the whole system.</p>
 
     <h4>The <code>why</code> field is what enables conflict detection</h4>
     <p>Two formulas — <code>floor(order_total / 100)</code> and <code>floor(order_total / 100) × tier_mult</code> — look like a conflict. The <code>why</code> field on 1.1.1 ("simple flat rate, no tier") makes clear it is a supersede, not a contradiction. Without the <code>why</code> field, validate-knowledge cannot distinguish intentional replacement from accidental duplication. Verbose rules are not overhead — they are what makes the system work.</p>
