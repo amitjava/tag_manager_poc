@@ -1730,18 +1730,20 @@ pre {
       <line x1="410" y1="190" x2="410" y2="228" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
       <text x="420" y="207" fill="#94a3b8" font-size="11" font-weight="700">overlap found</text>
 
-      <!-- D2: Declaration? -->
+      <!-- D2: Intent clear from incoming PRD alone? -->
       <polygon points="410,230 560,280 410,330 260,280" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
-      <text x="410" y="275" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600">PRD declares rule_id + action?</text>
-      <text x="410" y="292" text-anchor="middle" fill="#94a3b8" font-size="11">Business Rules Affected section</text>
+      <text x="410" y="268" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600">Incoming PRD states intent clearly?</text>
+      <text x="410" y="284" text-anchor="middle" fill="#94a3b8" font-size="11">"replaces existing earn rule" /</text>
+      <text x="410" y="298" text-anchor="middle" fill="#94a3b8" font-size="11">"adds modifier on top of" / etc.</text>
 
       <!-- YES (declared) → right → DECLARED-WRITE -->
       <line x1="560" y1="280" x2="672" y2="280" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr-g)"/>
       <text x="614" y="272" text-anchor="middle" fill="#22c55e" font-size="11" font-weight="700">YES</text>
-      <rect x="674" y="252" width="136" height="56" rx="8" fill="#052e16" stroke="#22c55e" stroke-width="1.5"/>
-      <text x="742" y="274" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="700">✓ DECLARED-WRITE</text>
-      <text x="742" y="288" text-anchor="middle" fill="#86efac" font-size="9">auto-execute declared intent</text>
-      <text x="742" y="301" text-anchor="middle" fill="#86efac" font-size="9">gate was at PRD write time</text>
+      <rect x="674" y="252" width="136" height="60" rx="8" fill="#052e16" stroke="#22c55e" stroke-width="1.5"/>
+      <text x="742" y="272" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="700">✓ DECLARED-WRITE</text>
+      <text x="742" y="286" text-anchor="middle" fill="#86efac" font-size="9">intent clear from PRD text</text>
+      <text x="742" y="299" text-anchor="middle" fill="#86efac" font-size="9">no second fetch needed</text>
+      <text x="742" y="312" text-anchor="middle" fill="#86efac" font-size="9">PM decision already made</text>
 
       <!-- DECLARED-WRITE dashed arrow to chain check (D4) -->
       <line x1="742" y1="308" x2="742" y2="710" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,3"/>
@@ -1752,9 +1754,10 @@ pre {
       <text x="420" y="354" fill="#94a3b8" font-size="11" font-weight="700">NO</text>
 
       <!-- Fetch PRD box -->
-      <rect x="270" y="370" width="280" height="52" rx="8" fill="#1c1917" stroke="#78716c" stroke-width="1.5"/>
-      <text x="410" y="392" text-anchor="middle" fill="#e7e5e4" font-size="12" font-weight="600">📥 fetch prd  gh issue view N</text>
-      <text x="410" y="410" text-anchor="middle" fill="#a8a29e" font-size="10">read both PRDs · semantic comparison</text>
+      <rect x="240" y="370" width="340" height="60" rx="8" fill="#1c1917" stroke="#78716c" stroke-width="1.5"/>
+      <text x="410" y="390" text-anchor="middle" fill="#e7e5e4" font-size="12" font-weight="600">📥 fetch historical PRD</text>
+      <text x="410" y="406" text-anchor="middle" fill="#a8a29e" font-size="10">gh issue view &lt;introduced_prd of overlapping rule&gt;</text>
+      <text x="410" y="421" text-anchor="middle" fill="#a8a29e" font-size="10">read original intent · compare with incoming PRD</text>
 
       <!-- Arrow down -->
       <line x1="410" y1="422" x2="410" y2="458" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
