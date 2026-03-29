@@ -1706,8 +1706,9 @@ pre {
       </defs>
 
       <!-- START -->
-      <rect x="260" y="10" width="300" height="44" rx="22" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-      <text x="410" y="37" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="600">Extract rule text from PRD</text>
+      <rect x="240" y="10" width="340" height="44" rx="22" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+      <text x="410" y="30" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="600">New PRD proposed</text>
+      <text x="410" y="47" text-anchor="middle" fill="#94a3b8" font-size="10">extract rule text · scan existing YAML rules</text>
 
       <!-- Arrow down -->
       <line x1="410" y1="54" x2="410" y2="88" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
@@ -1732,9 +1733,9 @@ pre {
 
       <!-- D2: Intent clear from incoming PRD alone? -->
       <polygon points="410,230 560,280 410,330 260,280" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
-      <text x="410" y="268" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600">Incoming PRD states intent clearly?</text>
-      <text x="410" y="284" text-anchor="middle" fill="#94a3b8" font-size="11">"replaces existing earn rule" /</text>
-      <text x="410" y="298" text-anchor="middle" fill="#94a3b8" font-size="11">"adds modifier on top of" / etc.</text>
+      <text x="410" y="270" text-anchor="middle" fill="#e2e8f0" font-size="11" font-weight="600">PRD clearly states intent?</text>
+      <text x="410" y="284" text-anchor="middle" fill="#94a3b8" font-size="10">"replaces" / "adds modifier"</text>
+      <text x="410" y="298" text-anchor="middle" fill="#94a3b8" font-size="10">"retires" / "VIP-only variant"</text>
 
       <!-- YES (declared) → right → DECLARED-WRITE -->
       <line x1="560" y1="280" x2="672" y2="280" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr-g)"/>
@@ -1754,10 +1755,10 @@ pre {
       <text x="420" y="354" fill="#94a3b8" font-size="11" font-weight="700">NO</text>
 
       <!-- Fetch PRD box -->
-      <rect x="240" y="370" width="340" height="60" rx="8" fill="#1c1917" stroke="#78716c" stroke-width="1.5"/>
-      <text x="410" y="390" text-anchor="middle" fill="#e7e5e4" font-size="12" font-weight="600">📥 fetch historical PRD</text>
-      <text x="410" y="406" text-anchor="middle" fill="#a8a29e" font-size="10">gh issue view &lt;introduced_prd of overlapping rule&gt;</text>
-      <text x="410" y="421" text-anchor="middle" fill="#a8a29e" font-size="10">read original intent · compare with incoming PRD</text>
+      <rect x="250" y="370" width="320" height="56" rx="8" fill="#1c1917" stroke="#78716c" stroke-width="1.5"/>
+      <text x="410" y="391" text-anchor="middle" fill="#e7e5e4" font-size="12" font-weight="600">📥 fetch historical PRD</text>
+      <text x="410" y="407" text-anchor="middle" fill="#a8a29e" font-size="10">gh issue view &lt;introduced_prd&gt;</text>
+      <text x="410" y="420" text-anchor="middle" fill="#a8a29e" font-size="10">read original intent · compare with incoming</text>
 
       <!-- Arrow down -->
       <line x1="410" y1="422" x2="410" y2="458" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
@@ -1789,11 +1790,11 @@ pre {
       <!-- Three branches from Q3 -->
       <!-- Left: SCOPE-INFERRED -->
       <line x1="290" y1="614" x2="104" y2="660" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arr-r)"/>
-      <rect x="10" y="660" width="154" height="68" rx="8" fill="#2d0a0a" stroke="#ef4444" stroke-width="1.5"/>
-      <text x="87" y="678" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="700">❌ SCOPE-INFERRED</text>
-      <text x="87" y="693" text-anchor="middle" fill="#fca5a5" font-size="9">Modifying a rule you</text>
-      <text x="87" y="706" text-anchor="middle" fill="#fca5a5" font-size="9">did not author</text>
-      <text x="87" y="720" text-anchor="middle" fill="#fca5a5" font-size="9">→ human authorises</text>
+      <rect x="10" y="655" width="154" height="74" rx="8" fill="#2d0a0a" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="87" y="673" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="700">❌ SCOPE-INFERRED</text>
+      <text x="87" y="687" text-anchor="middle" fill="#fca5a5" font-size="9">Modifying a rule you</text>
+      <text x="87" y="700" text-anchor="middle" fill="#fca5a5" font-size="9">did not author</text>
+      <text x="87" y="715" text-anchor="middle" fill="#fca5a5" font-size="9">→ human authorises</text>
 
       <!-- Center: CONFLICT-UNRESOLVABLE -->
       <line x1="410" y1="621" x2="410" y2="660" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arr-r)"/>
