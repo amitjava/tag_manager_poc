@@ -2316,39 +2316,32 @@ pre {
     <div class="state-box" style="overflow-x:auto;">
       <pre style="font-size:0.8rem;line-height:1.8;"><span class="y-comment"># Platform-level (project root)</span>
 <span class="y-key">CLAUDE.md</span>                           <span class="y-comment"># process rules, phase definitions, skill invocations</span>
-<span class="y-key">PLATFORM_CONTEXT.md</span>                 <span class="y-comment"># platform overview, capabilities (planned → live), active seams</span>
+<span class="y-key">PLATFORM_CONTEXT.md</span>                 <span class="y-comment"># platform overview, capabilities (planned → live), active cross-domain contracts</span>
 <span class="y-key">AGENT_CONTEXT.md</span>                    <span class="y-comment"># platform agent entry point — reading order for any new task</span>
-<span class="y-key">UBIQUITOUS_LANGUAGE.md</span>              <span class="y-comment"># controlled domain vocabulary — source of truth for terms</span>
 
 <span class="y-comment"># Process docs</span>
 <span class="y-key">docs/</span>
-  <span class="y-key">PROCESS_LOG.md</span>                    <span class="y-comment"># step log — date, what shipped, issues closed, tests passing</span>
-  <span class="y-key">UNKNOWNS.md</span>                       <span class="y-comment"># open questions; resolved unknowns marked closed by /ship-feature</span>
-  <span class="y-key">system-architecture.md</span>            <span class="y-comment"># domain table, seam table, cross-domain dependencies</span>
-  <span class="y-key">contracts/</span>
+  <span class="y-key">system-architecture.md</span>            <span class="y-comment"># domain table, cross-domain dependency map</span>
+  <span class="y-key">cross-domain/</span>                     <span class="y-comment"># optional — only needed when two domains share a boundary</span>
     <span class="y-key">&lt;provider&gt;→&lt;consumer&gt;/</span>
       <span class="y-key">FUNCTIONAL.md</span>                 <span class="y-comment"># business reason, boundary rules, UX if provider unavailable</span>
       <span class="y-key">ARCHITECTURE.md</span>               <span class="y-comment"># integration method, versioning, breaking change protocol</span>
       <span class="y-key">DATA.md</span>                       <span class="y-comment"># exact fields crossing boundary, types, cache rules</span>
 
-<span class="y-comment"># Domain knowledge (one folder per domain)</span>
+<span class="y-comment"># Domain knowledge (one folder per domain) — REQUIRED files starred ★</span>
 <span class="y-key">backend/src/domains/&lt;name&gt;/docs/</span>
-  <span class="y-key">AGENT_CONTEXT.md</span>                  <span class="y-comment"># domain entry point — reading order, common tasks, do-not-touch</span>
-  <span class="y-key">DOMAIN_BUSINESS.md</span>                <span class="y-comment"># use cases, domain language, out-of-scope, open questions</span>
-  <span class="y-key">domain-rules.yaml</span>                 <span class="y-comment"># ★ structured business rules registry — THE source of truth</span>
-  <span class="y-key">DOMAIN_API.md</span>                     <span class="y-comment"># human-readable API contract (derived from openapi.yaml)</span>
-  <span class="y-key">openapi.yaml</span>                      <span class="y-comment"># machine-readable API spec (generated from router code)</span>
-  <span class="y-key">DOMAIN_BACKEND_ARCHITECTURE.md</span>    <span class="y-comment"># module map, data flow, patterns used, known debt</span>
-  <span class="y-key">DOMAIN_DATA.md</span>                    <span class="y-comment"># tables owned, columns, constraints, migration list</span>
+  <span class="y-key">AGENT_CONTEXT.md</span>                  <span class="y-comment"># ★ domain entry point — reading order, common tasks, do-not-touch</span>
+  <span class="y-key">DOMAIN_BUSINESS.md</span>                <span class="y-comment"># ★ use cases, domain language, out-of-scope — NO rule IDs, prose only</span>
+  <span class="y-key">domain-rules.yaml</span>                 <span class="y-comment"># ★ structured business rules registry — ONLY file that contains rule IDs</span>
+  <span class="y-key">openapi.yaml</span>                      <span class="y-comment"># ★ machine-readable API spec (generated from router code)</span>
+  <span class="y-key">DOMAIN_BACKEND_ARCHITECTURE.md</span>    <span class="y-comment"># ★ module map, data flow, patterns used, known debt</span>
+  <span class="y-key">DOMAIN_DATA.md</span>                    <span class="y-comment"># ★ tables owned, columns, constraints, migration list</span>
+  <span class="y-key">DOMAIN_API.md</span>                     <span class="y-comment">#   optional — human-readable companion to openapi.yaml</span>
 
 <span class="y-comment"># Frontend domain knowledge</span>
 <span class="y-key">frontend/src/domains/&lt;name&gt;/docs/</span>
-  <span class="y-key">AGENT_CONTEXT.md</span>                  <span class="y-comment"># frontend domain entry point</span>
-  <span class="y-key">DOMAIN_FRONTEND_ARCHITECTURE.md</span>   <span class="y-comment"># component map, state management, patterns</span>
-
-<span class="y-comment"># Business / product layer</span>
-<span class="y-key">business/product/</span>
-  <span class="y-key">FEATURES.md</span>                       <span class="y-comment"># feature index — name, PRD link, status, shipped date</span></pre>
+  <span class="y-key">AGENT_CONTEXT.md</span>                  <span class="y-comment"># ★ frontend domain entry point</span>
+  <span class="y-key">DOMAIN_FRONTEND_ARCHITECTURE.md</span>   <span class="y-comment"># ★ component map, state management, patterns</span></pre>
     </div>
   </div>
 
@@ -2388,35 +2381,34 @@ pre {
           <td class="code-cell" style="vertical-align:top;">DOMAIN_BUSINESS.md</td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 1 (grill-me) and after each shipped PRD</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Plain-language description of what the domain does</li>
+            <li>Plain-language description of what the domain does — written for PM and business audience</li>
             <li>All use cases — one entry per user story, written in business language</li>
             <li>Domain vocabulary — key terms and their precise meaning in this domain</li>
             <li>What is explicitly out of scope for this domain</li>
-            <li>Open questions and links to UNKNOWNS.md for unresolved items</li>
-            <li>Promoted business rules narrative (prose context, not the authoritative rules — those are in domain-rules.yaml)</li>
             <li>Stakeholder context — who cares about this domain and why</li>
+            <li><strong>Does NOT contain rule IDs.</strong> Prose context only — authoritative rules with IDs live in domain-rules.yaml</li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">AGENT_CONTEXT.md</td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When new domains are added or seams become active</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When new domains added or cross-domain contracts become active</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Prescribed reading order — which files to read first and why</li>
             <li>Common tasks table — the 5–8 most frequent agent tasks in this domain</li>
-            <li>Do-not-touch list — files or areas that require special care or human approval</li>
-            <li>Active seams this domain is a party to</li>
+            <li>Do-not-touch list — files or areas that require human approval before change</li>
+            <li>Active cross-domain contracts this domain is a party to</li>
             <li>Key invariants the agent must not violate (e.g. "never delete from orders table directly")</li>
-            <li>Current phase of the domain — how mature/stable the code is</li>
+            <li>Current maturity phase of the domain — affects how conservative the agent should be</li>
           </ul></td>
         </tr>
         <tr>
           <td class="code-cell" style="vertical-align:top;">PLATFORM_CONTEXT.md</td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When capabilities move Planned → Live, or seams activate</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When capabilities move Planned → Live, or cross-domain contracts activate</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Platform overview — what this system does in one paragraph</li>
             <li>All domains and their current status (planned / in-progress / live)</li>
             <li>Capabilities index — what the platform can do, with live/planned status per capability</li>
-            <li>Active seams table — which domain pairs have established contracts</li>
+            <li>Active cross-domain contracts — which domain pairs have established boundaries</li>
             <li>Technology stack summary — runtime, database, deployment target</li>
             <li>Team structure — who owns which domain</li>
             <li>Current release stage and known constraints</li>
@@ -2436,13 +2428,12 @@ pre {
           </ul></td>
         </tr>
         <tr>
-          <td class="code-cell" style="vertical-align:top;">DOMAIN_API.md</td>
+          <td class="code-cell" style="vertical-align:top;">DOMAIN_API.md <span style="font-size:0.75rem;color:#9ca3af;font-weight:400;">(optional)</span></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for any API-touching PRD</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Human-readable API contract derived from openapi.yaml</li>
+            <li>Human-readable companion to openapi.yaml — skip if team is comfortable reading the spec directly</li>
             <li>Business-language description of what each endpoint does and why it exists</li>
-            <li>Who calls each endpoint and under what circumstances</li>
-            <li>Business rules enforced at the API boundary (cross-reference to domain-rules.yaml)</li>
+            <li>Business rules enforced at each endpoint — described in prose, not rule IDs</li>
             <li>Error codes and their business meaning (not just HTTP status)</li>
             <li>Rate limits, pagination conventions, and caching guidance</li>
             <li>Breaking change history — what changed between versions and why</li>
@@ -2475,40 +2466,15 @@ pre {
           </ul></td>
         </tr>
         <tr>
-          <td class="code-cell" style="vertical-align:top;">PROCESS_LOG.md</td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Once per shipped PRD — never mid-cycle</td>
+          <td class="code-cell" style="vertical-align:top;">cross-domain/* <span style="font-size:0.75rem;color:#9ca3af;font-weight:400;">(conditional)</span></td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Written once per boundary before first cross-domain PRD</td>
           <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Chronological log of every shipped feature — date, feature name, PRD link</li>
-            <li>Files created or modified per feature</li>
-            <li>GitHub issues closed per feature</li>
-            <li>Test counts passing at ship time</li>
-            <li>Checks run (lint, type check, schema validation, CI)</li>
-            <li>Known gaps or deferred items at ship time</li>
-            <li>Who approved the ship</li>
-          </ul></td>
-        </tr>
-        <tr>
-          <td class="code-cell" style="vertical-align:top;">contracts/*/</td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Written once per seam before first cross-domain PRD</td>
-          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>FUNCTIONAL.md — business reason the seam exists, what capability is consumed</li>
+            <li>Only created when two domains share a boundary — skip entirely for single-domain projects</li>
+            <li>FUNCTIONAL.md — business reason the boundary exists, what capability is consumed</li>
             <li>FUNCTIONAL.md — user experience impact if the provider is unavailable</li>
-            <li>FUNCTIONAL.md — business rules that apply at the boundary</li>
-            <li>ARCHITECTURE.md — integration method (HTTP / event / shared interface)</li>
-            <li>ARCHITECTURE.md — versioning protocol and breaking change process</li>
+            <li>ARCHITECTURE.md — integration method (HTTP / event / shared interface), versioning protocol</li>
             <li>DATA.md — exact fields crossing the boundary with types and ownership</li>
             <li>DATA.md — which fields the consumer may cache vs must re-fetch</li>
-          </ul></td>
-        </tr>
-        <tr>
-          <td class="code-cell" style="vertical-align:top;">UNKNOWNS.md</td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Added during grill-me; closed when feature ships</td>
-          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Open questions surfaced during grill-me that could not be answered in session</li>
-            <li>Each entry: question, who raised it, date, impact if unresolved</li>
-            <li>Status per entry: open / in-progress / resolved</li>
-            <li>Resolution notes — what the answer was and which PRD closed it</li>
-            <li>Dependency flag — which future PRDs are blocked on this unknown being resolved</li>
           </ul></td>
         </tr>
       </tbody>
@@ -2520,14 +2486,14 @@ pre {
     <p>When an agent starts any task, it reads files in this order. Each layer provides context for the next:</p>
     <ol style="margin:14px 0 0 20px;line-height:2.2;font-size:0.9rem;">
       <li><code>CLAUDE.md</code> — process rules and phase definitions (always first)</li>
-      <li><code>AGENT_CONTEXT.md</code> (platform) — reading order and active seams</li>
+      <li><code>AGENT_CONTEXT.md</code> (platform) — reading order and active cross-domain contracts</li>
       <li><code>PLATFORM_CONTEXT.md</code> — what capabilities exist and which are live</li>
       <li><code>backend/src/domains/&lt;name&gt;/docs/AGENT_CONTEXT.md</code> — domain-specific entry point</li>
-      <li><code>DOMAIN_BUSINESS.md</code> — use cases and business context for the domain</li>
-      <li><code>domain-rules.yaml</code> — active business rules (primary source of truth for decisions)</li>
-      <li>Any seam contracts relevant to the task (<code>docs/contracts/</code>)</li>
+      <li><code>DOMAIN_BUSINESS.md</code> — use cases and business context (prose only, no rule IDs)</li>
+      <li><code>domain-rules.yaml</code> — active business rules with IDs (primary source of truth for decisions)</li>
+      <li>Any cross-domain contracts relevant to the task (<code>docs/cross-domain/</code>) — if applicable</li>
     </ol>
-    <p style="margin-top:12px;">An agent that skips <code>domain-rules.yaml</code> and relies on DOMAIN_BUSINESS.md prose alone for business rule knowledge will produce inconsistent results — the YAML is the authoritative, conflict-checked version.</p>
+    <p style="margin-top:12px;">An agent that skips <code>domain-rules.yaml</code> and relies on DOMAIN_BUSINESS.md prose alone will produce inconsistent results — the YAML is the authoritative, conflict-checked version and the only file containing rule IDs.</p>
   </div>
 
     <div class="chapter-nav">
