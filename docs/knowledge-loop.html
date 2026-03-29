@@ -1438,19 +1438,17 @@ pre {
 <span class="vk-section">Step 1 — cheap LLM text scan of domain-rules.yaml (4 active rules)...</span>
 <span class="vk-indent vk-warn">⚠ OVERLAP — rule 1.4.1 describes the same business decision (point redemption at checkout).
   LLM reasoning: "Both rules govern how many points can be redeemed as a discount on an order —
-  they describe the same redemption decision."
-  Fetch PRDs to verify intentional supersede.</span>
+  they describe the same redemption decision."</span>
 
-<span class="vk-section">Step 2 — fetch PRD context...</span>
-<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 3</span>  <span class="vk-dim">— source of 1.4.1</span>
-<span class="vk-indent">  Cap: 50% of gross total. Reason: prevent full-discount abuse.</span>
-<span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 7</span>  <span class="vk-dim">— incoming PRD</span>
-<span class="vk-indent">  Cap: 40% of gross total. Reason: protect minimum order revenue.</span></span>
+<span class="vk-section">Step 2 — check if incoming PRD states intent clearly...</span>
+<span class="vk-indent vk-ok">✓ DECLARED-WRITE — PRD #7 declares: action: supersede 1.4.1. Intent confirmed.
+  No verification fetch needed. Supersede will proceed.</span>
 
-<span class="vk-section">Step 3 — semantic comparison...</span>
-<span class="vk-indent vk-dim">Same slot, clear version boundary, explicit reason. Intentional supersede. ✓</span>
+<span class="vk-section">Step 3 — fetch historical PRD for chain analysis (what specifically changed)...</span>
+<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 3</span>  <span class="vk-dim">— source of 1.4.1, need to understand what is changing</span>
+<span class="vk-indent">  Old cap: 50% of gross total. New cap (PRD #7): 40% of gross total.</span></span>
 
-<span class="vk-section">Step 4 — scan for depends_on chain...</span>
+<span class="vk-section">Step 4 — scan all rules for depends_on: [1.4.1]...</span>
 <span class="vk-indent vk-warn">⚠ CHAIN NOTICE — 1.1.3 declares depends_on: [1.4.1]</span>
 <span class="vk-indent vk-dim">1.4.1 is being superseded. 1.1.3 depends on it.
   1.1.3 formula: floor(effective_total/100) × tier_mult
