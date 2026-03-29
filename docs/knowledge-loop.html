@@ -506,6 +506,16 @@ pre {
     <div class="prog-label">Methodology</div>
     <div class="prog-desc">Reference guide</div>
   </div>
+  <div id="prog-10" class="prog-step" style="background:#f0fdf4;" onclick="goCh(10)">
+    <div class="prog-num" style="color:#16a34a;">⊞</div>
+    <div class="prog-label">Schema</div>
+    <div class="prog-desc">Field reference</div>
+  </div>
+  <div id="prog-11" class="prog-step" style="background:#fefce8;" onclick="goCh(11)">
+    <div class="prog-num" style="color:#ca8a04;">⊟</div>
+    <div class="prog-label">Files</div>
+    <div class="prog-desc">Structure</div>
+  </div>
 </div>
 </nav>
 
@@ -2012,17 +2022,428 @@ pre {
 
     <div class="chapter-nav">
       <button class="ch-nav-btn" onclick="goCh(8)">← PRD #8 — Blocked</button>
-      <span class="ch-nav-count">9 of 9</span>
-      <button class="ch-nav-btn" disabled>(end)</button>
+      <span class="ch-nav-count">9 of 11</span>
+      <button class="ch-nav-btn" onclick="goCh(10)">⊞ Schema →</button>
     </div>
   </div><!-- /chapter-body -->
 </div><!-- /chapter 9 -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 10 — SCHEMA REFERENCE                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="chapter" id="ch-10">
+
+  <div class="chapter-header" onclick="goCh(10)">
+    <div class="ch-num" style="background:#dcfce7;color:#16a34a;width:48px;height:48px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;">⊞</div>
+    <div>
+      <div class="ch-title">domain-rules.yaml — full field reference</div>
+      <div class="ch-desc">Every field in domain-rules.yaml, whether it is required or optional, the type, validation constraints, and purpose. Use this as the canonical spec when authoring rules or building tooling against the YAML.</div>
+    </div>
+    <span class="ch-tag" style="background:#dcfce7;color:#16a34a;">Schema</span>
+    <span class="ch-chevron">▾</span>
+  </div>
+
+  <div class="chapter-body">
+
+  <div class="meth-section">
+    <h3>Rule status lifecycle</h3>
+    <p>Every rule has a <code>status</code> field that controls which fields are required and how validate-knowledge treats it:</p>
+    <table class="code-table" style="margin-top:14px;">
+      <thead><tr><th>Status</th><th>Meaning</th><th>Can be written by</th></tr></thead>
+      <tbody>
+        <tr><td class="code-cell">draft</td><td>Rule is proposed but not yet in production code</td><td>validate-knowledge on incoming PRD</td></tr>
+        <tr><td class="code-cell">active</td><td>Rule is live in production, enforced in CI</td><td>validate-knowledge after code ships</td></tr>
+        <tr><td class="code-cell">superseded</td><td>Rule was replaced by a newer rule — kept as immutable history</td><td>validate-knowledge (never manual)</td></tr>
+        <tr><td class="code-cell">retired</td><td>Feature removed, no replacement — rule is permanently inactive</td><td>validate-knowledge on retire PRD</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="meth-section">
+    <h3>Field reference — domain-rules.yaml</h3>
+    <table class="code-table" style="margin-top:14px;">
+      <thead>
+        <tr>
+          <th style="width:160px">Field</th>
+          <th style="width:90px">Type</th>
+          <th style="width:110px">Required</th>
+          <th>Description &amp; constraints</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">IDENTITY</td>
+        </tr>
+        <tr>
+          <td class="code-cell">id</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#22c55e;font-size:0.82rem;font-weight:600;">Required</td>
+          <td>Numeric format <code>N.N.N</code> — domain number · concept number · version. Example: <code>1.1.3</code> = loyalty domain, earn concept, version 3. Never reused after a rule is superseded — increment the version for replacements.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">status</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">enum</td>
+          <td style="color:#22c55e;font-size:0.82rem;font-weight:600;">Required</td>
+          <td>One of: <code>draft</code> · <code>active</code> · <code>superseded</code> · <code>retired</code>. Set and updated only by validate-knowledge — never edited manually after creation.</td>
+        </tr>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">RULE CONTENT</td>
+        </tr>
+        <tr>
+          <td class="code-cell">plain_english</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#22c55e;font-size:0.82rem;font-weight:600;">Required</td>
+          <td><strong>Primary matching surface for conflict detection.</strong> Must be verbose — 3+ sentences covering: what the rule governs, when it applies, what it does not apply to, edge cases, and business intent. A cheap LLM compares this field against all other active rules to detect overlap. Short values like "1 point per dollar" are invalid — the LLM cannot reliably distinguish two short descriptions. Minimum ~80 words.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">formula</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if active</td>
+          <td>The calculation or condition in plain notation. Examples: <code>floor(net_total_cents / 100) * tier_mult</code>, <code>min(redeem_points, floor(gross * 0.4))</code>. Must match what the code implements — CI verifies this via <code>test_cases</code>. Omitted for <code>retired</code> rules.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">why</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#22c55e;font-size:0.82rem;font-weight:600;">Required</td>
+          <td>Business rationale — why this rule exists or why this version supersedes the previous. Enables validate-knowledge to distinguish intentional replacement from accidental duplication. Without <code>why</code>, two rules with similar formulas look like a conflict even when one clearly replaces the other.</td>
+        </tr>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">PROVENANCE</td>
+        </tr>
+        <tr>
+          <td class="code-cell">introduced_prd</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">integer</td>
+          <td style="color:#22c55e;font-size:0.82rem;font-weight:600;">Required</td>
+          <td>PRD number that first introduced this rule. Used by validate-knowledge to fetch the historical PRD when chain analysis needs context. Also the primary audit trail link — every rule traces back to a product decision.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">user_story_ref</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">Optional</td>
+          <td>Which user stories in the PRD this rule satisfies. Example: <code>"PRD #3 Story 1, Story 2"</code>. Useful for tracing a rule back to a specific acceptance criterion but not required for conflict detection or CI.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">modified_prd</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">integer</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Set by validate-knowledge</td>
+          <td>PRD that caused a retroactive modification to this rule (e.g. scope annotation added by SCOPE-INFERRED). Without this, git blame on domain-rules.yaml cannot explain why a rule changed between PRDs. Never set manually.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">modified_by</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Set by validate-knowledge</td>
+          <td>Attribution for retroactive modifications. Always <code>"validate-knowledge"</code>. Distinguishes automated modifications from original author intent. Required alongside <code>modified_prd</code> whenever a rule is changed after initial creation.</td>
+        </tr>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">SUPERSEDE LINEAGE</td>
+        </tr>
+        <tr>
+          <td class="code-cell">supersedes</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Conditional</td>
+          <td>ID of the rule this rule replaces. Required when this rule is a newer version of an existing rule. validate-knowledge uses this to mark the referenced rule as <code>superseded</code> and sets its <code>superseded_by</code> field. If present, the referenced rule must exist and be <code>active</code> or <code>draft</code>.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">superseded_by</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Set by validate-knowledge</td>
+          <td>ID of the rule that replaced this one. Set automatically when a rule's status changes to <code>superseded</code>. Never written manually. Present on all <code>superseded</code> rules, absent on all other statuses.</td>
+        </tr>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">COMPOSITION (two rules active simultaneously on same concept)</td>
+        </tr>
+        <tr>
+          <td class="code-cell">composes_with</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Conditional</td>
+          <td>ID of the rule this rule combines with. Both rules remain <code>active</code> simultaneously — this one modifies or extends the other. Triggers validate-knowledge-COMPOSITION outcome instead of conflict. Requires <code>composition_order</code> and <code>modifier_type</code> to be set.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">composition_order</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">enum</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if composes_with set</td>
+          <td><code>applied_before</code> or <code>applied_after</code>. Defines evaluation order — which rule runs first. Example: base earn rule runs first, weekend modifier applies after. Absence when <code>composes_with</code> is set is a schema validation error.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">modifier_type</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">enum</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if composes_with set</td>
+          <td>How this rule modifies the base rule's result. One of: <code>additive</code> (adds to result), <code>multiplicative</code> (multiplies result), <code>conditional</code> (replaces result under specific condition). Used to generate the combined formula shown in the validate-knowledge COMPOSITION output.</td>
+        </tr>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">SCOPE (non-overlapping customer segments)</td>
+        </tr>
+        <tr>
+          <td class="code-cell">scope</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">Optional</td>
+          <td>Named customer segment this rule applies to. Examples: <code>vip</code>, <code>non_vip</code>, <code>bronze</code>. Absence means the rule applies to all customers. When an incoming rule has a narrower scope than an existing rule on the same concept, validate-knowledge triggers SCOPE-INFERRED rather than conflict — the two rules cover non-overlapping populations.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">scope_condition</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if scope set</td>
+          <td>Boolean expression that evaluates the scope at runtime. Example: <code>"customer.vip == true"</code>. Must be a deterministic condition against available customer attributes. Absence when <code>scope</code> is set is a schema validation error.</td>
+        </tr>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">DEPENDENCY</td>
+        </tr>
+        <tr>
+          <td class="code-cell">depends_on</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">array</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">Optional</td>
+          <td>Array of rule IDs whose output this rule's formula consumes. Example: <code>[1.4.1]</code> means this rule receives a pre-computed value from rule 1.4.1. When any rule in this array is superseded or retired, validate-knowledge triggers CHAIN-IMPACT and halts for human confirmation before writing.</td>
+        </tr>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">RETIREMENT</td>
+        </tr>
+        <tr>
+          <td class="code-cell">retired_prd</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">integer</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if retired</td>
+          <td>PRD number that retired this rule. Required when <code>status: retired</code>. Serves the same audit purpose as <code>introduced_prd</code> — every lifecycle event traces to a product decision.</td>
+        </tr>
+        <tr>
+          <td class="code-cell">retire_reason</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">string</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if retired</td>
+          <td>Why the rule was retired. Should include business context — e.g. "Birthday bonus removed — 0.3% redemption rate, high ops cost." Enables future teams to understand whether a feature was retired for good reasons or could be revived.</td>
+        </tr>
+
+        <tr style="background:#0f1a0f;">
+          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">CI VERIFICATION</td>
+        </tr>
+        <tr>
+          <td class="code-cell">test_cases</td>
+          <td style="color:#94a3b8;font-size:0.82rem;">array</td>
+          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if active</td>
+          <td>Array of <code>{input, expected}</code> pairs. A CI check reads every <code>active</code> rule and verifies each test case passes against the actual code. This is the strongest safeguard: if validate-knowledge writes a rule with a wrong formula, or if code is deployed that contradicts an active rule, the CI build fails. Removed from CI when a rule is retired (<code>test_cases: []</code>). At least one case required per active rule.</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="meth-section">
+    <h3>Minimal valid rule (new slot, no history)</h3>
+    <div class="state-box">
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+<span class="y-new">  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.1</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">plain_english</span><span class="y-val">:</span> <span class="y-str">"Customers earn loyalty points on every completed order at a rate of 1 point
+      per whole dollar of the order total (net of discounts). Fractional dollars
+      are discarded. Applies to all tiers and all order types except gift card
+      purchases. Cancelled and refunded orders earn zero points. Intent: a simple,
+      predictable rate that customers can calculate mentally."</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(net_total_cents / 100)"</span>
+    <span class="y-key">why</span><span class="y-val">:</span> <span class="y-str">"Simple flat rate. Fractional points rejected in grill-me — adds complexity,
+      no perceived customer value."</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">1</span>
+    <span class="y-key">test_cases</span><span class="y-val">:</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ net_total_cents: 2500 }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ net_total_cents: 99 }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 0 }</span></span></pre>
+    </div>
+  </div>
+
+  <div class="meth-section">
+    <h3>Maximal valid rule (composition modifier, scoped, with dependency and history)</h3>
+    <div class="state-box">
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+<span class="y-new">  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.2.1</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">plain_english</span><span class="y-val">:</span> <span class="y-str">"On Saturday and Sunday, all loyalty point earnings are multiplied by 1.5
+      on top of the normal tier-multiplied rate from rule 1.1.3. This rule modifies
+      the base earn result — it does not replace it. Combined formula:
+      floor(net_total_cents/100) * tier_mult * 1.5 (weekends only). A Gold-tier
+      customer earns 3 points per dollar on weekdays and 4.5 on weekends (floored).
+      Applies to all tiers equally. Does not apply on public holidays. Intent:
+      incentivise off-peak weekend ordering."</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"base_points * 1.5"</span>
+    <span class="y-key">why</span><span class="y-val">:</span> <span class="y-str">"Weekend incentive to drive off-peak orders. Stacks with tier, not replaces."</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">4</span>
+    <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #4 Story 1"</span>
+    <span class="y-key">composes_with</span><span class="y-val">:</span> <span class="y-str">1.1.3</span>
+    <span class="y-key">composition_order</span><span class="y-val">:</span> <span class="y-str">applied_after</span>
+    <span class="y-key">modifier_type</span><span class="y-val">:</span> <span class="y-str">multiplicative</span>
+    <span class="y-key">scope</span><span class="y-val">:</span> <span class="y-str">weekend</span>
+    <span class="y-key">scope_condition</span><span class="y-val">:</span> <span class="y-str">"day_of_week IN [saturday, sunday]"</span>
+    <span class="y-key">depends_on</span><span class="y-val">:</span> <span class="y-val">[1.1.3]</span>
+    <span class="y-key">test_cases</span><span class="y-val">:</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ net_total_cents: 2500, tier_mult: 1, day: saturday }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 37 }</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ net_total_cents: 2500, tier_mult: 1, day: monday }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span></span></pre>
+    </div>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(9)">← Methodology</button>
+      <span class="ch-nav-count">10 of 11</span>
+      <button class="ch-nav-btn" onclick="goCh(11)">⊟ Files →</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 10 -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 11 — FILE STRUCTURE                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="chapter" id="ch-11">
+
+  <div class="chapter-header" onclick="goCh(11)">
+    <div class="ch-num" style="background:#fef9c3;color:#ca8a04;width:48px;height:48px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;">⊟</div>
+    <div>
+      <div class="ch-title">File structure — where everything lives</div>
+      <div class="ch-desc">The full directory layout of the knowledge layer. What each file is for, who reads it, who writes it, and how the files relate to each other.</div>
+    </div>
+    <span class="ch-tag" style="background:#fef9c3;color:#ca8a04;">Files</span>
+    <span class="ch-chevron">▾</span>
+  </div>
+
+  <div class="chapter-body">
+
+  <div class="meth-section">
+    <h3>Directory tree</h3>
+    <div class="state-box" style="overflow-x:auto;">
+      <pre style="font-size:0.8rem;line-height:1.8;"><span class="y-comment"># Platform-level (project root)</span>
+<span class="y-key">CLAUDE.md</span>                           <span class="y-comment"># process rules, phase definitions, skill invocations</span>
+<span class="y-key">PLATFORM_CONTEXT.md</span>                 <span class="y-comment"># platform overview, capabilities (planned → live), active seams</span>
+<span class="y-key">AGENT_CONTEXT.md</span>                    <span class="y-comment"># platform agent entry point — reading order for any new task</span>
+<span class="y-key">UBIQUITOUS_LANGUAGE.md</span>              <span class="y-comment"># controlled domain vocabulary — source of truth for terms</span>
+
+<span class="y-comment"># Process docs</span>
+<span class="y-key">docs/</span>
+  <span class="y-key">PROCESS_LOG.md</span>                    <span class="y-comment"># step log — date, what shipped, issues closed, tests passing</span>
+  <span class="y-key">UNKNOWNS.md</span>                       <span class="y-comment"># open questions; resolved unknowns marked closed by /ship-feature</span>
+  <span class="y-key">system-architecture.md</span>            <span class="y-comment"># domain table, seam table, cross-domain dependencies</span>
+  <span class="y-key">contracts/</span>
+    <span class="y-key">&lt;provider&gt;→&lt;consumer&gt;/</span>
+      <span class="y-key">FUNCTIONAL.md</span>                 <span class="y-comment"># business reason, boundary rules, UX if provider unavailable</span>
+      <span class="y-key">ARCHITECTURE.md</span>               <span class="y-comment"># integration method, versioning, breaking change protocol</span>
+      <span class="y-key">DATA.md</span>                       <span class="y-comment"># exact fields crossing boundary, types, cache rules</span>
+
+<span class="y-comment"># Domain knowledge (one folder per domain)</span>
+<span class="y-key">backend/src/domains/&lt;name&gt;/docs/</span>
+  <span class="y-key">AGENT_CONTEXT.md</span>                  <span class="y-comment"># domain entry point — reading order, common tasks, do-not-touch</span>
+  <span class="y-key">DOMAIN_BUSINESS.md</span>                <span class="y-comment"># use cases, domain language, out-of-scope, open questions</span>
+  <span class="y-key">domain-rules.yaml</span>                 <span class="y-comment"># ★ structured business rules registry — THE source of truth</span>
+  <span class="y-key">DOMAIN_API.md</span>                     <span class="y-comment"># human-readable API contract (derived from openapi.yaml)</span>
+  <span class="y-key">openapi.yaml</span>                      <span class="y-comment"># machine-readable API spec (generated from router code)</span>
+  <span class="y-key">DOMAIN_BACKEND_ARCHITECTURE.md</span>    <span class="y-comment"># module map, data flow, patterns used, known debt</span>
+  <span class="y-key">DOMAIN_DATA.md</span>                    <span class="y-comment"># tables owned, columns, constraints, migration list</span>
+
+<span class="y-comment"># Frontend domain knowledge</span>
+<span class="y-key">frontend/src/domains/&lt;name&gt;/docs/</span>
+  <span class="y-key">AGENT_CONTEXT.md</span>                  <span class="y-comment"># frontend domain entry point</span>
+  <span class="y-key">DOMAIN_FRONTEND_ARCHITECTURE.md</span>   <span class="y-comment"># component map, state management, patterns</span>
+
+<span class="y-comment"># Business / product layer</span>
+<span class="y-key">business/product/</span>
+  <span class="y-key">FEATURES.md</span>                       <span class="y-comment"># feature index — name, PRD link, status, shipped date</span></pre>
+    </div>
+  </div>
+
+  <div class="meth-section">
+    <h3>File ownership — who reads it, who writes it</h3>
+    <table class="code-table" style="margin-top:14px;">
+      <thead>
+        <tr>
+          <th style="width:220px">File</th>
+          <th style="width:130px">Written by</th>
+          <th style="width:130px">Read by</th>
+          <th>When it changes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="code-cell">domain-rules.yaml</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">validate-knowledge</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">validate-knowledge, CI, agents</td>
+          <td style="font-size:0.82rem;color:#94a3b8;">Every PRD that adds, supersedes, or retires a rule</td>
+        </tr>
+        <tr>
+          <td class="code-cell">DOMAIN_BUSINESS.md</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">/write-domain-business, /ship-feature</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">Agents writing PRDs, PM, new engineers</td>
+          <td style="font-size:0.82rem;color:#94a3b8;">After Phase 1 (grill-me) and after each shipped PRD</td>
+        </tr>
+        <tr>
+          <td class="code-cell">AGENT_CONTEXT.md</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">/scaffold-domain</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">Every agent at the start of every task</td>
+          <td style="font-size:0.82rem;color:#94a3b8;">When new domains are added or seams become active</td>
+        </tr>
+        <tr>
+          <td class="code-cell">PLATFORM_CONTEXT.md</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">/scaffold-domain, /ship-feature</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">Agents writing cross-domain PRDs</td>
+          <td style="font-size:0.82rem;color:#94a3b8;">When capabilities move from Planned → Live, or seams activate</td>
+        </tr>
+        <tr>
+          <td class="code-cell">openapi.yaml</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">/generate-domain-docs</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">Frontend agents, integration testing, API consumers</td>
+          <td style="font-size:0.82rem;color:#94a3b8;">After Phase 6 (tdd) completes for any API-touching PRD</td>
+        </tr>
+        <tr>
+          <td class="code-cell">PROCESS_LOG.md</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">/ship-feature</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">Team leads, auditors</td>
+          <td style="font-size:0.82rem;color:#94a3b8;">Once per shipped PRD — never mid-cycle</td>
+        </tr>
+        <tr>
+          <td class="code-cell">contracts/*/</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">/define-seam-contract</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">Both sides of a cross-domain feature</td>
+          <td style="font-size:0.82rem;color:#94a3b8;">Once per seam — written before the first cross-domain PRD is authored</td>
+        </tr>
+        <tr>
+          <td class="code-cell">UNKNOWNS.md</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">/grill-me (adds), /ship-feature (closes)</td>
+          <td style="font-size:0.82rem;color:#e2e8f0;">PM, agents writing dependent PRDs</td>
+          <td style="font-size:0.82rem;color:#94a3b8;">Added during grill-me, closed when feature ships</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="meth-section">
+    <h3>The knowledge hierarchy — reading order for agents</h3>
+    <p>When an agent starts any task, it reads files in this order. Each layer provides context for the next:</p>
+    <ol style="margin:14px 0 0 20px;line-height:2.2;font-size:0.9rem;">
+      <li><code>CLAUDE.md</code> — process rules and phase definitions (always first)</li>
+      <li><code>AGENT_CONTEXT.md</code> (platform) — reading order and active seams</li>
+      <li><code>PLATFORM_CONTEXT.md</code> — what capabilities exist and which are live</li>
+      <li><code>backend/src/domains/&lt;name&gt;/docs/AGENT_CONTEXT.md</code> — domain-specific entry point</li>
+      <li><code>DOMAIN_BUSINESS.md</code> — use cases and business context for the domain</li>
+      <li><code>domain-rules.yaml</code> — active business rules (primary source of truth for decisions)</li>
+      <li>Any seam contracts relevant to the task (<code>docs/contracts/</code>)</li>
+    </ol>
+    <p style="margin-top:12px;">An agent that skips <code>domain-rules.yaml</code> and relies on DOMAIN_BUSINESS.md prose alone for business rule knowledge will produce inconsistent results — the YAML is the authoritative, conflict-checked version.</p>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(10)">← Schema</button>
+      <span class="ch-nav-count">11 of 11</span>
+      <button class="ch-nav-btn" disabled>(end)</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 11 -->
 
 </div><!-- /main-content -->
 </div><!-- /layout -->
 
 <script>
-const TOTAL = 9;
+const TOTAL = 11;
 
 function goCh(n) {
   for (let i = 1; i <= TOTAL; i++) {
