@@ -2354,63 +2354,162 @@ pre {
 
   <div class="meth-section">
     <h3>File ownership — who reads it, who writes it</h3>
-    <table class="code-table" style="margin-top:14px;">
+    <table class="code-table" style="margin-top:14px;table-layout:fixed;width:100%;">
+      <colgroup>
+        <col style="width:220px">
+        <col style="width:200px">
+        <col>
+      </colgroup>
       <thead>
         <tr>
-          <th style="width:220px">File</th>
-          <th style="width:130px">Written by</th>
-          <th style="width:130px">Read by</th>
+          <th>File</th>
           <th>When it changes</th>
+          <th>Contents</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td class="code-cell">domain-rules.yaml</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">validate-knowledge</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">validate-knowledge, CI, agents</td>
-          <td style="font-size:0.82rem;color:#94a3b8;">Every PRD that adds, supersedes, or retires a rule</td>
+          <td class="code-cell" style="vertical-align:top;">domain-rules.yaml</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Every PRD that adds, supersedes, or retires a rule</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>All business rules for the domain, one entry per rule</li>
+            <li>Rule ID, status, formula, plain_english, why, introduced_prd</li>
+            <li>Supersede lineage — supersedes / superseded_by links</li>
+            <li>Composition metadata — composes_with, composition_order, modifier_type</li>
+            <li>Scope fields — scope name and scope_condition expression</li>
+            <li>Dependency links — depends_on array (triggers CHAIN-IMPACT)</li>
+            <li>Retirement fields — retired_prd, retire_reason</li>
+            <li>test_cases for every active rule (verified by CI)</li>
+            <li>Full immutable history — superseded rules stay, never deleted</li>
+            <li>Modification attribution — modified_prd, modified_by for retroactive changes</li>
+          </ul></td>
         </tr>
         <tr>
-          <td class="code-cell">DOMAIN_BUSINESS.md</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">/write-domain-business, /ship-feature</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">Agents writing PRDs, PM, new engineers</td>
-          <td style="font-size:0.82rem;color:#94a3b8;">After Phase 1 (grill-me) and after each shipped PRD</td>
+          <td class="code-cell" style="vertical-align:top;">DOMAIN_BUSINESS.md</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 1 (grill-me) and after each shipped PRD</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Plain-language description of what the domain does</li>
+            <li>All use cases — one entry per user story, written in business language</li>
+            <li>Domain vocabulary — key terms and their precise meaning in this domain</li>
+            <li>What is explicitly out of scope for this domain</li>
+            <li>Open questions and links to UNKNOWNS.md for unresolved items</li>
+            <li>Promoted business rules narrative (prose context, not the authoritative rules — those are in domain-rules.yaml)</li>
+            <li>Stakeholder context — who cares about this domain and why</li>
+          </ul></td>
         </tr>
         <tr>
-          <td class="code-cell">AGENT_CONTEXT.md</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">/scaffold-domain</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">Every agent at the start of every task</td>
-          <td style="font-size:0.82rem;color:#94a3b8;">When new domains are added or seams become active</td>
+          <td class="code-cell" style="vertical-align:top;">AGENT_CONTEXT.md</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When new domains are added or seams become active</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Prescribed reading order — which files to read first and why</li>
+            <li>Common tasks table — the 5–8 most frequent agent tasks in this domain</li>
+            <li>Do-not-touch list — files or areas that require special care or human approval</li>
+            <li>Active seams this domain is a party to</li>
+            <li>Key invariants the agent must not violate (e.g. "never delete from orders table directly")</li>
+            <li>Current phase of the domain — how mature/stable the code is</li>
+          </ul></td>
         </tr>
         <tr>
-          <td class="code-cell">PLATFORM_CONTEXT.md</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">/scaffold-domain, /ship-feature</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">Agents writing cross-domain PRDs</td>
-          <td style="font-size:0.82rem;color:#94a3b8;">When capabilities move from Planned → Live, or seams activate</td>
+          <td class="code-cell" style="vertical-align:top;">PLATFORM_CONTEXT.md</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">When capabilities move Planned → Live, or seams activate</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Platform overview — what this system does in one paragraph</li>
+            <li>All domains and their current status (planned / in-progress / live)</li>
+            <li>Capabilities index — what the platform can do, with live/planned status per capability</li>
+            <li>Active seams table — which domain pairs have established contracts</li>
+            <li>Technology stack summary — runtime, database, deployment target</li>
+            <li>Team structure — who owns which domain</li>
+            <li>Current release stage and known constraints</li>
+          </ul></td>
         </tr>
         <tr>
-          <td class="code-cell">openapi.yaml</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">/generate-domain-docs</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">Frontend agents, integration testing, API consumers</td>
-          <td style="font-size:0.82rem;color:#94a3b8;">After Phase 6 (tdd) completes for any API-touching PRD</td>
+          <td class="code-cell" style="vertical-align:top;">openapi.yaml</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for any API-touching PRD</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>OpenAPI 3.x machine-readable spec generated from router code</li>
+            <li>All endpoints — path, method, description</li>
+            <li>Request shapes — required and optional fields, types, validation rules</li>
+            <li>Response shapes — success and error schemas</li>
+            <li>Authentication requirements per endpoint</li>
+            <li>Example request/response pairs</li>
+            <li>Versioning information — current version, deprecated endpoints</li>
+          </ul></td>
         </tr>
         <tr>
-          <td class="code-cell">PROCESS_LOG.md</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">/ship-feature</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">Team leads, auditors</td>
-          <td style="font-size:0.82rem;color:#94a3b8;">Once per shipped PRD — never mid-cycle</td>
+          <td class="code-cell" style="vertical-align:top;">DOMAIN_API.md</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for any API-touching PRD</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Human-readable API contract derived from openapi.yaml</li>
+            <li>Business-language description of what each endpoint does and why it exists</li>
+            <li>Who calls each endpoint and under what circumstances</li>
+            <li>Business rules enforced at the API boundary (cross-reference to domain-rules.yaml)</li>
+            <li>Error codes and their business meaning (not just HTTP status)</li>
+            <li>Rate limits, pagination conventions, and caching guidance</li>
+            <li>Breaking change history — what changed between versions and why</li>
+          </ul></td>
         </tr>
         <tr>
-          <td class="code-cell">contracts/*/</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">/define-seam-contract</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">Both sides of a cross-domain feature</td>
-          <td style="font-size:0.82rem;color:#94a3b8;">Once per seam — written before the first cross-domain PRD is authored</td>
+          <td class="code-cell" style="vertical-align:top;">DOMAIN_BACKEND_ARCHITECTURE.md</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After Phase 6 (tdd) for structural changes</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Module map — one line per file with its responsibility</li>
+            <li>Data flow for the key operation (e.g. "how an order is placed")</li>
+            <li>Architectural patterns used — service layer, repository, event bus, etc.</li>
+            <li>External dependencies — third-party services, queues, caches</li>
+            <li>Known technical debt with estimated impact</li>
+            <li>Invariants the code must preserve (e.g. idempotency guarantees)</li>
+            <li>Test strategy — unit vs integration split, what is mocked and what is not</li>
+          </ul></td>
         </tr>
         <tr>
-          <td class="code-cell">UNKNOWNS.md</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">/grill-me (adds), /ship-feature (closes)</td>
-          <td style="font-size:0.82rem;color:#e2e8f0;">PM, agents writing dependent PRDs</td>
-          <td style="font-size:0.82rem;color:#94a3b8;">Added during grill-me, closed when feature ships</td>
+          <td class="code-cell" style="vertical-align:top;">DOMAIN_DATA.md</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After any PRD that changes schema or migration</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Tables owned by this domain — names and business purpose</li>
+            <li>Column-level reference — name, type, nullable, constraints, default</li>
+            <li>Indexes — which columns are indexed and why</li>
+            <li>Migration history — ordered list of all migrations with dates</li>
+            <li>Data ownership rules — which domain is the source of truth for shared entities</li>
+            <li>Test data strategy — how test fixtures are generated for this domain</li>
+            <li>Volume and growth expectations — important for index and query planning</li>
+          </ul></td>
+        </tr>
+        <tr>
+          <td class="code-cell" style="vertical-align:top;">PROCESS_LOG.md</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Once per shipped PRD — never mid-cycle</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Chronological log of every shipped feature — date, feature name, PRD link</li>
+            <li>Files created or modified per feature</li>
+            <li>GitHub issues closed per feature</li>
+            <li>Test counts passing at ship time</li>
+            <li>Checks run (lint, type check, schema validation, CI)</li>
+            <li>Known gaps or deferred items at ship time</li>
+            <li>Who approved the ship</li>
+          </ul></td>
+        </tr>
+        <tr>
+          <td class="code-cell" style="vertical-align:top;">contracts/*/</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Written once per seam before first cross-domain PRD</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>FUNCTIONAL.md — business reason the seam exists, what capability is consumed</li>
+            <li>FUNCTIONAL.md — user experience impact if the provider is unavailable</li>
+            <li>FUNCTIONAL.md — business rules that apply at the boundary</li>
+            <li>ARCHITECTURE.md — integration method (HTTP / event / shared interface)</li>
+            <li>ARCHITECTURE.md — versioning protocol and breaking change process</li>
+            <li>DATA.md — exact fields crossing the boundary with types and ownership</li>
+            <li>DATA.md — which fields the consumer may cache vs must re-fetch</li>
+          </ul></td>
+        </tr>
+        <tr>
+          <td class="code-cell" style="vertical-align:top;">UNKNOWNS.md</td>
+          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Added during grill-me; closed when feature ships</td>
+          <td style="font-size:0.8rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
+            <li>Open questions surfaced during grill-me that could not be answered in session</li>
+            <li>Each entry: question, who raised it, date, impact if unresolved</li>
+            <li>Status per entry: open / in-progress / resolved</li>
+            <li>Resolution notes — what the answer was and which PRD closed it</li>
+            <li>Dependency flag — which future PRDs are blocked on this unknown being resolved</li>
+          </ul></td>
         </tr>
       </tbody>
     </table>
