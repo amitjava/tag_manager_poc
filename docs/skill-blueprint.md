@@ -129,7 +129,7 @@ Before running `/grill-me`, the tech lead assigns the new feature to a domain.
 ### `/write-a-prd`
 
 **When:** After grill-me + ubiquitous-language + any prototyping. You know what you're building.
-**What it does:** Conducts a structured interview, explores the codebase, and produces a PRD as a GitHub issue. Includes user stories, module sketches, and acceptance criteria.
+**What it does:** Conducts a structured interview, explores the codebase, and produces a PRD as a GitHub issue. Includes user stories and acceptance criteria. Behavioral user stories and ACs get a `[rule_id]` badge inline; UI/layout items stay as plain prose. Mints rule IDs in domain-rules.yaml in the same step and sets `user_story_ref` (required) and `introduced_prd` on each new rule.
 **Tag Manager example:** PRD covers: tag CRUD, bulk tagging UI, tag filtering on entity list, tag permissions by role, DB schema, API contract, validation rules, error states.
 **Rule:** Focus on user-visible behaviour, not implementation. "The user can filter entities by tag" not "add a WHERE clause to the query".
 **Key insight (aihero.dev):** Grill yourself on every decision point during PRD writing — not just during grill-me. The PRD is where edge cases get resolved, not during execution.
