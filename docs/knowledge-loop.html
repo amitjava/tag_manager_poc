@@ -1806,8 +1806,8 @@ pre {
             <div style="margin-top:6px;color:#86efac;font-weight:600;font-size:12px;">For each new business rule discovered:</div>
             <div style="padding-left:14px;">validate-knowledge scans domain-rules.yaml for conflict with the new rule</div>
             <div style="padding-left:14px;">If conflict found → reads the existing PRD (gh issue view &lt;introduced_prd&gt;)</div>
-            <div style="padding-left:14px;color:#86efac;">CLEAN → no conflict, seeds draft rule automatically</div>
-            <div style="padding-left:14px;color:#86efac;">DECLARED-WRITE → intent clear from PRD text, seeds draft rule automatically</div>
+            <div style="padding-left:14px;color:#86efac;">CLEAN → no conflict, seeds draft rule into domain-rules.yaml automatically</div>
+            <div style="padding-left:14px;color:#86efac;">DECLARED-WRITE → intent clear from PRD text, seeds draft rule into domain-rules.yaml automatically</div>
             <div style="margin-top:6px;background:#0a3d20;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> BLOCKED → halts, shows the conflict clearly, asks human to resolve before continuing</div>
           </div>
         </div>
@@ -1852,7 +1852,7 @@ pre {
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
             <div>CLAUDE.md — auto-loaded, has domain map + context-loading instructions</div>
             <div>Reads AGENT_CONTEXT.md — purpose, glossary, architecture patterns for this domain</div>
-            <div>Reads domain-rules.yaml — all active and draft rules (the rule cache)</div>
+            <div>Reads domain-rules.yaml — all active and draft rules for this domain</div>
             <div>Reads PRD GitHub issue — acceptance criteria and which checkbox is this ticket's scope</div>
           </div>
         </div>
@@ -2001,6 +2001,32 @@ pre {
         <div><a href="#" onclick="openSkillModal('request-refactor-plan');return false;" style="color:#9ca3af;text-decoration:none;border-bottom:1px dashed #6b7280;">/request-refactor-plan</a> — safe refactor plan with test gate</div>
       </div>
     </div>
+
+  </div>
+
+  <!-- ── Reference bullets ── -->
+  <div style="max-width:680px;margin:32px auto 0;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#000000;line-height:1.9;">
+
+    <div style="color:#000000;font-weight:700;margin-bottom:8px;">Why domain-rules.yaml matters</div>
+    <ul style="margin:0 0 24px 0;padding-left:18px;">
+      <li>Single source of truth for every business rule in a domain — not scattered in docs or heads</li>
+      <li>Claude reads it before /grill-me so it only asks about gaps, not things already settled</li>
+      <li>validate-knowledge uses it to detect conflicts before a new rule is written — prevents silent contradictions</li>
+      <li>Each rule carries <code style="color:#000000;">introduced_prd</code> — a permanent link back to the PRD that created it, full audit trail</li>
+      <li>Rules have a lifecycle: draft (seeded after grill-me) → active (promoted at ship) → superseded (when a newer rule replaces it)</li>
+      <li><code style="color:#000000;">test_cases</code> on every active rule are enforced by spec-alignment CI — rules can't drift from the test suite</li>
+    </ul>
+
+    <div style="color:#000000;font-weight:700;margin-bottom:8px;">Per-ticket Claude window — internals</div>
+    <ul style="margin:0;padding-left:18px;">
+      <li>Scope is one checkbox from the PRD issue — nothing more, nothing less</li>
+      <li>Fresh window = zero context from prior tickets, no accumulated drift</li>
+      <li>CLAUDE.md auto-loads at session start unconditionally — no extra token cost</li>
+      <li>Then reads 3 files: AGENT_CONTEXT.md · domain-rules.yaml · PRD issue</li>
+      <li>CONTRACT.md also read if the ticket touches a cross-domain seam</li>
+      <li>One PR per window — small, reviewable, mergeable independently</li>
+      <li>After merge → checkbox ticked in PRD issue → next ticket gets its own fresh window</li>
+    </ul>
 
   </div>
 
