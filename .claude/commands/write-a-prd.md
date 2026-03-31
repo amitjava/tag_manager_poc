@@ -20,7 +20,20 @@ Run /design-an-interface for any module where the API shape is unclear. Do not g
 
 Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
 
-5. Once you have a complete understanding of the problem and solution, use the template below to write the PRD. The PRD should be submitted as a GitHub issue.
+5. Once you have a complete understanding of the problem and solution, choose the right PRD template and submit as a GitHub issue.
+
+   **Template selection:**
+   - **Feature PRD** (default): use the template below. Covers new behavior being added.
+   - **Refactor PRD**: use the template below but replace User Stories with:
+     - "What is wrong now" — specific problems with the current implementation
+     - "What is being removed or replaced" — exact modules/patterns being deleted
+     - "Migration path" — sequence of steps from current to end state
+     - "Rollback plan" — how to undo if the refactor is wrong
+   - **Bug fix PRD**: use the template below but replace User Stories with:
+     - "Reproduction steps" — exact steps to reproduce
+     - "Root cause" — confirmed hypothesis with evidence
+     - "Affected scope" — users, data, environments impacted
+     - "Regression test" — the test that proves it's fixed and won't recur
 
 6. **Immediately after the issue is submitted** — mint rule IDs and run conflict detection:
 
@@ -31,6 +44,8 @@ Check with the user that these modules match their expectations. Check with the 
 
    b. **Edit the PRD issue body** to replace any placeholder descriptions with the minted IDs.
    Use: `gh issue edit <number> --body "$(updated body text)"`
+
+   **Verify the edit landed:** Immediately after editing, run `gh issue view <number>` and confirm the minted IDs appear in the issue body. If the IDs are missing (network error, auth expiry, CLI bug), retry the edit before proceeding. Do not continue until the IDs are visible in the issue body — they are the single source of truth for the rule lifecycle.
 
    c. **Run `/validate-knowledge`** for each rule with `action: add` or `action: supersede`:
    - Incoming: the rule's plain_english + formula from the PRD

@@ -37,13 +37,15 @@ Read the PRD and extract:
 
 ### Step 2 — Cheap LLM text scan against domain-rules.yaml
 
-Read the full `domain-rules.yaml` for this domain. Use the cheapest available model (Haiku or equivalent) for this scan — this is a text comparison task, not a reasoning task. For each **active** rule in the file, ask:
+Read the full `domain-rules.yaml` for this domain. Use the cheapest available model (Haiku or equivalent) for the initial scan — this is a text comparison task. For each **active** rule in the file, ask:
 
 > "Do these two rules govern the same business decision, even partially? Rule A: [incoming plain_english + formula]. Rule B: [existing plain_english + formula]. Answer YES or NO with one sentence of reasoning."
 
 Superseded and retired rules are skipped — they are history.
 
 This is the primary overlap detection mechanism. No conflict_key, no entity/field/operation matching.
+
+**Uncertainty escalation:** If the cheap model's YES/NO reasoning contains hedging language ("possibly", "might", "could be", "unclear", "hard to say") — escalate that specific comparison to a more capable model (Sonnet or equivalent) before classifying. Cost of one escalated call is far lower than cost of a wrong YAML write.
 
 **Prompt discipline:** The question must be "same business decision" not "similar topic". Two rules about loyalty points that cover non-overlapping conditions (VIP vs non-VIP) are NOT the same decision. The LLM reasoning sentence is surfaced to the human in all non-CLEAN outcomes.
 
@@ -76,7 +78,7 @@ Read both PRDs. Determine intent.
 → Auto-execute. No second fetch. PM already made the decision when writing the PRD.
 
 **INFERRED-WRITE** — no explicit declaration, but reading both PRDs makes intent unambiguous (one clearly replaces or layers on the other).
-→ Auto-write with reasoning shown. No human gate.
+→ BLOCKED for human confirmation. Show the diff and reasoning — do not auto-write. LLM inference is not deterministic; a plausible-sounding but wrong inference would silently corrupt the YAML. The human confirms intent before any write.
 
 **SCOPE-INFERRED** — overlap exists but incoming rule has a narrower scope (e.g. VIP only) that forces annotation on an existing rule the current PRD does not own.
 → BLOCKED. Human must authorise modification to a rule they did not author.
@@ -89,6 +91,24 @@ Read both PRDs. Determine intent.
 Before writing any DECLARED-WRITE or INFERRED-WRITE, scan all domain-rules.yaml files for rules with `depends_on` pointing to the rule being changed.
 
 If a rule has a `depends_on` reference pointing to a rule that no longer exists in any domain-rules.yaml, flag it separately as **DATA-INTEGRITY** and block the write until the `depends_on` is corrected. Do not proceed with the write until the broken reference is fixed.
+
+**Circular dependency check:** Before writing, verify no cycle exists. A cycle is `RULE-A depends_on RULE-B depends_on RULE-A`. Walk the full `depends_on` chain for the incoming rule. If you reach the incoming rule's own ID, HALT:
+
+```
+BLOCKED — DATA-INTEGRITY: circular depends_on detected.
+Chain: RULE-A → RULE-B → RULE-A
+Fix the depends_on before writing.
+```
+
+**Supersede chain depth warning:** If the supersede chain for the rule being changed has depth ≥ 4 (e.g. A→B→C→D→incoming), emit a warning:
+
+```
+⚠ CHAIN-DEPTH: this rule has been superseded 4+ times.
+Consider whether the concept should be split into distinct rules
+rather than continuing to extend a single lineage.
+```
+
+This is advisory — does not block the write.
 
 If any found (and the referenced rule does exist) → escalate to **CHAIN-IMPACT**:
 
@@ -150,6 +170,38 @@ calculate mentally."
 ```
 
 When writing a new rule to YAML, always write plain_english at this level of detail.
+
+## Batch supersede mode
+
+A major overhaul may supersede 5–10 rules simultaneously. Running N independent validate-knowledge passes raises N independent CHAIN-IMPACT gates — each judged against the old state — even though they are all part of one intentional product decision.
+
+**When to use batch mode:** When the PRD explicitly states it is replacing a set of rules as a coordinated overhaul (e.g. "restructure the entire earn rate model").
+
+**How batch mode works:**
+
+1. Collect all incoming rules for the overhaul into one set.
+2. Run the Step 2 text scan across all of them together against the existing active rules.
+3. Show one consolidated diff:
+
+   ```
+   BATCH SUPERSEDE — validate-knowledge-BATCH
+
+   Overhaul replaces: RULE-A, RULE-B, RULE-C, RULE-D
+   New rules: RULE-X, RULE-Y, RULE-Z
+
+   Internal consistency check: do the incoming rules contradict each other?
+   [YES/NO with reasoning]
+
+   Chain-impact: rules with depends_on pointing to any of the superseded set:
+   [list or "none"]
+
+   Proceed with full batch? (yes to write all / no to cancel)
+   ```
+
+4. One human confirmation writes the entire batch.
+5. Check internal consistency within the incoming set (do the new rules conflict with each other?) — flag before showing the diff.
+
+Batch mode is not activated automatically. The human must request it: "Run validate-knowledge in batch mode for this overhaul."
 
 ## Rules for the skill itself
 

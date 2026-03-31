@@ -27,6 +27,24 @@ Read:
 
 If `AGENT_CONTEXT.md` does not exist yet, run `/scaffold-domain` first, then return here.
 
+## Step 1.5 — Concurrent write check
+
+AGENT_CONTEXT.md is a shared file. Two developers or parallel ticket windows writing to it simultaneously will produce a git conflict.
+
+Before editing, run:
+
+```
+git fetch origin && git log origin/main..HEAD --oneline -- backend/src/domains/<name>/AGENT_CONTEXT.md
+```
+
+If the remote has commits ahead of local that touch this file: **pull first**, then edit. Do not write over concurrent changes.
+
+**Concurrent PRD rule:** If two PRDs are in-flight for the same domain at the same time:
+
+- Only one PRD's grill-me session should update `## Ticket handoffs` at a time.
+- Coordinate by rule: whichever PRD is further along (more tickets merged) has "write priority." The other PRD author pulls before each edit.
+- If in doubt: make your edit a focused `+` only (add new content, not rewrite existing lines). Additive edits produce resolvable conflicts.
+
 ## Step 2 — Update AGENT_CONTEXT.md
 
 The file has 3 required sections (Purpose, Glossary, Known debt) and optional sections that vary by domain archetype. Update only where grill-me produced new information. Do not blank out sections that are already populated.

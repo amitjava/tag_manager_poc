@@ -121,11 +121,32 @@ Before: | <provider> | <consumer> | <capability> | Not yet established |
 After:  | <provider> | <consumer> | <capability> | Active — established <today> |
 ```
 
-## Step 5 — Confirm to user
+## Step 5 — Enforce the contract with a CODEOWNERS rule
+
+A CONTRACT.md with a comment saying "never edit manually" is aspirational — it relies on humans reading and obeying the comment. Add a technical enforcement layer:
+
+1. Open (or create) `.github/CODEOWNERS` in the repo root.
+2. Add a line:
+   ```
+   contracts/<provider>-to-<consumer>/CONTRACT.md  @<provider-team> @<consumer-team>
+   ```
+   Replace `<provider-team>` and `<consumer-team>` with the GitHub team slugs that own each domain (e.g. `@acme/billing-team @acme/loyalty-team`). If teams are not set up, use individual GitHub handles.
+3. This means any PR that touches CONTRACT.md requires a review approval from both domain owners — GitHub enforces it, not a comment.
+
+If CODEOWNERS cannot be set up (no GitHub teams, non-GitHub VCS), note the gap explicitly:
+
+```
+⚠ CONTRACT ENFORCEMENT: CODEOWNERS not configured.
+This contract relies on process only — no technical gate.
+Flag in CLAUDE.md Known limitations section.
+```
+
+## Step 6 — Confirm to user
 
 State:
 
 > Seam contract established: <provider> → <consumer>
 > contracts/<provider>-to-<consumer>/CONTRACT.md written.
 > CLAUDE.md seam status updated to Active.
+> .github/CODEOWNERS updated — both domain owners must approve changes to this contract.
 > Next step: FEATURE cycle — /grill-me → /update-agent-context → /write-a-prd → /break-into-tickets.

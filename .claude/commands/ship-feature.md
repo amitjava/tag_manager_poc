@@ -20,9 +20,23 @@ Read `AGENT_CONTEXT.md` and the PRD GitHub issue (`gh issue view <issue-number>`
 | Check                     | Condition                                                                             | Failure action                            |
 | ------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------- |
 | All rules have minted IDs | Every rule in the PRD's "Business Rules Affected" has a `RULE-<DOMAIN>-P<N>-<seq>` ID | HALT — run /write-a-prd to mint IDs first |
-| All ticket PRs merged     | GitHub shows all checkboxes checked                                                   | HALT — merge remaining tickets first      |
+| All ticket PRs merged     | GitHub shows all checkboxes checked                                                   | HALT — see partial ship path below        |
 
-If all checks pass: proceed.
+**Partial ship path** — if one or more tickets are blocked (external dependency, deferred decision, indefinitely stalled):
+
+You do not need to wait. Ask the user: "Ticket N is blocked. Do you want to partial-ship the merged tickets now?"
+
+If yes:
+
+1. Proceed with this skill using only the merged tickets in scope.
+2. In Step 2, write only rules that belong to merged-ticket scope. Leave deferred rules in the PRD as-is.
+3. In Step 5, do **not** close the issue — add label `status: partial-ship` instead.
+4. Add a Known debt entry in AGENT_CONTEXT.md: "PRD #N partial-ship — Ticket X deferred: [reason]."
+5. The deferred work is captured in a new PRD that references this one: "Continuation of PRD #N, Ticket X."
+
+If no: HALT — merge remaining tickets first.
+
+If all checks pass (or partial ship agreed): proceed.
 
 ## Step 1 — Gather context
 
@@ -52,7 +66,14 @@ Identify from the PRD:
 
 Read the PRD's "Business Rules Affected" section. For each rule:
 
-**`action: add`** — write the rule to domain-rules.yaml as `status: active`:
+**`action: add`** — stale conflict re-check before writing:
+
+Run `/validate-knowledge` for this rule against the **current** domain-rules.yaml. Between PRD creation and now, other PRDs may have shipped overlapping rules. Use the same incoming rule text (plain_english + formula from the PRD).
+
+- CLEAN → proceed to write.
+- BLOCKED → surface the conflict to the user before writing. Do not write until resolved.
+
+Once cleared, write the rule to domain-rules.yaml as `status: active`:
 
 ```yaml
 - id: RULE-<DOMAIN>-P<N>-<seq> # from PRD "Business Rules Affected"
@@ -81,7 +102,18 @@ For the domain(s) involved, use Edit tool to update:
 - **Known debt** — if TDD surfaced debt
 - **File locations** — if new files were added
 - **Owned tables** — if schema changed
-- **Ticket handoffs** — clear the entire `## Ticket handoffs` section now that all PRs for this PRD are merged. Delete from the `## Ticket handoffs` heading to the end of that section (all `### Ticket N` entries). The handoff notes are no longer needed — they were for in-flight coordination only.
+- **Known debt** — review the `## Known debt` section. For each item that was resolved during this PRD's tickets, mark it resolved:
+
+  ```
+  - ~~[debt description]~~ ← resolved in PRD #N
+  ```
+
+  Do not delete — strike-through preserves history. Only mark items explicitly addressed by this PRD's merged code.
+
+- **Ticket handoffs** — before clearing, archive the handoff content:
+  1. Copy the full `## Ticket handoffs` section content.
+  2. Write it to `grill-me-docs/<prd-brief-name>/handoffs-PRD-<issue-number>.md` — this preserves the in-flight reasoning for post-ship debugging.
+  3. Then clear the section in AGENT_CONTEXT.md: delete from `## Ticket handoffs` heading to end of that section (all `### Ticket N` entries). The live context is cleaned; the archive is in grill-me-docs.
 
 Do not rewrite the whole file — only update sections that changed.
 

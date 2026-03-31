@@ -4,11 +4,21 @@ Read `.claude/skill-config.yaml` to get project paths. Use those paths wherever 
 
 ---
 
-Run a structured discovery interview across the 5 branches below. Work through one
+## Step 0 — Detect PRD type
 
-branch at a time. For each question, offer your best-guess answer based on what you
-know — the user corrects or confirms. Do not move to the next branch until the
-current one is resolved.
+Before any questions, determine what kind of PRD this is. Ask:
+
+> "Is this a (A) new feature, (B) refactor / tech-debt cleanup, or (C) bug fix?"
+
+The answer determines which branch set to run:
+
+- **A — Feature**: run Branches 1–5 below (standard set).
+- **B — Refactor**: skip to [Refactor branches](#refactor-branches) below.
+- **C — Bug fix**: skip to [Bug fix branches](#bugfix-branches) below.
+
+---
+
+Run a structured discovery interview across the branches for your PRD type. Work through one branch at a time. For each question, offer your best-guess answer based on what you know — the user corrects or confirms. Do not move to the next branch until the current one is resolved.
 
 If a question can be answered by reading the codebase, read it instead of asking.
 
@@ -74,6 +84,102 @@ For every significant workflow in scope:
 
 ---
 
+---
+
+## Refactor branches {#refactor-branches}
+
+### Refactor Branch 1 — What is wrong now
+
+1. What is the specific problem with the current implementation? (fragile, slow, unmaintainable, blocking future work?)
+2. Who is affected? (developers working in this area, downstream consumers, end users?)
+3. What has already been tried or why have previous fixes been insufficient?
+4. What is the measurable signal that the refactor succeeded?
+
+### Refactor Branch 2 — What changes
+
+1. What code is being removed or replaced?
+2. What stays exactly as-is (behavior, interfaces, contracts)?
+3. What new abstractions or patterns are being introduced?
+4. Which tests need to be deleted, rewritten, or newly written?
+
+### Refactor Branch 3 — Migration path
+
+1. Is this a flag-day change (all at once) or incremental (parallel run, strangler fig)?
+2. What is the sequence of steps that gets from current state to end state safely?
+3. Which downstream callers need to be updated, and in what order?
+4. What does rollback look like if the refactor is wrong?
+
+### Refactor Branch 4 — Dependencies & risk
+
+1. Which other domains or services call into the code being refactored?
+2. What integration points exist? What contract tests cover them?
+3. What is the blast radius if something breaks mid-refactor?
+4. Are there any hard deadlines or release windows that constrain timing?
+
+---
+
+## Bug fix branches {#bugfix-branches}
+
+### Bug Branch 1 — Reproduction
+
+1. What are the exact steps to reproduce the bug?
+2. What environment does it reproduce in? (prod only, staging, all envs?)
+3. What is the observed behavior vs. expected behavior?
+4. Is this deterministic or intermittent?
+
+### Bug Branch 2 — Impact
+
+1. Which users or data are affected? (all users, specific tier, specific region?)
+2. What is the severity of impact? (data loss, incorrect output, cosmetic?)
+3. How long has this been broken? (regression: which deploy introduced it?)
+4. Are there workarounds in use today?
+
+### Bug Branch 3 — Root cause
+
+1. What is the hypothesis for root cause?
+2. Has the root cause been confirmed (log evidence, test that reproduces it)?
+3. Is this a code bug, a data bug, or a design bug?
+4. Are there similar patterns elsewhere in the codebase that could have the same bug?
+
+### Bug Branch 4 — Fix & regression
+
+1. What is the proposed fix?
+2. What is the test that proves the bug is fixed?
+3. What regression risk does the fix introduce?
+4. Does this fix require a business rule change? If yes, which rule and how?
+
+---
+
+## Branch completeness check
+
+Before saving the log, verify all branches for your PRD type were completed:
+
+**Feature** checklist:
+
+- [ ] Branch 1 — Scope & Problem: resolved
+- [ ] Branch 2 — Use Cases: resolved
+- [ ] Branch 3 — Workflow Actors: resolved
+- [ ] Branch 4 — Dependencies: resolved
+- [ ] Branch 5 — Domain Terms: resolved
+
+**Refactor** checklist:
+
+- [ ] Refactor Branch 1 — What is wrong now: resolved
+- [ ] Refactor Branch 2 — What changes: resolved
+- [ ] Refactor Branch 3 — Migration path: resolved
+- [ ] Refactor Branch 4 — Dependencies & risk: resolved
+
+**Bug fix** checklist:
+
+- [ ] Bug Branch 1 — Reproduction: resolved
+- [ ] Bug Branch 2 — Impact: resolved
+- [ ] Bug Branch 3 — Root cause: resolved
+- [ ] Bug Branch 4 — Fix & regression: resolved
+
+If any branch is incomplete, return to it before saving the log. Do not mark grill-me complete with open branches.
+
+---
+
 ## Save grill-me log
 
 After all 5 branches are complete, save the full Q&A transcript before handing off.
@@ -82,6 +188,11 @@ After all 5 branches are complete, save the full Q&A transcript before handing o
 2. Find the next file number: check `grill-me-docs/<prd-brief-name>/` for existing files (`grill-me-01.md`, `grill-me-02.md`, …). Use the next available number.
 3. Write the transcript to `grill-me-docs/<prd-brief-name>/grill-me-<NN>.md`.
 4. Each file is immutable — never overwrite. A second grill-me session on the same feature appends a new numbered file.
+5. **Update the search index:** After writing the log, open `grill-me-docs/INDEX.md` (create if it doesn't exist) and append one line:
+   ```
+   | <YYYY-MM-DD> | <prd-brief-name> | <grill-me-NN.md> | <PRD type: feature/refactor/bugfix> | <one-line summary of what the session covered> |
+   ```
+   The index is how humans and Claude find past sessions without grepping a folder tree. Keep each entry under 150 characters.
 
 This folder lives outside any domain folder. It is for ad-hoc human and Claude reference, not part of the domain context loaded per ticket.
 
