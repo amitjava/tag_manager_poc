@@ -1,5 +1,7 @@
 # AGENT_CONTEXT.md — billing domain
 
+# Archetype: backend
+
 # Created by /scaffold-domain · updated by /update-agent-context
 
 # Edit only via /update-agent-context — never manually.
@@ -15,7 +17,7 @@ invoice generation and payment intent creation. It does not own product prices
 
 ---
 
-## Ubiquitous language
+## Glossary
 
 | Term                   | Definition                                                                      | Do not say                   |
 | ---------------------- | ------------------------------------------------------------------------------- | ---------------------------- |
@@ -29,6 +31,23 @@ invoice generation and payment intent creation. It does not own product prices
 
 All monetary values are stored and passed as **whole cents (integer)**. Never use
 floats for money anywhere in this domain.
+
+---
+
+## Known debt
+
+- Tax rate is a single env var (SALES_TAX_RATE). Multi-jurisdiction tax is out of scope until PRD #12.
+- Coupon composition (stacking two coupons) is explicitly out of scope. If a request adds it, raise before writing code.
+- Invoice PDF generation is stubbed — returns a placeholder URL until PRD #15.
+
+---
+
+## Owned tables
+
+- `orders` — order header, status, customer_id, timestamps
+- `order_line_items` — unit_price_cents, quantity, product_id per line
+- `coupons` — code, type (percent/fixed), value, expiry, redemption count
+- `invoices` — immutable record per confirmed payment
 
 ---
 
@@ -50,25 +69,17 @@ floats for money anywhere in this domain.
 ### Money rule
 
 All monetary arithmetic uses integer cents. No floats. Rounding is always `floor`
-(customer-favoured). This is enforced by rule 2.3.1 in domain-rules.yaml.
+(customer-favoured). Enforced by rule RULE-BILLING-003 in domain-rules.yaml.
 
 ---
 
-## Known debt
-
-- Tax rate is a single env var (SALES_TAX_RATE). Multi-jurisdiction tax is out of scope until PRD #12.
-- Coupon composition (stacking two coupons) is explicitly out of scope. If a request adds it, raise before writing code.
-- Invoice PDF generation is stubbed — returns a placeholder URL until PRD #15.
-
----
-
-## Files in this domain
+## File locations
 
 ```
 backend/src/domains/billing/
   AGENT_CONTEXT.md          ← this file
-  domain-rules.yaml         ← business rules with test cases
-  openapi.yaml              ← API contract for billing endpoints
+  domain-rules.yaml
+  openapi.yaml
   OrderCalculator.ts
   CouponRepository.ts
   InvoiceRepository.ts
