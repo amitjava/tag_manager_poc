@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Changes — Knowledge Loop</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f8fafc; color: #1e293b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.7; }
+
+  .header { background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 24px 40px; display: flex; align-items: center; gap: 20px; }
+  .header-title { font-size: 20px; font-weight: 700; color: #0f172a; }
+  .header-sub { color: #94a3b8; font-size: 13px; margin-top: 2px; }
+  .badge { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; white-space: nowrap; }
+
+  .layout { max-width: 1000px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .section { margin-bottom: 8px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; background: #ffffff; }
+  .section-header { display: flex; align-items: center; gap: 12px; padding: 14px 20px; cursor: pointer; user-select: none; background: #ffffff; transition: background 0.15s; }
+  .section-header:hover { background: #f1f5f9; }
+  .section-num { background: #f1f5f9; color: #94a3b8; font-size: 11px; font-weight: 700; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .section-title { font-weight: 600; font-size: 14px; color: #0f172a; flex: 1; }
+  .section-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .tag-fix    { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+  .tag-new    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .tag-design { background: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+  .tag-gap    { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+  .tag-infra  { background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4; }
+  .chevron { color: #cbd5e1; font-size: 12px; transition: transform 0.2s; }
+  .section.open .chevron { transform: rotate(90deg); }
+
+  .section-body { display: none; padding: 20px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+  .section.open .section-body { display: block; }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 7px; padding: 14px 16px; }
+  .card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; margin-bottom: 6px; }
+  .card.issue .card-label { color: #dc2626; }
+  .card.fix .card-label { color: #15803d; }
+  .card.means .card-label { color: #1d4ed8; }
+  .card p { color: #374151; font-size: 13px; line-height: 1.6; }
+
+  .files { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .file { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 5px; padding: 3px 10px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: #475569; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  th { background: #f8fafc; color: #64748b; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+  td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #374151; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  code { background: #f1f5f9; color: #0f766e; padding: 1px 5px; border-radius: 3px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; }
+
+  .bullets { margin-top: 10px; padding-left: 0; list-style: none; }
+  .bullets li { color: #374151; font-size: 13px; padding: 3px 0 3px 16px; position: relative; }
+  .bullets li::before { content: '·'; position: absolute; left: 4px; color: #cbd5e1; }
+
+  .rule-flow { display: flex; align-items: stretch; gap: 0; margin-top: 12px; border-radius: 7px; overflow: hidden; border: 1px solid #e2e8f0; }
+  .flow-step { flex: 1; padding: 12px 14px; background: #ffffff; border-right: 1px solid #e2e8f0; }
+  .flow-step:last-child { border-right: none; }
+  .flow-step-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; margin-bottom: 6px; }
+  .flow-step-name { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .flow-step-detail { font-size: 11px; color: #94a3b8; }
+  .flow-arrow { display: flex; align-items: center; padding: 0 4px; color: #cbd5e1; font-size: 18px; background: #f8fafc; }
+
+  .grid-severity { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+  .sev-card { border-radius: 7px; padding: 14px; text-align: center; }
+  .sev-card.p0 { background: #fff1f2; border: 1px solid #fecdd3; }
+  .sev-card.p1 { background: #fffbeb; border: 1px solid #fde68a; }
+  .sev-card.p2 { background: #eff6ff; border: 1px solid #bfdbfe; }
+  .sev-card.p3 { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .sev-num { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .sev-card.p0 .sev-num { color: #dc2626; }
+  .sev-card.p1 .sev-num { color: #d97706; }
+  .sev-card.p2 .sev-num { color: #1d4ed8; }
+  .sev-card.p3 .sev-num { color: #15803d; }
+  .sev-label { font-size: 11px; font-weight: 700; color: #374151; }
+  .sev-desc { font-size: 10px; color: #94a3b8; margin-top: 3px; }
+
+  .infra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .infra-item { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 7px; padding: 12px 14px; }
+  .infra-item-title { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .infra-item-desc { font-size: 12px; color: #64748b; }
+
+  .toc { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; margin-bottom: 28px; }
+  .toc-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; margin-bottom: 10px; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .toc-item { font-size: 12px; color: #64748b; cursor: pointer; padding: 2px 0; }
+  .toc-item:hover { color: #0f172a; }
+  .toc-item span { color: #cbd5e1; margin-right: 8px; font-family: monospace; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">Knowledge Loop — Session Changes</div>
+    <div class="header-sub">All fixes, new features, and open gaps from this session</div>
+  </div>
+  <div class="badge">14 changes</div>
+</div>
+
+<div class="layout">
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <div class="toc-grid">
+      <div class="toc-item" onclick="open_section('s1')"><span>01</span>PRD manual promotion gate</div>
+      <div class="toc-item" onclick="open_section('s2')"><span>02</span>Upload docs during grill-me</div>
+      <div class="toc-item" onclick="open_section('s3')"><span>03</span>Save grill-me log</div>
+      <div class="toc-item" onclick="open_section('s4')"><span>04</span>Supersede vs scope branch</div>
+      <div class="toc-item" onclick="open_section('s5')"><span>05</span>Tests on non-plain supersede</div>
+      <div class="toc-item" onclick="open_section('s6')"><span>06</span>Ticket dependencies + handoffs</div>
+      <div class="toc-item" onclick="open_section('s7')"><span>07</span>Removed test_cases from YAML</div>
+      <div class="toc-item" onclick="open_section('s8')"><span>08</span>Test types reference tab</div>
+      <div class="toc-item" onclick="open_section('s9')"><span>09</span>AGENT_CONTEXT archetype templates</div>
+      <div class="toc-item" onclick="open_section('s10')"><span>10</span>No draft rules in YAML (Option C)</div>
+      <div class="toc-item" onclick="open_section('s11')"><span>11</span>Rule ID format (Option 1)</div>
+      <div class="toc-item" onclick="open_section('s12')"><span>12</span>Skills extracted to .md files</div>
+      <div class="toc-item" onclick="open_section('s13')"><span>13</span>Major overhauls — gaps identified</div>
+      <div class="toc-item" onclick="open_section('s14')"><span>14</span>Framework challenge grid</div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <div class="section" id="s1">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">1</div>
+      <div class="section-title">PRD must be manually promoted from Draft → Submitted</div>
+      <div class="section-tag tag-fix">Fix</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>No gate between a PRD being written and tickets starting. An agent could begin building before the human reviewed and approved.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Added a "Promote PRD: Draft → Submitted" button at the bottom of the FEATURE phase. Tickets cannot begin until the human manually clicks it.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>PRD is locked at submission — no further edits without a new PRD. Claude never promotes automatically. Human owns the gate.</p></div>
+      </div>
+      <div class="files"><div class="file">docs/knowledge-loop.html</div></div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="section" id="s2">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">2</div>
+      <div class="section-title">Upload documents during grill-me</div>
+      <div class="section-tag tag-new">New</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>Background docs (specs, legacy system docs, competitor analysis) were ignored. Grill-me would ask questions the docs already answered.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Added "Before starting — read any uploaded docs" as the first step of <code>/grill-me</code>. Agent reads all uploaded files before asking any questions.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>Grill-me treats uploaded docs as pre-loaded context. The 5-branch interview focuses only on genuine gaps — not re-asking what's already written.</p></div>
+      </div>
+      <div class="files"><div class="file">.claude/commands/grill-me.md</div></div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="section" id="s3">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">3</div>
+      <div class="section-title">Save grill-me results in a persistent log</div>
+      <div class="section-tag tag-new">New</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>Grill-me output lived only in the conversation. Future sessions, humans, and Claude couldn't search past decisions or re-used questions.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Final step of <code>/grill-me</code> saves the session to <code>grill-me-docs/&lt;prd-name&gt;/grill-me-NN.md</code>. Append-only. Never overwritten. Session number increments on each re-run.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>Every grill-me session is permanently searchable. Decision history is complete even if grill-me loops multiple times before a PRD is approved.</p></div>
+      </div>
+      <div class="files"><div class="file">.claude/commands/grill-me.md</div><div class="file">grill-me-docs/&lt;name&gt;/grill-me-NN.md</div></div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="section" id="s4">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">4</div>
+      <div class="section-title">Supersede vs scope branch — three distinct paths modelled</div>
+      <div class="section-tag tag-design">Design</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>When a new feature applied to only a subset (e.g. VIP customers), it was unclear whether that supersedes the original general rule or just branches from it.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Three explicit outcomes now modelled in validate-knowledge and the flowchart:</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>Supersede is not the only path. The framework models the full shape of the change rather than forcing every partial overlap into a supersede.</p></div>
+      </div>
+      <table>
+        <tr><th>Outcome</th><th>Situation</th><th>What changes in YAML</th></tr>
+        <tr><td><strong>Composition</strong></td><td>New rule adds a modifier on top — original formula unchanged for all segments</td><td>New rule with <code>composes_with</code>. Original untouched.</td></tr>
+        <tr><td><strong>SCOPE-INFERRED</strong></td><td>New scoped rule introduced — original still valid for remaining segment</td><td>Original gets <code>scope</code> + <code>modified_prd</code> annotation. New scoped rule added as active.</td></tr>
+        <tr><td><strong>Supersede split</strong></td><td>New scoped rules cover all segments — original no longer applies to any</td><td>Original marked <code>superseded</code>. Two new scoped rules written as active.</td></tr>
+      </table>
+      <div class="files"><div class="file">docs/knowledge-loop.html</div><div class="file">.claude/commands/validate-knowledge.md</div></div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section" id="s5">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">5</div>
+      <div class="section-title">Tests on scope splits and compositions</div>
+      <div class="section-tag tag-design">Design</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>For scope splits and compositions, it was unclear which existing tests were still valid, which needed updating, and who was responsible.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Handled at the <code>/tdd</code> level. The rule action (<code>supersede</code> / <code>SCOPE-INFERRED</code> / <code>composition</code>) is stated in the PRD; each ticket reads the PRD and writes tests for its scope while preserving existing tests for unchanged scopes.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>No test management lives in domain-rules.yaml. The PRD is the authority on what changed. The test file is the authority on whether the code matches.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="section" id="s6">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">6</div>
+      <div class="section-title">Ticket dependencies + cross-window handoffs</div>
+      <div class="section-tag tag-new">New</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>Each ticket runs in its own Claude window with no memory of prior tickets. If Ticket 2 called a function created by Ticket 1, the Ticket 2 window had no way to know that interface existed.</p></div>
+        <div class="card fix"><div class="card-label">Fix (two parts)</div><p><code>/break-into-tickets</code> marks each checkbox with an explicit dependency: <code>| requires: Ticket 1 merged</code>.<br><br><code>## Ticket handoffs</code> section added to AGENT_CONTEXT.md — each ticket appends a brief note before opening its PR. Cleared at ship-feature.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>Tickets can run in separate windows without losing continuity. The handoff section is the lightweight shared memory between sequential tickets in the same PRD.</p></div>
+      </div>
+      <div class="files"><div class="file">.claude/commands/break-into-tickets.md</div><div class="file">AGENT_CONTEXT.md (## Ticket handoffs)</div></div>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="section" id="s7">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">7</div>
+      <div class="section-title">Removed test_cases field from domain-rules.yaml</div>
+      <div class="section-tag tag-fix">Fix</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p><code>test_cases</code> in YAML duplicated what test files already proved. Had no enforcement mechanism, added maintenance overhead, and was fragile — a rule description change required updating both YAML and tests.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Removed <code>test_cases</code> field entirely from the schema. Also removed <code>spec-alignment CI</code> job that was checking YAML strings against test file strings — a string-vs-string check, not behaviour-vs-code.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>Test files are the sole authority for test lifecycle. YAML owns the business rule definition. The two don't duplicate each other.</p></div>
+      </div>
+      <div class="files"><div class="file">docs/knowledge-loop.html</div><div class="file">docs/sample-domain-rules.yaml</div><div class="file">.claude/commands/tdd.md</div><div class="file">.claude/commands/ship-feature.md</div></div>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="section" id="s8">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">8</div>
+      <div class="section-title">Test types reference tab added (Chapter 14)</div>
+      <div class="section-tag tag-new">New</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>The framework referenced "tests" generically. No central reference explained the different types, which skill covers each, when each runs, and what happens on failure.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Added Chapter 14 — Test Types tab to <code>knowledge-loop.html</code>. Covers 8 test types with: what it is, who triggers it, which skill owns it, when it runs, and what happens on failure.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>Clear single reference for testing strategy. On failure: CI blocks the PR. <code>/ship-feature</code> will not proceed if any ticket PR has failing checks.</p></div>
+      </div>
+      <table>
+        <tr><th>Test Type</th><th>Skill</th><th>When triggered</th></tr>
+        <tr><td>Unit</td><td><code>/tdd</code></td><td>Per behavior during ticket TDD loop</td></tr>
+        <tr><td>Integration</td><td><code>/tdd</code></td><td>Per ticket, after unit tests pass</td></tr>
+        <tr><td>End-to-end</td><td>Manual / CI</td><td>After all tickets merged, before ship</td></tr>
+        <tr><td>Frontend component</td><td><code>/tdd</code></td><td>Same TDD loop, scoped to UI component</td></tr>
+        <tr><td>Backend API</td><td><code>/tdd</code></td><td>Same TDD loop, scoped to endpoint</td></tr>
+        <tr><td>Browser-based</td><td>External tool</td><td>Post-merge, regression suite</td></tr>
+        <tr><td>Contract</td><td><code>/define-seam-contract</code></td><td>At seam establishment, on any seam change</td></tr>
+      </table>
+      <div class="files"><div class="file">docs/knowledge-loop.html (ch-14)</div></div>
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="section" id="s9">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">9</div>
+      <div class="section-title">AGENT_CONTEXT.md — archetype-based templates</div>
+      <div class="section-tag tag-design">Design</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>The single fixed AGENT_CONTEXT.md template was too rigid. Backend domains need owned tables; AI agent domains need escalation logic; cross-cutting domains need neither. One template became a graveyard of N/A sections.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p><code>/scaffold-domain</code> now asks which archetype, then generates a matching template. New sections can be added freely when grill-me surfaces content with no existing home.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>The template is a starting point, not a constraint. Archetype determines defaults; the domain's actual needs determine what gets added or dropped.</p></div>
+      </div>
+      <table>
+        <tr><th>Archetype</th><th>Required</th><th>Optional</th></tr>
+        <tr><td><strong>backend</strong></td><td>Purpose · Glossary · Known debt</td><td>Owned tables · Architecture patterns · File locations</td></tr>
+        <tr><td><strong>agent</strong></td><td>Purpose · Glossary · Known debt</td><td>Agent capabilities · Escalation rules · Tool inventory · Prompt patterns</td></tr>
+        <tr><td><strong>integration</strong></td><td>Purpose · Glossary · Known debt</td><td>External systems · Auth & credentials · Rate limits · Failure modes</td></tr>
+        <tr><td><strong>cross-cutting</strong></td><td>Purpose · Glossary · Known debt</td><td>Policy rules · Consumer domains · Enforcement point</td></tr>
+      </table>
+      <div class="files"><div class="file">.claude/commands/scaffold-domain.md</div><div class="file">docs/sample-agent-context.md</div></div>
+    </div>
+  </div>
+
+  <!-- 10 -->
+  <div class="section" id="s10">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">10</div>
+      <div class="section-title">No draft rules in domain-rules.yaml (Option C)</div>
+      <div class="section-tag tag-design">Design</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>Rules were written into YAML with <code>status: draft</code> as soon as they were discovered in grill-me — before any code existed. This polluted the "what is live" view. Draft rules and live rules were indistinguishable at a glance.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Rules stay plain English in AGENT_CONTEXT.md until they ship. YAML never receives a draft. The only write to domain-rules.yaml is at <code>/ship-feature</code>, directly as <code>status: active</code>.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>domain-rules.yaml only ever contains rules with shipped code behind them. No <code>draft</code> status exists anywhere in the YAML schema.</p></div>
+      </div>
+      <div class="rule-flow">
+        <div class="flow-step"><div class="flow-step-label">grill-me</div><div class="flow-step-name">Plain English</div><div class="flow-step-detail">No ID · No YAML</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-label">update-agent-context</div><div class="flow-step-name">Plain English</div><div class="flow-step-detail">Written to AGENT_CONTEXT.md only</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-label">write-a-prd</div><div class="flow-step-name">IDs minted</div><div class="flow-step-detail">After gh issue create · validate-knowledge runs · still not in YAML</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-label">ship-feature</div><div class="flow-step-name">Written to YAML</div><div class="flow-step-detail">status: active · first and only write</div></div>
+      </div>
+      <div class="files"><div class="file">docs/knowledge-loop.html</div><div class="file">docs/skill-content.js</div><div class="file">.claude/commands/update-agent-context.md</div><div class="file">.claude/commands/write-a-prd.md</div><div class="file">.claude/commands/ship-feature.md</div></div>
+    </div>
+  </div>
+
+  <!-- 11 -->
+  <div class="section" id="s11">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">11</div>
+      <div class="section-title">Rule ID format — PRD-number-based (Option 1)</div>
+      <div class="section-tag tag-design">Design</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>The old <code>RULE-DOMAIN-NNN</code> format used a counter. Two PRDs written before either shipped could mint the same counter value — a collision. The counter also wasn't available during grill-me.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>New format: <code>RULE-&lt;DOMAIN&gt;-P&lt;issue-number&gt;-&lt;seq&gt;</code><br>e.g. <code>RULE-BILLING-P10-1</code><br><br>IDs minted in <code>/write-a-prd</code> immediately after <code>gh issue create</code> returns the issue number.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>Collision-proof — GitHub issue numbers are globally unique. IDs are stable from PRD creation through shipping. No shared counter needed. No registry.</p></div>
+      </div>
+      <div class="files"><div class="file">docs/knowledge-loop.html (ch-10 schema)</div><div class="file">docs/sample-domain-rules.yaml</div><div class="file">.claude/commands/write-a-prd.md</div><div class="file">.claude/commands/ship-feature.md</div></div>
+    </div>
+  </div>
+
+  <!-- 12 -->
+  <div class="section" id="s12">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">12</div>
+      <div class="section-title">Skills extracted to individual .md files + config</div>
+      <div class="section-tag tag-infra">Infra</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Issue</div><p>All 20 skills lived as JavaScript strings in <code>skill-content.js</code>. Not executable by Claude. Git diffs for any skill change mixed with unrelated changes. No per-skill git history.</p></div>
+        <div class="card fix"><div class="card-label">Fix</div><p>Each skill extracted to <code>.claude/commands/&lt;skill-name&gt;.md</code>. Claude Code picks these up as slash commands automatically. HTML viewer now fetches <code>.md</code> files directly — no more <code>skill-content.js</code> dependency.</p></div>
+        <div class="card means"><div class="card-label">What it means</div><p>Skills are versioned independently. Every skill edit has its own git blame. The HTML viewer and the executable command are always the same file.</p></div>
+      </div>
+      <div class="infra-grid">
+        <div class="infra-item"><div class="infra-item-title">.claude/commands/ — 20 skill files</div><div class="infra-item-desc">grill-me.md · write-a-prd.md · ship-feature.md · validate-knowledge.md · scaffold-domain.md · break-into-tickets.md · define-seam-contract.md · update-agent-context.md · tdd.md · and 11 more</div></div>
+        <div class="infra-item"><div class="infra-item-title">.claude/skill-config.yaml</div><div class="infra-item-desc">Fill in once: <code>paths.domains</code>, <code>paths.contracts</code>, <code>paths.grill_me_logs</code>. Skills that reference project paths read this file automatically as their first step.</div></div>
+        <div class="infra-item"><div class="infra-item-title">HTML viewer — fetch() based</div><div class="infra-item-desc">Modal now does <code>fetch('../.claude/commands/&lt;name&gt;.md')</code> with an in-memory cache. No build step. Requires a local HTTP server (<code>python3 -m http.server</code>).</div></div>
+        <div class="infra-item"><div class="infra-item-title">skill-content.js — deprecated</div><div class="infra-item-desc">Still exists as a snapshot but is no longer loaded by the HTML. Safe to delete once verified.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13 -->
+  <div class="section" id="s13">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">13</div>
+      <div class="section-title">Major overhauls — gaps identified (not yet built)</div>
+      <div class="section-tag tag-gap">Gap</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="card issue"><div class="card-label">Question raised</div><p>How does the framework handle a big-bang refactor — ripping out an entire subsystem with a better idea? How do docs and YAML catch up?</p></div>
+        <div class="card fix"><div class="card-label">What works today</div><p>Pure architectural refactor (same rules, different code) works fine. 2–3 rule replacements via the supersede path work cleanly.</p></div>
+        <div class="card means"><div class="card-label">Proposed (not built)</div><p><code>/overhaul-domain</code> skill with an overhaul manifest, single validate-knowledge scan across the whole batch, and section-level AGENT_CONTEXT.md rewrites.</p></div>
+      </div>
+      <table>
+        <tr><th>Gap</th><th>Why it breaks</th></tr>
+        <tr><td>Batch supersede — 8 rules</td><td>8 independent validate-knowledge runs, each can raise its own CHAIN-IMPACT gate. No "treat as one coordinated batch" primitive.</td></tr>
+        <tr><td>AGENT_CONTEXT.md reset</td><td>ship-feature uses Edit tool for targeted updates. Wholesale section rewrites require rewriting every line — no section-level replace supported.</td></tr>
+        <tr><td>Refactor PRD template</td><td>The PRD template is additive. No "Motivation: why current approach is wrong" section. No "what is being removed" section.</td></tr>
+        <tr><td>Multi-domain overhauls</td><td>Merging or splitting domains touches CLAUDE.md, multiple AGENT_CONTEXT.md files, and moves rules between domains. No skill covers this coordination.</td></tr>
+        <tr><td>Stale AGENT_CONTEXT.md references</td><td>After a refactor, module names and file paths in AGENT_CONTEXT.md may reference things that were deleted. No audit mechanism.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 14 -->
+  <div class="section" id="s14">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">14</div>
+      <div class="section-title">Framework challenge grid — 35 issues rated</div>
+      <div class="section-tag tag-gap">Review</div>
+      <div class="chevron">▶</div>
+    </div>
+    <div class="section-body">
+      <div class="grid-severity">
+        <div class="sev-card p0"><div class="sev-num">1</div><div class="sev-label">P0 Critical</div><div class="sev-desc">INFERRED-WRITE auto-executes without human gate — only auto-path that writes permanent YAML</div></div>
+        <div class="sev-card p1"><div class="sev-num">15</div><div class="sev-label">P1 High</div><div class="sev-desc">Stale conflict check · cheap LLM misses overlaps · parallel ticket git conflicts · no rollback · no partial shipping · no brownfield · concurrent PRDs · context window mid-ticket</div></div>
+        <div class="sev-card p2"><div class="sev-num">15</div><div class="sev-label">P2 Medium</div><div class="sev-desc">plain_english not enforced · depends_on not validated · supersede chain readability · no cross-PRD search · no out-of-scope section · no complexity estimate · handoff history lost</div></div>
+        <div class="sev-card p3"><div class="sev-num">4</div><div class="sev-label">P3 Low</div><div class="sev-desc">Misleading IDs after revision · GitHub char limit · double validate-knowledge run · forced archetype choice</div></div>
+      </div>
+      <div class="files" style="margin-top:14px;"><div class="file">docs/framework-challenge-grid.md</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(header) {
+  header.parentElement.classList.toggle('open');
+}
+function open_section(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add('open');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+// Open first section by default
+document.getElementById('s1').classList.add('open');
+</script>
+</body>
+</html>

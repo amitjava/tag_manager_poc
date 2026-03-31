@@ -1765,7 +1765,7 @@ pre {
           <div style="color:#4ade80;font-weight:600;margin-bottom:4px;">Load domain context</div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
             <div>Reads AGENT_CONTEXT.md — existing purpose, glossary, architecture patterns, known debt</div>
-            <div>Reads domain-rules.yaml — all active and draft rules already established for this domain</div>
+            <div>Reads domain-rules.yaml — all active rules already established for this domain</div>
             <div>If seam involved → reads CONTRACT.md for that seam</div>
             <div style="margin-top:4px;color:#86efac;font-style:italic;">Now knows what is already settled. Grill-me will only ask about gaps.</div>
           </div>
@@ -1806,45 +1806,11 @@ pre {
           <div style="color:#4ade80;font-weight:600;margin-bottom:4px;"><a href="#" onclick="openSkillModal('update-agent-context');return false;" style="color:#4ade80;text-decoration:none;border-bottom:1px dashed #4ade80;">/update-agent-context</a></div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
             <div>Writes new discoveries to AGENT_CONTEXT.md — glossary terms, patterns, purpose updates</div>
-            <div style="margin-top:6px;color:#86efac;font-weight:600;font-size:12px;">For each new business rule discovered:</div>
-            <div style="padding-left:14px;">validate-knowledge scans domain-rules.yaml for conflict with the new rule</div>
-            <div style="padding-left:14px;">If conflict found → reads the existing PRD (gh issue view &lt;introduced_prd&gt;)</div>
-            <div style="padding-left:14px;color:#86efac;">CLEAN → no conflict, seeds draft rule into domain-rules.yaml automatically</div>
-            <div style="padding-left:14px;color:#86efac;">DECLARED-WRITE → intent clear from PRD text, seeds draft rule into domain-rules.yaml automatically</div>
-            <div style="margin-top:6px;background:#0a3d20;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> BLOCKED → halts, shows the conflict clearly, asks human to resolve before continuing</div>
+            <div style="margin-top:6px;color:#86efac;font-weight:600;font-size:12px;">For business rules discovered during grill-me:</div>
+            <div style="padding-left:14px;">Written to AGENT_CONTEXT.md in plain English — no ID, no YAML entry yet</div>
+            <div style="padding-left:14px;color:#94a3b8;font-style:italic;">Rule IDs are minted during /write-a-prd · YAML entry written at /ship-feature</div>
+            <div style="margin-top:6px;background:#0a3d20;border-left:2px solid #86efac;padding:5px 10px;border-radius:0 3px 3px 0;color:#86efac;">Business rules noted in context: <em>N</em> (plain English — IDs minted during /write-a-prd)</div>
           </div>
-        </div>
-
-        <div style="text-align:center;color:#16a34a;font-size:16px;line-height:1.6;">↓</div>
-
-        <div style="background:#0c1a2e;border:1px solid #334155;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
-          <div style="color:#94a3b8;font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Overlap detected — which structural change?</div>
-          <table style="width:100%;font-size:11px;border-collapse:collapse;">
-            <thead>
-              <tr style="border-bottom:1px solid #1e293b;">
-                <th style="color:#64748b;font-weight:600;padding:4px 8px 4px 0;text-align:left;">Situation</th>
-                <th style="color:#64748b;font-weight:600;padding:4px 8px;text-align:left;">Outcome</th>
-                <th style="color:#64748b;font-weight:600;padding:4px 0 4px 8px;text-align:left;">What changes in YAML</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-bottom:1px solid #1e293b;">
-                <td style="color:#cbd5e1;padding:5px 8px 5px 0;">New rule adds a scoped modifier on top — original formula unchanged for all</td>
-                <td style="color:#a78bfa;padding:5px 8px;white-space:nowrap;">Composition</td>
-                <td style="color:#cbd5e1;padding:5px 0 5px 8px;">New rule with <code style="color:#86efac;">composes_with</code>. Original untouched.</td>
-              </tr>
-              <tr style="border-bottom:1px solid #1e293b;">
-                <td style="color:#cbd5e1;padding:5px 8px 5px 0;">New scoped rule introduced — original formula still valid for remaining segment</td>
-                <td style="color:#38bdf8;padding:5px 8px;white-space:nowrap;">SCOPE-INFERRED</td>
-                <td style="color:#cbd5e1;padding:5px 0 5px 8px;">Original annotated with <code style="color:#86efac;">scope</code> + <code style="color:#86efac;">modified_prd</code>. New scoped rule added.</td>
-              </tr>
-              <tr>
-                <td style="color:#cbd5e1;padding:5px 8px 5px 0;">New scoped rules introduced — original formula no longer matches any segment</td>
-                <td style="color:#f97316;padding:5px 8px;white-space:nowrap;">Supersede split</td>
-                <td style="color:#cbd5e1;padding:5px 0 5px 8px;">Original marked <code style="color:#86efac;">superseded</code>. Two new scoped rules written as active.</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
 
         <div style="text-align:center;color:#16a34a;font-size:16px;line-height:1.6;">↓</div>
@@ -1852,8 +1818,13 @@ pre {
         <div style="background:#073a1f;border:1px solid #16a34a;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
           <div style="color:#4ade80;font-weight:600;margin-bottom:4px;"><a href="#" onclick="openSkillModal('write-a-prd');return false;" style="color:#4ade80;text-decoration:none;border-bottom:1px dashed #4ade80;">/write-a-prd</a></div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
-            <div>Reads AGENT_CONTEXT.md + domain-rules.yaml — pulls existing rule IDs</div>
-            <div>Writes GitHub PRD issue: user stories with [rule_id] badges · acceptance criteria with [rule_id] badges on behavioral items · introduced_prd write-back · user_story_ref (required)</div>
+            <div>Reads AGENT_CONTEXT.md — picks up plain-English rules from grill-me</div>
+            <div>Writes GitHub PRD issue with <code style="font-size:11px;">gh issue create</code> → gets back the issue number</div>
+            <div style="margin-top:5px;color:#86efac;font-weight:600;font-size:12px;">After issue number is returned:</div>
+            <div style="padding-left:14px;">Mints rule IDs: <code style="font-size:11px;">RULE-&lt;DOMAIN&gt;-P&lt;N&gt;-&lt;seq&gt;</code> e.g. <code style="font-size:11px;">RULE-BILLING-P10-1</code></div>
+            <div style="padding-left:14px;">Edits PRD body to replace placeholders with real IDs in [rule_id] badges</div>
+            <div style="padding-left:14px;">For each <code style="font-size:11px;">action: add</code> or <code style="font-size:11px;">action: supersede</code> rule → runs validate-knowledge conflict check</div>
+            <div style="padding-left:14px;color:#94a3b8;font-style:italic;">Rules stay in AGENT_CONTEXT.md — not written to domain-rules.yaml until /ship-feature</div>
             <div style="margin-top:6px;display:flex;gap:16px;flex-wrap:wrap;">
               <a href="prd-template.md" target="_blank" style="color:#86efac;font-size:11px;text-decoration:none;border-bottom:1px dashed #86efac;">📄 PRD template</a>
               <a href="prd-sample-billing.md" target="_blank" style="color:#86efac;font-size:11px;text-decoration:none;border-bottom:1px dashed #86efac;">📄 Sample PRD — billing</a>
@@ -1909,7 +1880,7 @@ pre {
             <div>CLAUDE.md — auto-loaded, has domain map + context-loading instructions</div>
             <div>Reads AGENT_CONTEXT.md — purpose, glossary, architecture patterns for this domain</div>
             <div style="padding-left:14px;color:#c4b5fd;">Reads <code style="font-size:11px;">## Ticket handoffs</code> section — sees interfaces and decisions established by prior tickets in this PRD</div>
-            <div>Reads domain-rules.yaml — all active and draft rules for this domain</div>
+            <div>Reads domain-rules.yaml — all active rules for this domain</div>
             <div>Reads PRD GitHub issue — acceptance criteria and which checkbox is this ticket's scope</div>
           </div>
         </div>
@@ -1983,9 +1954,9 @@ pre {
         <div style="background:#043d30;border:1px solid #0d9488;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
           <div style="color:#2dd4bf;font-weight:600;margin-bottom:4px;">Pre-flight checks</div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
-            <div>Reads domain-rules.yaml — verifies all three conditions before proceeding:</div>
-            <div style="padding-left:14px;">All ticket PRs are merged in GitHub</div>
-            <div style="padding-left:14px;">introduced_prd set on every rule being shipped</div>
+            <div>Reads AGENT_CONTEXT.md + PRD GitHub issue — verifies conditions before proceeding:</div>
+            <div style="padding-left:14px;">All ticket PRs for this PRD are merged in GitHub</div>
+            <div style="padding-left:14px;">All rules in AGENT_CONTEXT.md for this PRD have minted IDs (RULE-&lt;DOMAIN&gt;-P&lt;N&gt;-&lt;seq&gt;)</div>
             <div style="margin-top:6px;background:#022c22;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> If any check fails — halts and reports which condition failed before proceeding</div>
           </div>
         </div>
@@ -1993,22 +1964,13 @@ pre {
         <div style="text-align:center;color:#0d9488;font-size:16px;line-height:1.6;">↓</div>
 
         <div style="background:#043d30;border:1px solid #0d9488;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
-          <div style="color:#2dd4bf;font-weight:600;margin-bottom:4px;"><a href="#" onclick="openSkillModal('validate-knowledge');return false;" style="color:#2dd4bf;text-decoration:none;border-bottom:1px dashed #2dd4bf;">validate-knowledge</a> conflict gate</div>
+          <div style="color:#2dd4bf;font-weight:600;margin-bottom:4px;">Write rules to domain-rules.yaml</div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
-            <div>For each rule being promoted: scans domain-rules.yaml for overlap</div>
-            <div style="padding-left:14px;">If conflict found → reads existing PRD (gh issue view &lt;introduced_prd&gt;)</div>
-            <div style="padding-left:14px;color:#6ee7b7;">CLEAN or DECLARED-WRITE → proceed with promotion</div>
-            <div style="margin-top:6px;background:#022c22;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> BLOCKED → halts, shows the conflict, waits for human product decision before continuing</div>
-          </div>
-        </div>
-
-        <div style="text-align:center;color:#0d9488;font-size:16px;line-height:1.6;">↓</div>
-
-        <div style="background:#043d30;border:1px solid #0d9488;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
-          <div style="color:#2dd4bf;font-weight:600;margin-bottom:4px;">Promote rules</div>
-          <div style="color:#ffffff;font-size:12px;line-height:1.8;">
-            <div>All passing rules: draft → active in domain-rules.yaml</div>
-            <div>Superseded rules: status set to superseded · superseded_by filled</div>
+            <div>For each rule in the PRD (from AGENT_CONTEXT.md plain-English notes):</div>
+            <div style="padding-left:14px;"><code style="font-size:11px;">action: add</code> → writes rule directly as <code style="font-size:11px;">status: active</code> — no conflict check needed (already run at /write-a-prd)</div>
+            <div style="padding-left:14px;"><code style="font-size:11px;">action: supersede</code> → runs <a href="#" onclick="openSkillModal('validate-knowledge');return false;" style="color:#5eead4;text-decoration:none;border-bottom:1px dashed #5eead4;">validate-knowledge</a> · marks old rule <code style="font-size:11px;">superseded</code> · writes new rule as <code style="font-size:11px;">active</code></div>
+            <div style="padding-left:14px;"><code style="font-size:11px;">action: no_change</code> → skips</div>
+            <div style="margin-top:6px;background:#022c22;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> BLOCKED on supersede conflict → halts, shows the conflict, waits for human decision before continuing</div>
           </div>
         </div>
 
@@ -2138,13 +2100,13 @@ pre {
           <td class="code-cell">id</td>
           <td style="color:#94a3b8;font-size:0.82rem;">string</td>
           <td style="color:#22c55e;font-size:0.82rem;font-weight:600;">Required</td>
-          <td>Numeric format <code>N.N.N</code> — domain number · concept number · version. Example: <code>1.1.3</code> = loyalty domain, earn concept, version 3. Never reused after a rule is superseded — increment the version for replacements.</td>
+          <td>Format <code>RULE-&lt;DOMAIN&gt;-P&lt;N&gt;-&lt;seq&gt;</code> — domain abbreviation · PRD issue number · sequence. Example: <code>RULE-BILLING-P10-1</code> = billing domain, PRD issue #10, first rule. Minted by /write-a-prd after <code>gh issue create</code> returns the issue number. Never reused after a rule is superseded.</td>
         </tr>
         <tr>
           <td class="code-cell">status</td>
           <td style="color:#94a3b8;font-size:0.82rem;">enum</td>
           <td style="color:#22c55e;font-size:0.82rem;font-weight:600;">Required</td>
-          <td>One of: <code>draft</code> · <code>active</code> · <code>superseded</code> · <code>retired</code>. Set and updated only by validate-knowledge — never edited manually after creation.</td>
+          <td>One of: <code>active</code> · <code>superseded</code> · <code>retired</code>. Rules enter the YAML only at /ship-feature, always as <code>active</code> — there is no draft state in the YAML. Updated only by validate-knowledge — never edited manually.</td>
         </tr>
         <tr style="background:#0f1a0f;">
           <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">RULE CONTENT</td>
@@ -2603,9 +2565,9 @@ pre {
         <tr id="skill-update-agent-context">
           <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('update-agent-context');return false;" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/update-agent-context</code></a></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Reads grill-me conversation output</li>
+            <li>Reads grill-me output — writes discoveries to AGENT_CONTEXT.md</li>
             <li>Updates AGENT_CONTEXT.md (fixed template)</li>
-            <li>Seeds draft rules to domain-rules.yaml via validate-knowledge gate</li>
+            <li>Business rules stay as plain English in AGENT_CONTEXT.md — no YAML write, no IDs yet</li>
           </ul></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After /grill-me, before /write-a-prd.</td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">406</span></td>
@@ -2616,7 +2578,7 @@ pre {
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Explores codebase; interviews user</li>
             <li>Creates GitHub issue with Problem, Solution, User Stories (with [rule_id] badges on behavioral stories), Acceptance Criteria (with [rule_id] badges on behavioral items — plain prose for UI/layout items)</li>
-            <li>Writes back introduced_prd to domain-rules.yaml; sets user_story_ref (required, not optional)</li>
+            <li>After gh issue create: mints rule IDs as RULE-&lt;DOMAIN&gt;-P&lt;N&gt;-&lt;seq&gt;, edits PRD body with real IDs, runs validate-knowledge for each add/supersede rule</li>
           </ul></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After /update-agent-context, to produce the PRD GitHub issue.</td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">902</span></td>
@@ -2670,7 +2632,7 @@ pre {
             <li>Scans PRD AC [rule_id] badges to scope conflict detection to rules actually in play</li>
             <li>6 outcomes: CLEAN · DECLARED-WRITE · INFERRED-WRITE · SCOPE-INFERRED · CHAIN-IMPACT · CONFLICT-UNRESOLVABLE</li>
             <li>Flags superseded rule references in PR comment with replacement rule ID</li>
-            <li>Called internally by /update-agent-context, /ship-feature</li>
+            <li>Called internally by /write-a-prd (for all add/supersede rules) and /ship-feature (supersede actions only)</li>
           </ul></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">Internal gate — called by other skills, not directly by user.</td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">1171</span></td>
@@ -2792,7 +2754,6 @@ pre {
 </div><!-- /main-content -->
 </div><!-- /layout -->
 
-<script src="./skill-content.js"></script>
 <script>
 
 function renderMarkdown(md) {
@@ -2854,14 +2815,29 @@ function renderMarkdown(md) {
   return md;
 }
 
-function openSkillModal(name) {
-  const content = (typeof SKILL_DATA !== 'undefined' && SKILL_DATA[name])
-    ? SKILL_DATA[name]
-    : '<p>Skill content not available.</p>';
+const _skillCache = {};
+
+async function openSkillModal(name) {
   document.getElementById('modalTitle').textContent = '/' + name;
-  document.getElementById('modalBody').innerHTML = renderMarkdown(content);
+  document.getElementById('modalBody').innerHTML = '<p style="color:#64748b;font-style:italic;">Loading…</p>';
   document.getElementById('skillModal').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  if (_skillCache[name]) {
+    document.getElementById('modalBody').innerHTML = renderMarkdown(_skillCache[name]);
+    return;
+  }
+
+  try {
+    const res = await fetch(`../.claude/commands/${name}.md`);
+    if (!res.ok) throw new Error(res.status);
+    const md = await res.text();
+    _skillCache[name] = md;
+    document.getElementById('modalBody').innerHTML = renderMarkdown(md);
+  } catch (e) {
+    document.getElementById('modalBody').innerHTML =
+      `<p style="color:#f87171;">Could not load skill <code>${name}.md</code>.<br>Serve this file with a local HTTP server (e.g. <code>python3 -m http.server</code>) to enable skill previews.</p>`;
+  }
 }
 
 function closeSkillModal() {

@@ -1,0 +1,14 @@
+# Knowledge Loop — project configuration
+# Fill in once when adopting the framework. Skills read this automatically.
+# Do not commit sensitive values here — use environment variables for secrets.
+
+paths:
+  domains: backend/src/domains       # root folder containing domain subdirectories
+  contracts: contracts               # cross-domain CONTRACT.md files
+  grill_me_logs: grill-me-docs      # append-only grill-me session logs
+  claude_md: CLAUDE.md              # project knowledge root (auto-loaded by Claude)
+
+project:
+  vcs: github                        # github | gitlab | gitea
+  issue_tracker: github              # github | linear | jira
+  default_branch: main               # main | master
