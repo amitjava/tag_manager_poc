@@ -4,7 +4,7 @@ Read `.claude/skill-config.yaml` to get project paths. Use those paths wherever 
 
 ---
 
-This skill will be invoked when the user wants to create a PRD. You may skip steps if you don't consider them necessary.
+This skill will be invoked when the user wants to create a PRD. Steps 1–4 are flexible — use judgment. Steps 5–6 are mandatory and must not be skipped: they mint rule IDs and run the conflict gate that the rest of the framework depends on.
 
 1. Ask the user for a long, detailed description of the problem they want to solve and any potential ideas for solutions.
 
@@ -43,9 +43,15 @@ Check with the user that these modules match their expectations. Check with the 
    This format is collision-proof — the issue number is globally unique, no registry needed.
 
    b. **Edit the PRD issue body** to replace any placeholder descriptions with the minted IDs.
-   Use: `gh issue edit <number> --body "$(updated body text)"`
+   Use `--body-file` to avoid shell injection from special characters in rule text (formulas with `$`, backticks, parentheses will corrupt `--body "$(...)"`):
 
-   **Verify the edit landed:** Immediately after editing, run `gh issue view <number>` and confirm the minted IDs appear in the issue body. If the IDs are missing (network error, auth expiry, CLI bug), retry the edit before proceeding. Do not continue until the IDs are visible in the issue body — they are the single source of truth for the rule lifecycle.
+   ```bash
+   gh issue view <number> --json body -q .body > /tmp/prd-body.md
+   # Edit /tmp/prd-body.md: replace placeholder rule descriptions with minted IDs
+   gh issue edit <number> --body-file /tmp/prd-body.md
+   ```
+
+   **Verify the edit landed:** Immediately after editing, run `gh issue view <number>` and confirm the minted IDs appear in the issue body. If the IDs are missing, retry using the same `--body-file` approach. Do not continue until the IDs are visible — they are the single source of truth for the rule lifecycle.
 
    c. **Run `/validate-knowledge`** for each rule with `action: add` or `action: supersede`:
    - Incoming: the rule's plain_english + formula from the PRD

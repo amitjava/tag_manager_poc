@@ -12,3 +12,12 @@ project:
   vcs: github                        # github | gitlab | gitea
   issue_tracker: github              # github | linear | jira
   default_branch: main               # main | master
+
+framework:
+  version: "2.0"                     # Knowledge Loop framework version
+  # Version history:
+  #   2.0 — INFERRED-WRITE gated; DECLARED-WRITE requires rule ID; batch supersede;
+  #          brownfield-import; rollback-prd; tdd; cross-domain-prd; health-check
+  #   1.0 — initial framework
+  # PRDs written before version 2.0 did not have stale-check at ship or batch supersede.
+  # Run /health-check to validate existing rules conform to current framework expectations.

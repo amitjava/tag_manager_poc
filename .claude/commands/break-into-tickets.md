@@ -31,7 +31,7 @@ Rules for a well-formed ticket:
 - Has a clear definition of done (tests passing, PR mergeable)
 - Does not require another ticket to be finished before it starts (or explicitly notes the dependency)
 - Fits in one TDD session (a few hours of focused work)
-- **Size guideline:** A ticket should touch at most 3–4 modules and produce at most ~200 lines of new/changed logic. If a ticket would touch more, split it.
+- **Size guideline:** A ticket should implement at most **one independently testable behavior**. As a secondary check: touch at most 3–4 modules. The "lines of code" metric is language-dependent (Python is denser than Java; a React component may be 400 lines and still be one behavior). Use the behavior count as the primary signal — if completing the ticket requires testing more than one distinct user-observable outcome that could be released independently, split it.
 
 Bad boundaries: "backend work", "frontend work", "all the rules" — too broad.
 

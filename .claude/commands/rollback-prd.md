@@ -58,7 +58,20 @@ For each rule that was superseded by this PRD (old rule set to `status: supersed
 
 Use Edit tool — never overwrite the file.
 
-Show the full diff to the user before writing. Wait for explicit "yes".
+**Repair depends_on references:** After updating rule statuses, scan all domain-rules.yaml files for any rule with `depends_on` pointing to a rule that was just retired. For each found:
+
+```
+⚠ DEPENDS_ON REPAIR NEEDED
+  Rule <ID> has depends_on: <retired-rule-id>
+  Options:
+    A) Point depends_on to the restored predecessor rule (the old rule now back to active)
+    B) Remove the depends_on entirely — the dependency no longer makes sense
+    C) Flag as DATA-INTEGRITY — human must decide
+```
+
+Surface each case to the user and apply their choice before writing. Do not leave a `depends_on` pointing at a `retired` rule.
+
+Show the full diff (rule status changes + depends_on repairs) to the user before writing. Wait for explicit "yes".
 
 ## Step 3 — Restore AGENT_CONTEXT.md
 

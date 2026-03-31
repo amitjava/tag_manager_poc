@@ -42,7 +42,8 @@ If the remote has commits ahead of local that touch this file: **pull first**, t
 **Concurrent PRD rule:** If two PRDs are in-flight for the same domain at the same time:
 
 - Only one PRD's grill-me session should update `## Ticket handoffs` at a time.
-- Coordinate by rule: whichever PRD is further along (more tickets merged) has "write priority." The other PRD author pulls before each edit.
+- Coordinate by rule: **write priority goes to the PRD with more merged tickets in absolute count** (e.g. PRD A: 3 of 5 merged → 3 tickets; PRD B: 1 of 2 merged → 1 ticket → PRD A has priority). If tied, the PRD with the lower issue number has priority (it started first).
+- The other PRD author pulls before each edit: `git pull --rebase origin main` before opening AGENT_CONTEXT.md.
 - If in doubt: make your edit a focused `+` only (add new content, not rewrite existing lines). Additive edits produce resolvable conflicts.
 
 ## Step 2 — Update AGENT_CONTEXT.md
@@ -68,6 +69,22 @@ The file has 3 required sections (Purpose, Glossary, Known debt) and optional se
 The template is a starting point, not a constraint. If grill-me produced information that doesn't fit any existing section — e.g. a concurrency model, a caching strategy, a compliance requirement — add a new section with a descriptive heading. Use judgment: only add a section if the information is worth loading into every future ticket context.
 
 Use Edit tool — never overwrite the file.
+
+## Step 2.5 — Size check
+
+After editing, count the approximate line count of AGENT_CONTEXT.md:
+
+```bash
+wc -l backend/src/domains/<name>/AGENT_CONTEXT.md
+```
+
+| Line count    | Action                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| < 300 lines   | Fine — no action needed.                                                                                                                                                                                                                                                                                                                                                                                    |
+| 300–500 lines | **Warn:** "AGENT_CONTEXT.md is <N> lines. Consider archiving old Glossary entries that no longer reflect active terminology, and Known debt entries marked resolved."                                                                                                                                                                                                                                       |
+| > 500 lines   | **Flag:** "AGENT_CONTEXT.md is <N> lines — this will burn significant context window on every ticket. Archive stale sections now." Archive strategy: move any Known debt entries older than 3 shipped PRDs and marked resolved to `grill-me-docs/<domain>/archived-debt.md`. Move Glossary terms that haven't been referenced in recent PRDs to a `## Archived glossary` section at the bottom of the file. |
+
+The goal is to keep the live AGENT_CONTEXT.md to what a ticket window actually needs — not a historical record.
 
 ## Step 3 — Confirm to user
 

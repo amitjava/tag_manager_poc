@@ -65,15 +65,35 @@ Run `/write-a-prd` once per domain.
 
 ## Step 4 — Sequence the PRDs
 
-Determine which domain ships first. The dependency is usually:
+Determine the ship order by mapping the data flow topology:
 
-- Provider domain ships first (its code must exist for consumer to call it)
-- Consumer domain ships second
+**Two domains (provider → consumer):**
 
-Document the sequence in both PRDs:
+- Provider ships first, consumer ships second.
 
-Provider PRD: "Consumer PRD (#N+1) depends on this PRD shipping first."
-Consumer PRD: "Requires PRD #N (provider) shipped before ticket work begins."
+**Three or more domains — determine topology first:**
+
+Draw the dependency graph before writing any PRD sequence:
+
+```
+Chain:    billing → loyalty → fulfillment   (each depends on the previous)
+Fan-out:  billing → loyalty
+                  → fulfillment             (loyalty and fulfillment both read from billing)
+Fan-in:   billing  →
+          loyalty  → fulfillment            (fulfillment depends on both)
+```
+
+- **Chain**: ship left-to-right (billing first, fulfillment last).
+- **Fan-out**: ship the root domain (billing) first; the leaf domains (loyalty, fulfillment) can ship in parallel after.
+- **Fan-in**: ship all providers first (billing, loyalty in parallel); ship the consumer (fulfillment) last.
+
+Write the topology type and sequence explicitly in the first line of each PRD's "Further Notes" section so every ticket window knows the ship order.
+
+Document the sequence in all PRDs involved. Example for chain:
+
+PRD #N (billing): "PRDs #N+1 (loyalty) and #N+2 (fulfillment) depend on this shipping first."
+PRD #N+1 (loyalty): "Requires PRD #N (billing) shipped. PRD #N+2 (fulfillment) requires this."
+PRD #N+2 (fulfillment): "Requires PRD #N (billing) and PRD #N+1 (loyalty) shipped first."
 
 ## Step 5 — Coordinate ticket dependencies across domains
 

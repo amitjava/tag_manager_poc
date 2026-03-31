@@ -12,14 +12,23 @@ Onboard an existing codebase into the Knowledge Loop framework. Use when adoptin
 
 Once, at framework adoption time, per domain. Run `/scaffold-domain` first (creates folder structure), then run this skill to populate it with extracted knowledge.
 
-## Step 0 — Scope one domain
+## Step 0 — Scope one domain and create an import issue
 
 Do not try to import all domains at once. Pick one domain:
 
 1. Which existing folder or module maps to this domain? (e.g. `src/billing/`, `app/orders/`)
 2. What is the domain name? (e.g. `billing`, `loyalty`, `fulfillment`)
 
-Confirm with the user before extracting.
+Confirm with the user, then **create a GitHub issue** to anchor the import:
+
+```bash
+gh issue create \
+  --title "Brownfield import: <domain-name>" \
+  --body "Knowledge Loop framework adoption — extracting existing business rules and context for the <domain-name> domain." \
+  --label "knowledge-loop"
+```
+
+Save the returned issue number. All imported rules will use IDs in the format `RULE-<DOMAIN>-P<import-issue-number>-<seq>`, making them first-class citizens with a real GitHub anchor — the same format as all other rules in the framework.
 
 ## Step 1 — Read the existing code
 
@@ -46,17 +55,34 @@ For each rule found:
 - Write `plain_english` at the verbose level required by the YAML spec (80+ words).
 - Write `formula` if there is a calculation.
 - Write `why` — infer from tests, comments, or ask the user if unclear.
-- Assign a temporary ID: `RULE-<DOMAIN>-IMPORT-<seq>` (e.g. `RULE-BILLING-IMPORT-1`).
-- Set `status: active`, `introduced_prd: brownfield-import`.
+- Assign ID: `RULE-<DOMAIN>-P<import-issue-number>-<seq>` (e.g. if import issue is #42: `RULE-BILLING-P42-1`).
+- Set `status: active`, `introduced_prd: <import-issue-number>`.
 
 Show the full list to the user before writing. Ask: "Are these all the active rules? Any I missed or misunderstood?"
 
-## Step 3 — Run validate-knowledge on extracted rules
+## Step 3 — Cross-check extracted rules against each other
 
-For each extracted rule, run `/validate-knowledge` against itself (the other extracted rules) to detect intra-domain overlaps before writing. This catches cases where two code paths enforce contradictory behavior that no one noticed.
+`/validate-knowledge` reads domain-rules.yaml, which is empty at this point — do not call it here. Instead, do a direct pairwise comparison of the extracted rules in memory.
 
-- CLEAN: proceed.
-- CONFLICT-UNRESOLVABLE: surface to the user — the existing code may have a latent bug.
+For each pair of extracted rules (Rule A, Rule B), ask:
+
+> "Do these two rules govern the same business decision, even partially? Rule A: [plain_english + formula]. Rule B: [plain_english + formula]. Answer YES or NO with one sentence of reasoning."
+
+Use the same uncertainty escalation: if the cheap model hedges, escalate to Sonnet.
+
+- All pairs return NO → proceed to Step 4.
+- Any pair returns YES → surface to the user:
+  ```
+  ⚠ OVERLAP DETECTED IN EXTRACTED RULES
+  Rule <seq-A>: [plain_english summary]
+  Rule <seq-B>: [plain_english summary]
+  These may be the same business decision expressed differently in code, or a latent bug.
+  Options:
+    A) Merge into one rule — the code has two expressions of the same thing
+    B) Keep both — they cover genuinely different conditions (explain the boundary)
+    C) Flag as DATA-INTEGRITY — investigate the code before importing
+  ```
+  Do not write to YAML until all overlaps are resolved.
 
 ## Step 4 — Write domain-rules.yaml
 

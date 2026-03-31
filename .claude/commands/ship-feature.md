@@ -123,11 +123,11 @@ For the domain(s) involved, use Edit tool to update:
   2. Write it to `grill-me-docs/<prd-brief-name>/handoffs-PRD-<issue-number>.md` — this preserves the in-flight reasoning for post-ship debugging.
   3. Then clear the section in AGENT_CONTEXT.md: delete from `## Ticket handoffs` heading to end of that section (all `### Ticket N` entries). The live context is cleaned; the archive is in grill-me-docs.
 
-- **Stale reference audit** — scan AGENT_CONTEXT.md for references that may no longer be valid after this PRD's code changes:
-  - Module or class names listed in Architecture patterns — do they still exist in the codebase? (`grep -r "<ClassName>" backend/src/`)
-  - File paths listed in File locations — do those files exist? (`ls <path>`)
-  - Table names in Owned tables — do those migrations still define them?
-  - For each stale reference found: update or remove the entry. Note what changed.
+- **Stale reference audit** — scan AGENT_CONTEXT.md for references that may no longer be valid after this PRD's code changes. For each item, use **multiple search strategies** before concluding it still exists — a single grep can miss renamed or refactored symbols:
+  - Module or class names in Architecture patterns: search exact name, camelCase variant, snake_case variant, and as a string literal in imports. If not found by any strategy, flag for human review — do not assume it still exists.
+  - File paths in File locations: check the path exists (`ls <path>`). If missing, search for a file with a similar name in case of rename.
+  - Table names in Owned tables: search migration files for `CREATE TABLE` or `rename_table`. If a table appears only in old migrations and a newer one renamed it, update the entry.
+  - **Default to flag, not pass**: if you cannot confirm a reference exists with confidence, mark it `⚠ needs verification` and surface it to the user. Do not silently leave a stale reference in place.
 
 Do not rewrite the whole file — only update sections that changed.
 
@@ -156,6 +156,7 @@ gh issue close <number> --comment "Shipped. All <N> tickets merged. Rules promot
 git add backend/src/domains/<name>/AGENT_CONTEXT.md
 git add backend/src/domains/<name>/domain-rules.yaml
 git add CLAUDE.md
+git add grill-me-docs/  # includes handoffs archive and INDEX.md update
 git commit -m "Ship: <feature-name> — rules active, context updated"
 ```
 

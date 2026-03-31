@@ -35,6 +35,16 @@ Read the PRD and extract:
 - `formula` — the calculation or condition if applicable
 - `why` — business rationale
 
+### Step 1.5 — Enforce plain_english minimum length
+
+Count the words in the extracted `plain_english`. Apply:
+
+| Word count  | Action                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| < 50 words  | **HALT.** Return to the calling skill (write-a-prd or ship-feature) with: `BLOCKED — plain_english too short (<N> words). Minimum is 80 words. Ask the user to expand the description to cover: what the rule governs, which entities/conditions it applies to, which cases are excluded, and the business intent. Re-run validate-knowledge once expanded.` Do not proceed until the description meets the threshold. |
+| 50–79 words | **WARN.** Proceed, but surface: `⚠ plain_english is <N> words — below the recommended 80. Overlap detection may be less reliable. Consider expanding before the rule enters YAML.`                                                                                                                                                                                                                                     |
+| ≥ 80 words  | Proceed silently.                                                                                                                                                                                                                                                                                                                                                                                                      |
+
 ### Step 2 — Cheap LLM text scan against domain-rules.yaml
 
 Read the full `domain-rules.yaml` for this domain. Use the cheapest available model (Haiku or equivalent) for the initial scan — this is a text comparison task. For each **active** rule in the file, ask:
@@ -74,8 +84,11 @@ Read both PRDs. Determine intent.
 
 ### Step 5 — Classify
 
-**DECLARED-WRITE** — the incoming PRD text clearly states the relationship to the overlapping rule (replaces it, layers on it, scopes it, retires it). No rule IDs needed — plain English intent is sufficient.
-→ Auto-execute. No second fetch. PM already made the decision when writing the PRD.
+**DECLARED-WRITE** — the incoming PRD text explicitly names the rule ID being changed (e.g. "supersedes RULE-BILLING-P7-1", "layers on RULE-LOYALTY-P4-2", "retires RULE-BILLING-P3-1"). The relationship is declared with a specific rule reference, not just prose intent.
+
+**Important:** Plain English alone is not sufficient for DECLARED-WRITE. "Replaces our current earn rate" without citing a rule ID is INFERRED-WRITE, not DECLARED-WRITE — the overlap was inferred, not declared. The PRD author must have named the specific rule ID.
+
+→ Show diff and wait for human "yes" (Step 7). No second PRD fetch needed. The PM named the rule they intended to change.
 
 **INFERRED-WRITE** — no explicit declaration, but reading both PRDs makes intent unambiguous (one clearly replaces or layers on the other).
 → BLOCKED for human confirmation. Show the diff and reasoning — do not auto-write. LLM inference is not deterministic; a plausible-sounding but wrong inference would silently corrupt the YAML. The human confirms intent before any write.
@@ -171,6 +184,17 @@ calculate mentally."
 
 When writing a new rule to YAML, always write plain_english at this level of detail.
 
+### Optional: review_by field
+
+Rules can declare a review date — useful for time-sensitive business rules (promotional rates, regulatory requirements, seasonal logic):
+
+```yaml
+review_by: '2026-12-31' # ISO date — re-validate this rule before this date
+review_reason: 'Promotional rate expires; confirm rule still reflects product intent'
+```
+
+This field is advisory. No automated enforcement — it is a signal for the team's periodic health check. When writing a rule that is known to be time-sensitive, always populate `review_by`.
+
 ## Edge cases not covered by the 6 outcomes
 
 The 6 outcomes (CLEAN, DECLARED-WRITE, INFERRED-WRITE, SCOPE-INFERRED, CHAIN-IMPACT, CONFLICT-UNRESOLVABLE) cover the common cases. Real codebases produce edges that don't fit cleanly:
@@ -225,7 +249,14 @@ A major overhaul may supersede 5–10 rules simultaneously. Running N independen
 4. One human confirmation writes the entire batch.
 5. Check internal consistency within the incoming set (do the new rules conflict with each other?) — flag before showing the diff.
 
-Batch mode is not activated automatically. The human must request it: "Run validate-knowledge in batch mode for this overhaul."
+**Auto-detection:** If the calling skill is processing a PRD that contains ≥ 3 rules with `action: supersede`, automatically prompt before running individual passes:
+
+```
+⚠ BATCH DETECTED: This PRD supersedes <N> rules. This looks like a coordinated overhaul.
+Run in batch mode? (yes = single consolidated gate / no = N individual passes)
+```
+
+Wait for the human's answer. Default to individual passes if no response.
 
 ## Rules for the skill itself
 

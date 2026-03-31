@@ -132,6 +132,11 @@ gh pr create --title "Ticket N: <description> (PRD #<issue>)" \
 
 Mark the checkbox in the PRD issue:
 
-```
-gh issue edit <issue-number> --body "$(gh issue view <issue-number> --json body -q .body | sed 's/- \[ \] Ticket N:/- [x] Ticket N:/')"
+```bash
+# Replace <N> with the actual ticket number (e.g. 3)
+TICKET_NUM=<N>
+gh issue view <issue-number> --json body -q .body > /tmp/prd-body.md
+sed -i "s/- \[ \] Ticket ${TICKET_NUM}:/- [x] Ticket ${TICKET_NUM}:/" /tmp/prd-body.md
+gh issue edit <issue-number> --body-file /tmp/prd-body.md
+# Verify: gh issue view <issue-number> | grep "Ticket ${TICKET_NUM}"
 ```
