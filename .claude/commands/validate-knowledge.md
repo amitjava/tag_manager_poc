@@ -15,7 +15,7 @@ This skill **always gates** writes to `domain-rules.yaml`. It **optionally gates
 Called by other skills before they write to knowledge docs:
 
 - `/write-a-prd` → always, immediately after the PRD issue is created, for every rule with `action: add` or `action: supersede` in the "Business Rules Affected" section
-- `/ship-feature` → only when superseding an existing rule; skip for net-new rules (already cleared at PRD time)
+- `/ship-feature` → for every rule with `action: add` (stale conflict re-check — other PRDs may have shipped between PRD creation and now) and every rule with `action: supersede` (chain-impact check)
 
 Can also be invoked directly: "validate-knowledge before updating billing rules"
 
@@ -170,6 +170,30 @@ calculate mentally."
 ```
 
 When writing a new rule to YAML, always write plain_english at this level of detail.
+
+## Edge cases not covered by the 6 outcomes
+
+The 6 outcomes (CLEAN, DECLARED-WRITE, INFERRED-WRITE, SCOPE-INFERRED, CHAIN-IMPACT, CONFLICT-UNRESOLVABLE) cover the common cases. Real codebases produce edges that don't fit cleanly:
+
+**Partial overlap — neither fully supersedes the other:**
+
+> "Rule A covers orders under $100. Incoming rule governs orders over $50. There's a $50–$100 band where both fire."
+> → Treat as SCOPE-INFERRED. The incoming rule needs an explicit boundary condition before it can be written. BLOCK and ask the human to add a `when:` clause that makes the boundary precise.
+
+**Cross-cutting policy violation:**
+
+> "Rule is domain-correct but violates a cross-cutting policy (e.g. billing rule that contradicts a compliance requirement in a separate policy doc)."
+> → Treat as CONFLICT-UNRESOLVABLE. Surface the cross-cutting conflict explicitly: "This rule is valid in the billing domain but may conflict with [policy]. Human must confirm it's approved."
+
+**Correct now, planned future conflict:**
+
+> "Rule is clean today but would conflict with a known upcoming PRD that isn't written yet."
+> → CLEAN — write it. The future conflict will be caught when the future PRD runs validate-knowledge. Do not block on hypothetical future state; that is the job of the next PRD's validate-knowledge run.
+
+**Rule that layers on two existing rules simultaneously:**
+→ Treat as two separate SCOPE-INFERRED checks — one for each parent rule. Both must pass before writing.
+
+When in doubt about which outcome applies: use CONFLICT-UNRESOLVABLE and surface your reasoning. It is always better to block and ask than to auto-write ambiguous state.
 
 ## Batch supersede mode
 

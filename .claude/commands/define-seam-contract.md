@@ -141,6 +141,42 @@ This contract relies on process only — no technical gate.
 Flag in CLAUDE.md Known limitations section.
 ```
 
+## Step 5b — Add contract change CI trigger
+
+Contract tests written at seam establishment need to re-run automatically when the contract changes. Without this, a field addition or type change in CONTRACT.md silently breaks consumers until their next full CI run.
+
+Create `.github/workflows/contract-<provider>-to-<consumer>.yml`:
+
+```yaml
+name: Contract test trigger — <provider> → <consumer>
+
+on:
+  push:
+    paths:
+      - 'contracts/<provider>-to-<consumer>/CONTRACT.md'
+  pull_request:
+    paths:
+      - 'contracts/<provider>-to-<consumer>/CONTRACT.md'
+
+jobs:
+  consumer-contract-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run <consumer> contract tests
+        run: |
+          # Replace with the actual command to run contract tests for the consumer domain
+          # e.g: npm test --testPathPattern="<consumer>/contract"
+          echo "Run consumer contract tests here"
+      - name: Notify on failure
+        if: failure()
+        run: echo "CONTRACT CHANGED — consumer tests failed. Review CONTRACT.md diff."
+```
+
+Fill in the actual test command for the consumer domain. The workflow name and path pattern are derived from the contract folder name — keep them in sync if the folder is ever renamed.
+
+If CI is not GitHub Actions, adapt the trigger to your CI system. The key requirement: **any change to CONTRACT.md must automatically re-run the consumer's contract tests**.
+
 ## Step 6 — Confirm to user
 
 State:

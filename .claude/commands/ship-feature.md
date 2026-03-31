@@ -53,13 +53,22 @@ Identify from the PRD:
 - Business Rules Affected section (which rule IDs were changed)
 - Domains involved
 
-**Divergence check:** Compare the PRD's described feature scope with what the code actually implements. If they differ:
+**Divergence check:** This is one of the most complex reasoning tasks in the framework — read both sources carefully before concluding "no divergence."
 
-- Flag: "PRD says X, code does Y"
+Work through this checklist:
+
+1. **User stories covered?** — For each user story in the PRD, is there merged code + a test that exercises it? List any uncovered stories.
+2. **Business rules implemented?** — For each rule in "Business Rules Affected", is the formula/condition present in the code?
+3. **Out of scope respected?** — Did any merged code implement something the PRD marked out of scope?
+4. **Interface matches?** — If the PRD specified API shapes, payload fields, or module interfaces, do the merged PRs match them?
+
+If any checklist item is "no":
+
+- Flag specifically: "PRD says X, merged code does Y"
 - Ask the user:
   - A) Update the PRD to reflect what was built — then proceed
   - B) Revert code to match PRD — do not ship until code matches
-  - C) Ship as-built and note the divergence in the PRD issue
+  - C) Ship as-built and note the divergence in the PRD issue as a comment
 - Wait for user choice before continuing.
 
 ## Step 2 — Write rules to domain-rules.yaml
@@ -113,6 +122,12 @@ For the domain(s) involved, use Edit tool to update:
   1. Copy the full `## Ticket handoffs` section content.
   2. Write it to `grill-me-docs/<prd-brief-name>/handoffs-PRD-<issue-number>.md` — this preserves the in-flight reasoning for post-ship debugging.
   3. Then clear the section in AGENT_CONTEXT.md: delete from `## Ticket handoffs` heading to end of that section (all `### Ticket N` entries). The live context is cleaned; the archive is in grill-me-docs.
+
+- **Stale reference audit** — scan AGENT_CONTEXT.md for references that may no longer be valid after this PRD's code changes:
+  - Module or class names listed in Architecture patterns — do they still exist in the codebase? (`grep -r "<ClassName>" backend/src/`)
+  - File paths listed in File locations — do those files exist? (`ls <path>`)
+  - Table names in Owned tables — do those migrations still define them?
+  - For each stale reference found: update or remove the entry. Note what changed.
 
 Do not rewrite the whole file — only update sections that changed.
 
