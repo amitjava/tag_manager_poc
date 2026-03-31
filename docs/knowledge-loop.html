@@ -1811,9 +1811,10 @@ pre {
         <div style="background:#073a1f;border:1px solid #16a34a;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
           <div style="color:#4ade80;font-weight:600;margin-bottom:4px;">Save grill-me log</div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
-            <div>Claude saves the full Q&amp;A transcript to <code style="color:#86efac;font-size:11px;">grill-me-log-prd-&lt;N&gt;.md</code> in the domain folder</div>
-            <div style="margin-top:4px;">Searchable by humans and Claude in future sessions — use as reference during grill-me for related PRDs to skip already-answered questions</div>
-            <div style="margin-top:4px;color:#86efac;font-style:italic;">Each log is immutable — append-only, never overwritten</div>
+            <div>Claude saves the full Q&amp;A transcript to:</div>
+            <div style="margin-top:4px;background:#031a0e;border-radius:4px;padding:6px 10px;font-family:monospace;font-size:11px;color:#86efac;">grill-me-docs/<br>&nbsp;&nbsp;&lt;prd-brief-name&gt;/<br>&nbsp;&nbsp;&nbsp;&nbsp;grill-me-01.md<br>&nbsp;&nbsp;&nbsp;&nbsp;grill-me-02.md &nbsp;<span style="color:#4ade80;font-style:italic;">← each iteration appends a new file</span></div>
+            <div style="margin-top:6px;">Lives outside any domain folder — it's for ad-hoc human and Claude reference, not part of the domain context loaded per ticket</div>
+            <div style="margin-top:4px;color:#86efac;font-style:italic;">Each file is immutable. New iteration = new numbered file, never overwrite.</div>
           </div>
         </div>
 
