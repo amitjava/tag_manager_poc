@@ -627,11 +627,7 @@ pre {
 <span class="y-str">           no perceived customer value."</span>
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">1</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #1 Story 1, Story 2"</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 2500 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 99 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 0 }</span></span></pre>
+</span></pre>
     </div>
   </div>
 
@@ -715,9 +711,7 @@ pre {
     <span class="y-key">why</span><span class="y-val">:</span> <span class="y-str">"Simple rate, no fractions"</span>
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">1</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #1 Story 1, 2"</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 2500 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span></pre>
+</pre>
     </div>
     <div class="state-col after">
       <div class="state-label">domain-rules.yaml — after PRD #2</div>
@@ -737,11 +731,7 @@ pre {
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">2</span>
     <span class="y-key">supersedes</span><span class="y-val">:</span> <span class="y-str">1.1.1</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #2 Story 1, 2, 3"</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ total_cents: 2500, balance: 300 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span>  <span class="y-comment"># Bronze 1×</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ total_cents: 2500, balance: 1200 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 50 }</span>  <span class="y-comment"># Silver 2×</span></span>
+</span>
 
 <span class="y-comment">  # ── Superseded ─────────────────────────────────</span>
   - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.1</span>
@@ -891,11 +881,7 @@ pre {
 <span class="y-str">           Compensating restore if order creation fails."</span>
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">3</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #3 Story 1, 2, 3, 5"</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ balance: 500, total_cents: 1000, redeem: 200 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ discount_cents: 200 }</span>  <span class="y-comment"># within 50%</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ balance: 500, total_cents: 1000, redeem: 600 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ discount_cents: 500 }</span>  <span class="y-comment"># capped at 50%</span></span>
+</span>
 
 <span class="y-new">  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.3</span>
     <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
@@ -913,9 +899,7 @@ pre {
     <span class="y-key">supersedes</span><span class="y-val">:</span> <span class="y-str">1.1.2</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #3 Story 4"</span>
     <span class="y-key">depends_on</span><span class="y-val">:</span> <span class="y-val">[1.4.1]</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ gross: 2500, discount: 200, balance: 300 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 23 }</span>  <span class="y-comment"># floor(2300/100)×1</span></span>
+</span>
 
   <span class="y-comment"># ── Superseded ─────────────────────────────────</span>
   - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.2</span>
@@ -1070,11 +1054,7 @@ pre {
     <span class="y-key">why</span><span class="y-val">:</span> <span class="y-str">"Drive off-peak orders. Stacks with tier — does not replace it."</span>
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">4</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #4 Story 1, 2"</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ effective_total: 2500, balance: 300, day: saturday }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 37 }</span>  <span class="y-comment"># 25 × 1.5 = 37.5 → 37</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ effective_total: 2500, balance: 300, day: tuesday }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span>  <span class="y-comment"># modifier not applied</span></span></pre>
+</span></pre>
     </div>
   </div>
 
@@ -1195,9 +1175,7 @@ pre {
 <span class="y-str">                  Loop risk accepted for VIP tier."</span>
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">5</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #5 Story 1"</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ gross: 2500, discount: 200, vip: true, balance: 300 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span>  <span class="y-comment"># gross, not effective</span></span>
+</span>
 
   - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.3</span>
     <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
@@ -1304,7 +1282,7 @@ pre {
     <div class="ch-num c6">PRD<br>#6</div>
     <div>
       <div class="ch-title">Birthday bonus removed — pure retire, no replacement</div>
-      <div class="ch-desc">The birthday bonus (50 points on account anniversary) is being removed. The feature had 0.3% redemption rate and high operational cost. 1.5.1 has been active since PRD #0. This PRD retires it with no successor — test_cases are removed from CI, the use case is struck through in AGENT_CONTEXT.md.</div>
+      <div class="ch-desc">The birthday bonus (50 points on account anniversary) is being removed. The feature had 0.3% redemption rate and high operational cost. 1.5.1 has been active since PRD #0. This PRD retires it with no successor — the use case is struck through in AGENT_CONTEXT.md.</div>
     </div>
     <span class="ch-tag tag-retire">Pure retire</span>
     <span class="ch-chevron">▾</span>
@@ -1337,9 +1315,7 @@ pre {
       excluded. Intent: increase retention and emotional engagement around the
       customer anniversary milestone."</span>
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">0</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ days_since_creation: 365 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_awarded: 50 }</span>
+
 
   <span class="y-comment">  # ... other rules ...</span></pre>
     </div>
@@ -1357,8 +1333,7 @@ pre {
     <span class="y-key">retire_reason</span><span class="y-val">:</span>  <span class="y-str">"Feature removed — 0.3% engagement, high ops cost"</span>
     <span class="y-key">retired_replaces</span><span class="y-val">:</span> <span class="y-val">null</span>       <span class="y-comment"># no successor</span>
     <span class="y-key">formula</span><span class="y-val">:</span>        <span class="y-str">"50 points on account_anniversary_date"</span>
-    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">0</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>     <span class="y-val">[]</span>          <span class="y-comment"># removed from CI on retire</span></span></pre>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">0</span></span></pre>
     </div>
   </div>
 
@@ -1380,14 +1355,14 @@ pre {
 
 <span class="vk-retire">○ validate-knowledge-DECLARED-WRITE (RETIRE)</span>
 <span class="vk-retire">  PRD #6 declared retire 1.5.1. No dependents. No compositions. Auto-executing.</span>
-<span class="vk-retire">  1.5.1 → status: retired. test_cases cleared.</span></div>
+<span class="vk-retire">  1.5.1 → status: retired.</span></div>
   </div>
 
   <div class="outcome auto">
     <div class="outcome-icons">✅</div>
     <div class="outcome-body">
       <div class="outcome-code">validate-knowledge-DECLARED-WRITE (RETIRE)</div>
-      <div class="outcome-text">The PRD declared the retirement explicitly with a reason. validate-knowledge confirmed no other rules depend on 1.5.1 and nothing composes with it. Clean retirement — auto-executes. 1.5.1 marked retired, test_cases cleared from CI. No human gate needed.</div>
+      <div class="outcome-text">The PRD declared the retirement explicitly with a reason. validate-knowledge confirmed no other rules depend on 1.5.1 and nothing composes with it. Clean retirement — auto-executes. 1.5.1 marked retired. No human gate needed.</div>
     </div>
   </div>
 
@@ -1745,8 +1720,7 @@ pre {
         <div style="background:#1a1754;border:1px solid #4f46e5;border-radius:5px;padding:10px 14px;">
           <div style="color:#a5b4fc;font-weight:600;margin-bottom:4px;">CI + guardrails</div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
-            <div><span style="color:#fbbf24;">👤</span> Run <a href="#" onclick="openSkillModal('setup-pre-commit');return false;" style="color:#a5b4fc;text-decoration:none;border-bottom:1px dashed #a5b4fc;">/setup-pre-commit</a> · <a href="#" onclick="openSkillModal('git-guardrails-claude-code');return false;" style="color:#a5b4fc;text-decoration:none;border-bottom:1px dashed #a5b4fc;">/git-guardrails-claude-code</a> · <a href="#" onclick="openSkillModal('setup-spec-ci');return false;" style="color:#a5b4fc;text-decoration:none;border-bottom:1px dashed #a5b4fc;">/setup-spec-ci</a></div>
-            <div style="color:#ffffff;">spec-alignment.yml CI installed — runs on every push from here on</div>
+            <div><span style="color:#fbbf24;">👤</span> Run <a href="#" onclick="openSkillModal('setup-pre-commit');return false;" style="color:#a5b4fc;text-decoration:none;border-bottom:1px dashed #a5b4fc;">/setup-pre-commit</a> · <a href="#" onclick="openSkillModal('git-guardrails-claude-code');return false;" style="color:#a5b4fc;text-decoration:none;border-bottom:1px dashed #a5b4fc;">/git-guardrails-claude-code</a></div>
           </div>
         </div>
 
@@ -1966,12 +1940,6 @@ pre {
             <div style="color:#86efac;font-size:12px;">Write minimal code to pass — no speculative features</div>
             <div style="color:#4ade80;font-weight:700;font-size:12px;white-space:nowrap;margin-left:8px;">🟢 passes</div>
           </div>
-          <div style="text-align:center;color:#4b5563;font-size:14px;line-height:1.4;">↓</div>
-          <div style="background:#200040;border:1px solid #581c87;border-radius:4px;padding:8px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
-            <div style="color:#bfdbfe;font-size:12px;">Fill test_cases in domain-rules.yaml for the rule just exercised</div>
-            <div style="color:#93c5fd;font-size:12px;white-space:nowrap;margin-left:8px;">~ rules.yaml</div>
-          </div>
-          <div style="text-align:center;color:#4b5563;font-size:14px;line-height:1.4;">↓</div>
           <div style="color:#a78bfa;font-size:12px;text-align:center;font-style:italic;">next behavior ↑  or  done ↓</div>
         </div>
 
@@ -1992,7 +1960,7 @@ pre {
           <div style="color:#d8b4fe;font-weight:600;margin-bottom:4px;">Push → CI → PR</div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
             <div>Appends handoff note to <code style="font-size:11px;">## Ticket handoffs</code> in AGENT_CONTEXT.md — interfaces created, design decisions, error types introduced</div>
-            <div>Push branch → CI spec-alignment check runs — verifies rules.yaml matches test suite</div>
+            <div>Push branch → CI runs — all tests must pass</div>
             <div>Open PR linked to the PRD issue</div>
             <div style="margin-top:6px;background:#12012e;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> Reviews and approves PR → merge → checkbox ticked in PRD issue</div>
             <div style="margin-top:6px;color:#c4b5fd;font-style:italic;">Repeat TICKET for the next checkbox until all are done</div>
@@ -2017,7 +1985,6 @@ pre {
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
             <div>Reads domain-rules.yaml — verifies all three conditions before proceeding:</div>
             <div style="padding-left:14px;">All ticket PRs are merged in GitHub</div>
-            <div style="padding-left:14px;">test_cases filled for every active rule</div>
             <div style="padding-left:14px;">introduced_prd set on every rule being shipped</div>
             <div style="margin-top:6px;background:#022c22;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> If any check fails — halts and reports which condition failed before proceeding</div>
           </div>
@@ -2098,7 +2065,6 @@ pre {
       <li>validate-knowledge uses it to detect conflicts before a new rule is written — prevents silent contradictions</li>
       <li>Each rule carries <code style="color:#000000;">introduced_prd</code> — a permanent link back to the PRD that created it, full audit trail</li>
       <li>Rules have a lifecycle: draft (seeded after grill-me) → active (promoted at ship) → superseded (when a newer rule replaces it)</li>
-      <li><code style="color:#000000;">test_cases</code> on every active rule are enforced by spec-alignment CI — rules can't drift from the test suite</li>
     </ul>
 
     <div style="color:#000000;font-weight:700;margin-bottom:8px;">Per-ticket Claude window — internals</div>
@@ -2193,7 +2159,7 @@ pre {
           <td class="code-cell">formula</td>
           <td style="color:#94a3b8;font-size:0.82rem;">string</td>
           <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if active</td>
-          <td>The calculation or condition in plain notation. Examples: <code>floor(net_total_cents / 100) * tier_mult</code>, <code>min(redeem_points, floor(gross * 0.4))</code>. Must match what the code implements — CI verifies this via <code>test_cases</code>. Omitted for <code>retired</code> rules.</td>
+          <td>The calculation or condition in plain notation. Examples: <code>floor(net_total_cents / 100) * tier_mult</code>, <code>min(redeem_points, floor(gross * 0.4))</code>. Omitted for <code>retired</code> rules.</td>
         </tr>
         <tr>
           <td class="code-cell">why</td>
@@ -2303,15 +2269,6 @@ pre {
           <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if retired</td>
           <td>Why the rule was retired. Should include business context — e.g. "Birthday bonus removed — 0.3% redemption rate, high ops cost." Enables future teams to understand whether a feature was retired for good reasons or could be revived.</td>
         </tr>
-        <tr style="background:#0f1a0f;">
-          <td colspan="4" style="color:#4ade80;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:8px 12px;">CI VERIFICATION</td>
-        </tr>
-        <tr>
-          <td class="code-cell">test_cases</td>
-          <td style="color:#94a3b8;font-size:0.82rem;">array</td>
-          <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Required if active</td>
-          <td>Array of <code>{input, expected}</code> pairs. A CI check reads every <code>active</code> rule and verifies each test case passes against the actual code. This is the strongest safeguard: if validate-knowledge writes a rule with a wrong formula, or if code is deployed that contradicts an active rule, the CI build fails. Removed from CI when a rule is retired (<code>test_cases: []</code>). At least one case required per active rule.</td>
-        </tr>
       </tbody>
     </table>
   </div>
@@ -2329,12 +2286,7 @@ pre {
     <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(net_total_cents / 100)"</span>
     <span class="y-key">why</span><span class="y-val">:</span> <span class="y-str">"Simple flat rate. Fractional points rejected in grill-me — adds complexity,
       no perceived customer value."</span>
-    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">1</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ net_total_cents: 2500 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 25 }</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ net_total_cents: 99 }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 0 }</span></span></pre>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">1</span></span></pre>
   </div>
 
     <div class="chapter-nav">
@@ -2436,7 +2388,6 @@ pre {
             <ul style="margin:0;padding-left:14px;line-height:1.8;">
               <li>Active + draft business rules</li>
               <li>Superseded + retired rule history</li>
-              <li>test_cases for CI verification</li>
             </ul>
           </td>
           <td style="font-size:0.82rem;color:#333;vertical-align:top;">
@@ -2634,17 +2585,6 @@ pre {
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">310</span></td>
         </tr>
 
-        <tr id="skill-setup-spec-ci">
-          <td class="code-cell" style="vertical-align:top;"><a href="#" onclick="openSkillModal('setup-spec-ci');return false;" style="color:inherit;text-decoration:none;border-bottom:1px dashed #9ca3af;"><code>/setup-spec-ci</code></a></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
-            <li>Detects test framework</li>
-            <li>Generates scripts/check-spec-alignment.sh</li>
-            <li>Writes .github/workflows/spec-alignment.yml</li>
-            <li>Optional pre-push hook</li>
-          </ul></td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;">After first domain is scaffolded, before first feature.</td>
-          <td style="font-size:0.82rem;color:#374151;vertical-align:top;text-align:center;"><span style="background:#f3f4f6;color:#374151;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;">881</span></td>
-        </tr>
 
         <!-- FEATURE -->
         <tr><td colspan="4" style="background:#14532d;color:#86efac;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;padding:8px 12px;">FEATURE — per PRD</td></tr>
@@ -2701,7 +2641,6 @@ pre {
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;"><ul style="margin:0;padding-left:16px;line-height:1.8;">
             <li>Ticket-scoped; loads context per CLAUDE.md instructions</li>
             <li>Red → green → refactor cycle</li>
-            <li>Fills domain-rules.yaml test_cases from real tests</li>
             <li>Updates openapi.yaml if endpoints changed</li>
           </ul></td>
           <td style="font-size:0.82rem;color:#374151;vertical-align:top;">One new Claude window per ticket. Run after /break-into-tickets.</td>
@@ -3024,11 +2963,7 @@ document.addEventListener('DOMContentLoaded', () => { goCh(9); });
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">9</span>
     <span class="y-key">supersedes</span><span class="y-val">:</span>    <span class="y-str">1.1.1</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #9 Story 1"</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 2000, tier: "standard" }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 10 }</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 199, tier: "standard" }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 0 }</span>
+
 
   - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.3</span>
     <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
@@ -3040,9 +2975,7 @@ document.addEventListener('DOMContentLoaded', () => { goCh(9); });
     <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">9</span>
     <span class="y-key">supersedes</span><span class="y-val">:</span>    <span class="y-str">1.1.1</span>
     <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #9 Story 2"</span>
-    <span class="y-key">test_cases</span><span class="y-val">:</span>
-      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 2000, tier: "premium" }</span>
-        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 40 }</span></span></pre>
+</span></pre>
     </div>
   </div>
 
@@ -3147,7 +3080,6 @@ document.addEventListener('DOMContentLoaded', () => { goCh(9); });
   <div style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#ffffff;line-height:1.8;">
     <span style="color:#38bdf8;font-weight:700;">How tests fit the loop:</span>
     Tests are written once per ticket during <code>/tdd</code>. CI enforces them on every push.
-    domain-rules.yaml <code>test_cases</code> are traceability pointers (string labels) — they prove a rule is exercised, not the test logic itself.
     The test files in <code>__tests__/</code> are the single source of truth for what the code must do.
   </div>
 
@@ -3163,7 +3095,7 @@ document.addEventListener('DOMContentLoaded', () => { goCh(9); });
       <div style="margin-top:6px;"><span style="color:#a78bfa;font-weight:600;">Who triggers it:</span> Claude, once per ticket, in its own window.</div>
       <div style="margin-top:6px;"><span style="color:#a78bfa;font-weight:600;">Skill:</span> <a href="#" onclick="openSkillModal('tdd');return false;" style="color:#c4b5fd;border-bottom:1px dashed #7c3aed;">/tdd</a></div>
       <div style="margin-top:6px;"><span style="color:#a78bfa;font-weight:600;">When triggered:</span> After /break-into-tickets — one /tdd session per ticket checkbox, in dependency order.</div>
-      <div style="margin-top:6px;"><span style="color:#a78bfa;font-weight:600;">Output:</span> Test files in <code>__tests__/</code> + filled <code>test_cases</code> in domain-rules.yaml + handoff note in AGENT_CONTEXT.md.</div>
+      <div style="margin-top:6px;"><span style="color:#a78bfa;font-weight:600;">Output:</span> Test files in <code>__tests__/</code> + handoff note in AGENT_CONTEXT.md.</div>
       <div style="margin-top:8px;background:#12012e;border-left:3px solid #ef4444;padding:6px 10px;border-radius:0 4px 4px 0;">
         <span style="color:#fca5a5;font-weight:600;">Fails when:</span> <span style="color:#ffffff;">A test stays RED. Do not write more tests, do not open PR. Fix the RED before proceeding.</span>
       </div>
@@ -3180,7 +3112,7 @@ document.addEventListener('DOMContentLoaded', () => { goCh(9); });
       <div><span style="color:#4ade80;font-weight:600;">What it is:</span> Tests a single module or pure function with no I/O. Inputs go in, output is asserted. No database, no network, no file system. In this system: <code>OrderCalculator</code> is the canonical unit-testable module — it is a pure function by design.</div>
       <div style="margin-top:6px;"><span style="color:#4ade80;font-weight:600;">What it tests:</span> Formulas and business logic: discount capping, tax floor, subtotal arithmetic. Each test maps directly to a rule in domain-rules.yaml.</div>
       <div style="margin-top:6px;"><span style="color:#4ade80;font-weight:600;">Who triggers it:</span> Runs automatically — on every file save (watch mode), on pre-commit hook, on CI push.</div>
-      <div style="margin-top:6px;"><span style="color:#4ade80;font-weight:600;">Skill:</span> <a href="#" onclick="openSkillModal('tdd');return false;" style="color:#86efac;border-bottom:1px dashed #16a34a;">/tdd</a> (writes them). <a href="#" onclick="openSkillModal('setup-spec-ci');return false;" style="color:#86efac;border-bottom:1px dashed #16a34a;">/setup-spec-ci</a> (enforces rule coverage in CI).</div>
+      <div style="margin-top:6px;"><span style="color:#4ade80;font-weight:600;">Skill:</span> <a href="#" onclick="openSkillModal('tdd');return false;" style="color:#86efac;border-bottom:1px dashed #16a34a;">/tdd</a> (writes them).</div>
       <div style="margin-top:6px;"><span style="color:#4ade80;font-weight:600;">When triggered:</span> During TDD per ticket; re-run on every push by CI.</div>
       <div style="margin-top:8px;background:#031a0e;border-left:3px solid #ef4444;padding:6px 10px;border-radius:0 4px 4px 0;">
         <span style="color:#fca5a5;font-weight:600;">Fails when:</span> <span style="color:#ffffff;">Code change broke a formula. PR is blocked. Must fix before merging. If the rule itself changed, update domain-rules.yaml first via validate-knowledge.</span>
@@ -3224,23 +3156,6 @@ document.addEventListener('DOMContentLoaded', () => { goCh(9); });
     </div>
   </div>
 
-  <!-- 5. Spec-alignment / Rule-coverage -->
-  <div style="background:#022c22;border:1.5px solid #0d9488;border-radius:8px;margin-bottom:20px;overflow:hidden;">
-    <div style="background:#134e4a;padding:8px 16px;display:flex;align-items:baseline;gap:10px;">
-      <span style="color:#5eead4;font-weight:700;font-size:14px;">Spec-Alignment (Rule Coverage)</span>
-      <span style="color:#99f6e4;font-size:12px;letter-spacing:0.05em;">domain-rules.yaml ↔ test suite</span>
-    </div>
-    <div style="padding:12px 16px;font-size:13px;color:#ffffff;line-height:1.8;">
-      <div><span style="color:#2dd4bf;font-weight:600;">What it is:</span> A CI job that reads every <code>active</code> rule in domain-rules.yaml and checks that each rule's <code>test_cases[].input</code> string appears verbatim in at least one test file. This is not traditional code coverage — it's <em>rule coverage</em>: every business rule must have a named test.</div>
-      <div style="margin-top:6px;"><span style="color:#2dd4bf;font-weight:600;">What it tests:</span> That no active rule is "floating" without a test. A rule can be CLEAN in validate-knowledge and active in YAML, but if no test exercises it, spec-alignment fails.</div>
-      <div style="margin-top:6px;"><span style="color:#2dd4bf;font-weight:600;">Who triggers it:</span> GitHub Actions on every push and PR (spec-alignment.yml). Also runs as a pre-push git hook if installed.</div>
-      <div style="margin-top:6px;"><span style="color:#2dd4bf;font-weight:600;">Skill:</span> <a href="#" onclick="openSkillModal('setup-spec-ci');return false;" style="color:#5eead4;border-bottom:1px dashed #0d9488;">/setup-spec-ci</a> installs it. <a href="#" onclick="openSkillModal('tdd');return false;" style="color:#5eead4;border-bottom:1px dashed #0d9488;">/tdd</a> fills the test_cases entries it checks. <a href="#" onclick="openSkillModal('ship-feature');return false;" style="color:#5eead4;border-bottom:1px dashed #0d9488;">/ship-feature</a> pre-flight also checks this before promoting rules.</div>
-      <div style="margin-top:6px;"><span style="color:#2dd4bf;font-weight:600;">When triggered:</span> Every push from the moment /setup-spec-ci is installed. Also checked manually by /ship-feature pre-flight.</div>
-      <div style="margin-top:8px;background:#011a14;border-left:3px solid #ef4444;padding:6px 10px;border-radius:0 4px 4px 0;">
-        <span style="color:#fca5a5;font-weight:600;">Fails when:</span> <span style="color:#ffffff;">An active rule has empty <code>test_cases</code>, or the input string no longer matches any test file (test was renamed). Fix: run /tdd and update the test_cases input label to match the actual test describe/it string.</span>
-      </div>
-    </div>
-  </div>
 
   <!-- 6. Frontend / UI component tests -->
   <div style="background:#1a0a00;border:1.5px solid #ea580c;border-radius:8px;margin-bottom:20px;overflow:hidden;">
@@ -3336,14 +3251,7 @@ document.addEventListener('DOMContentLoaded', () => { goCh(9); });
           <td style="padding:7px 10px;color:#ffffff;">Every push</td>
           <td style="padding:7px 10px;color:#fbbf24;">◼ medium</td>
         </tr>
-        <tr style="background:#0f172a;border-bottom:1px solid #1e293b;">
-          <td style="padding:7px 10px;color:#5eead4;">Spec-alignment</td>
-          <td style="padding:7px 10px;color:#ffffff;">No</td>
-          <td style="padding:7px 10px;color:#ffffff;">No</td>
-          <td style="padding:7px 10px;color:#a5f3fc;">/setup-spec-ci</td>
-          <td style="padding:7px 10px;color:#ffffff;">Every push</td>
-          <td style="padding:7px 10px;color:#4ade80;">⚡ fast</td>
-        </tr>
+
         <tr style="border-bottom:1px solid #1e293b;">
           <td style="padding:7px 10px;color:#fdba74;">UI Component</td>
           <td style="padding:7px 10px;color:#ffffff;">No</td>

@@ -22,7 +22,6 @@ rules:
       calculations (discount cap, tax base) derive from this value.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 1"
-    test_cases: [] # filled by /tdd after RED→GREEN — each entry is the it() description string
 
   # ── Discount ─────────────────────────────────────────────────────────────
   - id: 2.2.1
@@ -43,7 +42,6 @@ rules:
       prevents negative taxable amounts without special-casing downstream.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 2"
-    test_cases: [] # filled by /tdd after RED→GREEN — each entry is the it() description string
 
   # ── Tax ──────────────────────────────────────────────────────────────────
   - id: 2.3.1
@@ -61,7 +59,6 @@ rules:
       application code for now.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 3"
-    test_cases: [] # filled by /tdd after RED→GREEN — each entry is the it() description string
 
   # ── Order Total ───────────────────────────────────────────────────────────
   - id: 2.4.1
@@ -78,4 +75,3 @@ rules:
       API call.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 4"
-    test_cases: [] # filled by /tdd after RED→GREEN — each entry is the it() description string
