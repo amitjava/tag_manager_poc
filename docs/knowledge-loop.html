@@ -1795,6 +1795,7 @@ pre {
           <div style="color:#4ade80;font-weight:600;margin-bottom:4px;"><a href="#" onclick="openSkillModal('grill-me');return false;" style="color:#4ade80;text-decoration:none;border-bottom:1px dashed #4ade80;">/grill-me</a></div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
             <div>Structured interview scoped to gaps — skips anything already settled in domain-rules.yaml</div>
+            <div style="margin-top:6px;background:#0a3d20;border-left:2px solid #6366f1;padding:5px 10px;border-radius:0 3px 3px 0;color:#c7d2fe;"><span style="color:#818cf8;">📎</span> <span style="color:#fbbf24;">👤</span> Optionally attach reference docs before starting — specs, designs, existing PRDs, data models. Claude reads them first and skips questions already answered in the docs.</div>
             <div style="margin-top:8px;color:#86efac;font-weight:600;">5 branches:</div>
             <div style="padding-left:14px;margin-top:2px;"><span style="color:#86efac;font-weight:600;">1. Happy path</span> — walk through the main user flow step by step</div>
             <div style="padding-left:14px;"><span style="color:#86efac;font-weight:600;">2. Edge cases</span> — boundaries, invalid inputs, empty states, concurrent operations</div>
@@ -1802,6 +1803,17 @@ pre {
             <div style="padding-left:14px;"><span style="color:#86efac;font-weight:600;">4. Integrations</span> — which other domains or systems does this touch? data flows in and out</div>
             <div style="padding-left:14px;"><span style="color:#86efac;font-weight:600;">5. Business rules</span> — explicit constraints, calculations, policies → candidates for domain-rules.yaml</div>
             <div style="margin-top:8px;background:#0a3d20;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> Answers each branch — this is the primary discovery conversation</div>
+          </div>
+        </div>
+
+        <div style="text-align:center;color:#16a34a;font-size:16px;line-height:1.6;">↓</div>
+
+        <div style="background:#073a1f;border:1px solid #16a34a;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
+          <div style="color:#4ade80;font-weight:600;margin-bottom:4px;">Save grill-me log</div>
+          <div style="color:#ffffff;font-size:12px;line-height:1.8;">
+            <div>Claude saves the full Q&amp;A transcript to <code style="color:#86efac;font-size:11px;">grill-me-log-prd-&lt;N&gt;.md</code> in the domain folder</div>
+            <div style="margin-top:4px;">Searchable by humans and Claude in future sessions — use as reference during grill-me for related PRDs to skip already-answered questions</div>
+            <div style="margin-top:4px;color:#86efac;font-style:italic;">Each log is immutable — append-only, never overwritten</div>
           </div>
         </div>
 
@@ -1844,6 +1856,20 @@ pre {
             <div>Reads PRD issue → proposes a Task checkbox breakdown of the work</div>
             <div style="margin-top:6px;background:#0a3d20;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> Reviews ticket breakdown, adjusts scope if needed, confirms — checkboxes are added to PRD issue</div>
             <div style="margin-top:6px;color:#86efac;font-style:italic;">Each checkbox = one Claude window = one PR</div>
+          </div>
+        </div>
+
+        <!-- ── loop back ── -->
+        <div style="margin-top:12px;border:1px dashed #16a34a;border-radius:6px;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;background:#031a0e;">
+          <div style="color:#4ade80;font-size:11px;">↺ &nbsp;PRD needs changes? Loop back to <strong>/grill-me</strong> — re-run from there, log is appended, PRD is updated</div>
+          <div style="color:#16a34a;font-size:18px;line-height:1;">↑</div>
+        </div>
+
+        <!-- ── promote button ── -->
+        <div style="margin-top:12px;text-align:center;">
+          <div style="display:inline-block;background:#14532d;border:1.5px solid #22c55e;border-radius:8px;padding:10px 28px;cursor:pointer;" onclick="this.style.background='#166534';this.querySelector('span').innerText='✓ Submitted';">
+            <span style="color:#86efac;font-weight:700;font-size:13px;letter-spacing:0.5px;">Promote PRD: Draft → Submitted</span>
+            <div style="color:#4ade80;font-size:10px;margin-top:3px;opacity:0.8;">PRD is locked · tickets can now begin · no further edits without a new PRD</div>
           </div>
         </div>
 
