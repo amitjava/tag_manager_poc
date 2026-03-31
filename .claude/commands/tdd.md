@@ -72,7 +72,7 @@ This list is the contract between you and the user before code exists. It preven
 
 Write all tests from the list. Tests must fail before any implementation exists — a test that passes before the code is written is testing nothing.
 
-Follow existing test patterns in the codebase. Read similar test files first.
+Read similar test files in the codebase for structural reference (test runner setup, fixture patterns, assertion style). **Do not follow existing patterns uncritically** — if existing tests violate the observable behavior rule (call private methods, assert on internal state), do not replicate those patterns. Follow the observable behavior rule, not the existing pattern. Use existing tests only for mechanical setup, not for what to test or how to assert.
 
 **Test structure:** Arrange → Act → Assert. One assertion per test where possible.
 
@@ -130,13 +130,26 @@ gh pr create --title "Ticket N: <description> (PRD #<issue>)" \
   --body "Part of PRD #<issue>. Implements: <bullet list of behaviors from test list>."
 ```
 
+**CI failure recovery:** After opening the PR, note CI status in the handoff before closing this window:
+
+```markdown
+### Ticket <N> — <description>
+
+...
+CI status: green ✓ / pending ⏳ / red ✗ [failing: <test names if known>]
+```
+
+If CI is red: diagnose and fix before closing the window if possible. If the window is near context limit, write the failing test names in the handoff so the next window can jump straight to the fix without re-running CI.
+
 Mark the checkbox in the PRD issue:
 
 ```bash
 # Replace <N> with the actual ticket number (e.g. 3)
 TICKET_NUM=<N>
-gh issue view <issue-number> --json body -q .body > /tmp/prd-body.md
-sed -i "s/- \[ \] Ticket ${TICKET_NUM}:/- [x] Ticket ${TICKET_NUM}:/" /tmp/prd-body.md
-gh issue edit <issue-number> --body-file /tmp/prd-body.md
+TMPFILE=$(mktemp /tmp/prd-body-XXXXXX.md)
+trap "rm -f $TMPFILE" EXIT
+gh issue view <issue-number> --json body -q .body > "$TMPFILE"
+sed -i "s/- \[ \] Ticket ${TICKET_NUM}:/- [x] Ticket ${TICKET_NUM}:/" "$TMPFILE"
+gh issue edit <issue-number> --body-file "$TMPFILE"
 # Verify: gh issue view <issue-number> | grep "Ticket ${TICKET_NUM}"
 ```

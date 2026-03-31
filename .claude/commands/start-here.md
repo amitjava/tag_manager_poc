@@ -72,7 +72,7 @@ Cross-cutting:
 
 **domain-rules.yaml** — the source of truth for business rules. Rules are never deleted; they are superseded or retired. Every rule has a unique ID (`RULE-<DOMAIN>-P<issue-number>-<seq>`).
 
-**AGENT_CONTEXT.md** — loaded by every Claude window working in a domain. Contains architecture, glossary, known debt, and in-flight ticket handoffs. Keep it under 500 lines or archive old sections.
+**AGENT_CONTEXT.md** — loaded by every Claude window working in a domain. Contains architecture, glossary, known debt, and in-flight ticket handoffs. Warn at 300 lines, archive at 500 lines (see `/update-agent-context` Step 2.5 for the archiving strategy).
 
 **validate-knowledge** — called automatically by write-a-prd and ship-feature. Detects rule overlaps before they enter YAML. A human "yes" is required before any write.
 
@@ -91,6 +91,18 @@ Cross-cutting:
 | Adopting this framework on existing code | `/brownfield-import`                              |
 | Knowledge files feel out of sync         | `/health-check`                                   |
 | A shipped PRD needs to be undone         | `/rollback-prd`                                   |
+
+## Known limitations
+
+**Multi-repo setups:** The framework assumes a monorepo. In microservices setups where domains are in separate repositories, the following will not work without adaptation:
+
+- `validate-knowledge` cross-domain scan cannot read rules from other repos
+- Seam contracts have no canonical home (each repo would need its own `/contracts` folder and contracts would be duplicated)
+- `/health-check` can only scan the repo it runs in
+
+For multi-repo adoption: designate one repo as the "knowledge hub" that holds CLAUDE.md and all domain-rules.yaml files, and reference it from domain repos. This is a significant framework adaptation — there is currently no built-in skill for it.
+
+**Tool lock-in:** The framework requires Claude Code (`/skills`) and the `gh` CLI (GitHub Issues for PRDs). Teams using other AI tools, GitLab, Jira, or Linear will need to adapt the skill files — there is no abstraction layer for alternative tooling.
 
 ## Framework version
 

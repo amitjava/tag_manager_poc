@@ -26,8 +26,18 @@ For each domain with a `domain-rules.yaml`, check:
 
 **introduced_prd integrity:**
 
-- For each `introduced_prd` value, verify the GitHub issue exists: `gh issue view <number>`.
-- If the issue is not found or returns 404: flag as `BROKEN-INTRODUCED-PRD`.
+- Collect all **unique** `introduced_prd` values across all rules (deduplicate — many rules share the same PRD).
+- For small sets (≤ 50 unique PRD numbers): verify each with `gh issue view <number>`.
+- For larger sets: batch-verify using the GitHub GraphQL API to avoid rate limits:
+  ```
+  gh api graphql -f query='{ repository(owner:"<owner>", name:"<repo>") {
+    n1: issue(number: N1) { number state }
+    n2: issue(number: N2) { number state }
+    ...
+  }}'
+  ```
+  If GraphQL is not available, sample-check 20 random PRD numbers and warn: "Full introduced_prd check skipped — too many unique values for sequential verification."
+- If an issue is not found or returns 404: flag as `BROKEN-INTRODUCED-PRD`.
 
 **superseded_by integrity:**
 
@@ -117,7 +127,7 @@ INFO:
   [MISSING-INDEX-ENTRY] grill-me-docs/loyalty-restructure/grill-me-02.md has no INDEX.md entry
 ```
 
-CRITICAL issues block any new PRD work in the affected domain until resolved.
+CRITICAL issues must be resolved before the next `/write-a-prd` or `/ship-feature` in the affected domain. These are enforced by convention — skills do not automatically block. Teams should run `/health-check` as part of their sprint kickoff or before any major overhaul, and treat CRITICAL items as blocking.
 WARNING issues should be resolved before the next ship.
 INFO issues are cleanup tasks.
 

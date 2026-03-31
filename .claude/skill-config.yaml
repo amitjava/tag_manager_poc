@@ -1,6 +1,12 @@
 # Knowledge Loop — project configuration
 # Fill in once when adopting the framework. Skills read this automatically.
 # Do not commit sensitive values here — use environment variables for secrets.
+#
+# GLOBAL PRE-FLIGHT (applies to every skill that uses gh CLI):
+# Before running any skill that calls gh commands, verify authentication:
+#   gh auth status
+# If not authenticated, run: gh auth login
+# Unauthenticated gh calls fail silently or return 404 — auth must be confirmed first.
 
 paths:
   domains: backend/src/domains       # root folder containing domain subdirectories
@@ -14,7 +20,9 @@ project:
   default_branch: main               # main | master
 
 framework:
-  version: "2.0"                     # Knowledge Loop framework version
+  version: "2.1"                     # Knowledge Loop framework version
+  max_rules_before_warn: 100         # validate-knowledge warns before scanning > N active rules
+  gh_auth_check: true                # if true, skills that use gh CLI verify auth before running
   # Version history:
   #   2.0 — INFERRED-WRITE gated; DECLARED-WRITE requires rule ID; batch supersede;
   #          brownfield-import; rollback-prd; tdd; cross-domain-prd; health-check

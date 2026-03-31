@@ -47,6 +47,15 @@ Count the words in the extracted `plain_english`. Apply:
 
 ### Step 2 — Cheap LLM text scan against domain-rules.yaml
 
+**Scan cost check:** Count active rules in domain-rules.yaml before scanning. If the count exceeds `max_rules_before_warn` in `skill-config.yaml` (default: 100 if not set), warn:
+
+```
+⚠ SCAN COST: This domain has <N> active rules. Scan will make ~<N> LLM comparisons.
+Proceed? (yes / no to cancel)
+```
+
+This prevents silent cost accumulation on mature domains.
+
 Read the full `domain-rules.yaml` for this domain. Use the cheapest available model (Haiku or equivalent) for the initial scan — this is a text comparison task. For each **active** rule in the file, ask:
 
 > "Do these two rules govern the same business decision, even partially? Rule A: [incoming plain_english + formula]. Rule B: [existing plain_english + formula]. Answer YES or NO with one sentence of reasoning."
@@ -57,12 +66,31 @@ This is the primary overlap detection mechanism. No conflict_key, no entity/fiel
 
 **Uncertainty escalation:** If the cheap model's YES/NO reasoning contains hedging language ("possibly", "might", "could be", "unclear", "hard to say") — escalate that specific comparison to a more capable model (Sonnet or equivalent) before classifying. Cost of one escalated call is far lower than cost of a wrong YAML write.
 
+**Cross-domain scan:** After scanning the target domain, run the same comparison against active rules in **all other domains**. Cross-domain overlap (the same business decision encoded in two domain YAMLs) is an architectural violation — it means business logic is duplicated or contradicted across boundaries.
+
+Cross-domain overlap → treat as **CONFLICT-UNRESOLVABLE**: flag which domains both govern the same decision, ask the human to decide which domain owns it, and remove or explicitly scope the other.
+
 **Prompt discipline:** The question must be "same business decision" not "similar topic". Two rules about loyalty points that cover non-overlapping conditions (VIP vs non-VIP) are NOT the same decision. The LLM reasoning sentence is surfaced to the human in all non-CLEAN outcomes.
 
 ### Step 3 — If no overlap found → CLEAN
 
-No existing rule covers the same business decision as the incoming rule.
-→ Auto-write. No PRD fetch. No human gate.
+No active rule covers the same business decision as the incoming rule.
+
+**Secondary check — retired rule resurrection:** After confirming CLEAN against active rules, run one additional scan against `status: retired` rules only:
+
+> "Does the incoming rule re-introduce a concept that was deliberately retired? Rule A: [incoming]. Rule B: [retired rule]. Answer YES or NO."
+
+If YES:
+
+```
+⚠ RETIRED-CONCEPT
+  Incoming rule may re-introduce concept from RULE-<ID> (retired in PRD #N).
+  Retired reason: <retired_reason field if present>
+  Confirm this retirement reversal is intentional before proceeding.
+  (yes to continue / no to cancel)
+```
+
+Wait for human confirmation. If no retired rule overlaps: proceed to auto-write with no further gate.
 
 ### Step 4 — If overlap found → check if intent is clear from incoming PRD alone
 

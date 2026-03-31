@@ -30,17 +30,19 @@ gh issue create \
 
 Save the returned issue number. All imported rules will use IDs in the format `RULE-<DOMAIN>-P<import-issue-number>-<seq>`, making them first-class citizens with a real GitHub anchor — the same format as all other rules in the framework.
 
-## Step 1 — Read the existing code
+## Step 1 — Read the existing code (chunked strategy)
 
-Read all files in the domain's source folder:
+Do not try to read all files at once — large domains will exhaust context limits. Use this priority order, stopping once you have enough to extract rules:
 
-- Service classes, models, business logic
-- Existing tests (these reveal intended behavior)
-- Any existing comments, README, or inline documentation
+1. **Test files first** — tests reveal intended behavior most clearly. A test named `test_refund_not_allowed_after_30_days` tells you the rule directly.
+2. **Service / business-logic classes** — the core calculation and condition code.
+3. **Models** — entity definitions, validations, database constraints.
+4. **Controllers / API endpoints** — only to understand external interface, not business rules.
+5. **Infrastructure / config files** — skip unless a rule depends on configuration values.
 
-Read the database schema for tables this domain owns (migration files, ORM models).
+Read in batches. After each batch, extract any rules found before reading the next batch. Stop reading when new batches stop producing new rules.
 
-Read any existing API contracts or interface definitions for this domain's public surface.
+**Ask before reading if the domain is large:** "This domain has <N> files. I'll read in batches — test files first. Confirm to proceed."
 
 ## Step 2 — Extract business rules
 
@@ -58,7 +60,11 @@ For each rule found:
 - Assign ID: `RULE-<DOMAIN>-P<import-issue-number>-<seq>` (e.g. if import issue is #42: `RULE-BILLING-P42-1`).
 - Set `status: active`, `introduced_prd: <import-issue-number>`.
 
-Show the full list to the user before writing. Ask: "Are these all the active rules? Any I missed or misunderstood?"
+For each rule, explicitly ask: **"Is this code correct, or is this a known bug?"** Code is not ground truth — a hardcoded value that has been wrong for 3 years becomes a canonicalized rule if you don't ask. For each rule where the `why` was inferred rather than confirmed, mark it: `why: "[INFERRED] ..."` so it is flagged for human review.
+
+If the same business logic appears in multiple places (e.g., discount calculation in 3 different service files), flag it as a consolidation debt rather than creating 3 separate rules: "Rule RULE-BILLING-P42-3 is enforced in 3 places: [list files]. Tech debt: consolidate."
+
+Show the full list to the user before writing. Ask: "Are these all the active rules? Any I missed, misunderstood, or flagged as wrong?"
 
 ## Step 3 — Cross-check extracted rules against each other
 

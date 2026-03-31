@@ -107,6 +107,14 @@ Tickets within one domain follow normal dependency rules. Cross-domain dependenc
 Ship provider PRD first (`/ship-feature` on provider PRD).
 Then ship consumer PRD (`/ship-feature` on consumer PRD).
 
+**Runtime enforcement:** The ship sequence is documented, not technically enforced. If someone ships the consumer before the provider, the consumer's code will call a provider interface that doesn't exist yet — runtime failures, not a compile error. To add a lightweight runtime guard, add a feature flag or an interface version check in the consumer that fails fast with a clear error:
+
+```
+ConsumerError: Provider interface not available — requires PRD #N shipped first.
+```
+
+This converts a silent runtime failure into a clear signal. The flag is removed once the provider ships.
+
 At each ship step, run the stale conflict re-check normally — cross-domain ships can still race with unrelated PRDs in the same domain.
 
 ## Step 7 — Confirm to user

@@ -15,6 +15,7 @@ The answer determines which branch set to run:
 - **A — Feature**: run Branches 1–5 below (standard set).
 - **B — Refactor**: skip to [Refactor branches](#refactor-branches) below.
 - **C — Bug fix**: skip to [Bug fix branches](#bugfix-branches) below.
+- **D — Refactor + Feature** (refactor that also adds a new capability): run all 4 Refactor branches first, then add Branch 2 (Use Cases) and Branch 3 (Workflow Actors) from the Feature set. The refactor defines what changes; the feature branches define what is being added on top of it.
 
 ---
 
@@ -99,6 +100,8 @@ For every significant workflow in scope:
 2. What stays exactly as-is (behavior, interfaces, contracts)?
 3. What new abstractions or patterns are being introduced?
 4. Which tests need to be deleted, rewritten, or newly written?
+
+**Test deletion gate:** For each test being deleted, ask: "Is this test being deleted because it tests an implementation detail (correct — delete it), or because it tests behavior that is being removed (dangerous — confirm the behavior removal is intentional)?" Log each deleted test's rationale in the PRD's Testing Decisions section. A refactor must not silently remove behavior coverage.
 
 ### Refactor Branch 3 — Migration path
 

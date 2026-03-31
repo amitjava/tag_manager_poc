@@ -34,10 +34,10 @@ AGENT_CONTEXT.md is a shared file. Two developers or parallel ticket windows wri
 Before editing, run:
 
 ```
-git fetch origin && git log origin/main..HEAD --oneline -- backend/src/domains/<name>/AGENT_CONTEXT.md
+git fetch origin && git log HEAD..origin/main --oneline -- backend/src/domains/<name>/AGENT_CONTEXT.md
 ```
 
-If the remote has commits ahead of local that touch this file: **pull first**, then edit. Do not write over concurrent changes.
+If the output is non-empty, the remote has commits you haven't pulled that touch this file: **pull first** (`git pull --rebase origin main`), then edit. Do not write over concurrent changes.
 
 **Concurrent PRD rule:** If two PRDs are in-flight for the same domain at the same time:
 
@@ -54,7 +54,7 @@ The file has 3 required sections (Purpose, Glossary, Known debt) and optional se
 
 - **Purpose** — refine if the session clarified domain scope
 - **Glossary** — add every new domain-specific term. Format: `Term: definition`.
-- **Known debt** — add anything the session surfaced as deferred or out of scope
+- **Known debt** — add anything the session surfaced as deferred or out of scope. Always append a PRD anchor: `(added: PRD #N)` or `(added: grill-me <date>)`. This makes archive thresholds measurable — you can count PRD numbers, not guess at wall-clock age.
 
 **Update if the section exists and grill-me touched it:**
 
@@ -78,11 +78,11 @@ After editing, count the approximate line count of AGENT_CONTEXT.md:
 wc -l backend/src/domains/<name>/AGENT_CONTEXT.md
 ```
 
-| Line count    | Action                                                                                                                                                                                                                                                                                                                                                                                                      |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| < 300 lines   | Fine — no action needed.                                                                                                                                                                                                                                                                                                                                                                                    |
-| 300–500 lines | **Warn:** "AGENT_CONTEXT.md is <N> lines. Consider archiving old Glossary entries that no longer reflect active terminology, and Known debt entries marked resolved."                                                                                                                                                                                                                                       |
-| > 500 lines   | **Flag:** "AGENT_CONTEXT.md is <N> lines — this will burn significant context window on every ticket. Archive stale sections now." Archive strategy: move any Known debt entries older than 3 shipped PRDs and marked resolved to `grill-me-docs/<domain>/archived-debt.md`. Move Glossary terms that haven't been referenced in recent PRDs to a `## Archived glossary` section at the bottom of the file. |
+| Line count    | Action                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| < 300 lines   | Fine — no action needed.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| 300–500 lines | **Warn:** "AGENT_CONTEXT.md is <N> lines. Consider archiving old Glossary entries that no longer reflect active terminology, and Known debt entries marked resolved."                                                                                                                                                                                                                                                                                                    |
+| > 500 lines   | **Flag:** "AGENT_CONTEXT.md is <N> lines — this will burn significant context window on every ticket. Archive stale sections now." Archive strategy: move Known debt entries that are (a) marked resolved `~~...~~` OR (b) have `(added: PRD #N)` where N is more than 3 shipped PRDs ago — to `grill-me-docs/<domain>/archived-debt.md`. Move Glossary terms that haven't been referenced in recent PRDs to a `## Archived glossary` section at the bottom of the file. |
 
 The goal is to keep the live AGENT_CONTEXT.md to what a ticket window actually needs — not a historical record.
 

@@ -22,18 +22,11 @@ Check with the user that these modules match their expectations. Check with the 
 
 5. Once you have a complete understanding of the problem and solution, choose the right PRD template and submit as a GitHub issue.
 
-   **Template selection:**
-   - **Feature PRD** (default): use the template below. Covers new behavior being added.
-   - **Refactor PRD**: use the template below but replace User Stories with:
-     - "What is wrong now" — specific problems with the current implementation
-     - "What is being removed or replaced" — exact modules/patterns being deleted
-     - "Migration path" — sequence of steps from current to end state
-     - "Rollback plan" — how to undo if the refactor is wrong
-   - **Bug fix PRD**: use the template below but replace User Stories with:
-     - "Reproduction steps" — exact steps to reproduce
-     - "Root cause" — confirmed hypothesis with evidence
-     - "Affected scope" — users, data, environments impacted
-     - "Regression test" — the test that proves it's fixed and won't recur
+   **Template selection — use the matching template tag below:**
+   - **Feature PRD** (new behavior): use `<prd-template>`
+   - **Refactor PRD** (restructure without adding features): use `<refactor-prd-template>`
+   - **Bug fix PRD**: use `<bugfix-prd-template>`
+   - **Refactor + Feature** (restructure that also adds capability): use `<refactor-prd-template>` and append the User Stories section from `<prd-template>`
 
 6. **Immediately after the issue is submitted** — mint rule IDs and run conflict detection:
 
@@ -46,9 +39,11 @@ Check with the user that these modules match their expectations. Check with the 
    Use `--body-file` to avoid shell injection from special characters in rule text (formulas with `$`, backticks, parentheses will corrupt `--body "$(...)"`):
 
    ```bash
-   gh issue view <number> --json body -q .body > /tmp/prd-body.md
-   # Edit /tmp/prd-body.md: replace placeholder rule descriptions with minted IDs
-   gh issue edit <number> --body-file /tmp/prd-body.md
+   TMPFILE=$(mktemp /tmp/prd-body-XXXXXX.md)
+   trap "rm -f $TMPFILE" EXIT
+   gh issue view <number> --json body -q .body > "$TMPFILE"
+   # Edit $TMPFILE: replace placeholder rule descriptions with minted IDs
+   gh issue edit <number> --body-file "$TMPFILE"
    ```
 
    **Verify the edit landed:** Immediately after editing, run `gh issue view <number>` and confirm the minted IDs appear in the issue body. If the IDs are missing, retry using the same `--body-file` approach. Do not continue until the IDs are visible — they are the single source of truth for the rule lifecycle.
@@ -161,3 +156,143 @@ A description of the things that are out of scope for this PRD.
 Any further notes about the feature.
 
 </prd-template>
+
+<refactor-prd-template>
+
+## Problem Statement
+
+The problem that the current implementation causes, from a developer or product perspective.
+
+## What Is Wrong Now
+
+Specific, concrete description of the current implementation's problems:
+
+- Why it is fragile, slow, unmaintainable, or blocking future work
+- Evidence (error rates, test failures, developer pain, performance data)
+- Why previous fixes have been insufficient
+
+## What Is Being Removed or Replaced
+
+Exact list of modules, patterns, classes, or APIs being deleted or replaced:
+
+- `ModuleA` — being deleted, replaced by `ModuleB`
+- Pattern X — being removed; new code uses Pattern Y
+
+## What Stays the Same
+
+List all behavior, interfaces, and contracts that must not change:
+
+- External API shapes (callers must not notice the refactor)
+- Database schema (if not part of the refactor)
+- Business rules (list rule IDs that are untouched)
+
+## Migration Path
+
+Step-by-step sequence from current state to end state:
+
+1. Step 1: [what is done first, why]
+2. Step 2: [what is done second]
+   ...
+
+Include whether this is a flag-day change (all at once) or incremental (parallel run, strangler fig).
+
+## Rollback Plan
+
+How to undo the refactor if it turns out to be wrong:
+
+- What git operations are needed
+- Whether any data migration needs reversal
+- How long the rollback window is practical
+
+## Testing Decisions
+
+- Which existing tests are being deleted and why (implementation-coupled tests)
+- Which existing tests are being rewritten
+- Which new behavior tests are being written
+- How to verify no behavior regression occurred
+
+## Business Rules Affected
+
+```
+changes:
+  - rule_id: RULE-<DOMAIN>-P<N>-1
+    action: no_change
+    reason: "<confirm this rule is not affected by the refactor>"
+```
+
+Refactors should rarely add or supersede rules. If the refactor reveals a rule that was wrong, use action: supersede with a clear reason.
+
+## Out of Scope
+
+What will not be changed in this refactor (scope creep boundary).
+
+## Further Notes
+
+Any further notes.
+
+</refactor-prd-template>
+
+<bugfix-prd-template>
+
+## Problem Statement
+
+The bug being fixed, from the user's perspective.
+
+## Reproduction Steps
+
+Exact steps to reproduce the bug:
+
+1. Step 1
+2. Step 2
+3. Observed: [what happens]
+4. Expected: [what should happen]
+
+Environment: [prod only / staging / all envs / specific version]
+Deterministic: [yes / intermittent — frequency if known]
+
+## Root Cause
+
+Confirmed hypothesis for root cause:
+
+- Code location: [file, function, line if known]
+- Evidence: [log output, test that reproduces it, data example]
+- Type: code bug / data bug / design bug / configuration bug
+
+## Affected Scope
+
+- Users affected: [all / specific tier / specific region / specific flow]
+- Data affected: [records impacted, estimate if possible]
+- Duration: [when did this start, which deploy introduced it if known]
+- Workarounds in use today: [yes/no, describe if yes]
+
+## Fix
+
+Description of the fix and why it addresses the root cause.
+
+Similar patterns elsewhere in the codebase that may have the same bug: [list or "none checked"]
+
+## Regression Test
+
+The test that proves:
+
+1. The bug is fixed (was failing before, passes after)
+2. It won't silently recur (the test would catch a regression)
+
+## Business Rules Affected
+
+```
+changes:
+  - rule_id: RULE-<DOMAIN>-P<N>-1
+    action: no_change | supersede
+    reason: "<if the bug was caused by a wrong rule, supersede it; otherwise no_change>"
+```
+
+## Out of Scope
+
+Related issues that are not being fixed in this PRD.
+
+## Further Notes
+
+Any further notes.
+
+</bugfix-prd-template>

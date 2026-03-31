@@ -31,10 +31,23 @@ For each merged PR in the PRD:
 gh pr list --search "PRD #<issue-number>"
 ```
 
+Before reverting, determine how the PRs were merged. Check the merge commit:
+
+```bash
+gh pr view <pr-number> --json mergeCommit -q .mergeCommit.oid
+# If the merge strategy was squash: one commit per PR — use: git revert <sha> --no-edit
+# If the merge strategy was merge commit: use: git revert -m 1 <sha> --no-edit
+#   (-m 1 specifies "revert to first parent" = the base branch, not the PR branch)
+```
+
 Create a revert PR for each merged PR:
 
-```
+```bash
+# For squash merges:
 git revert <merge-commit-sha> --no-edit
+# For merge commits:
+git revert -m 1 <merge-commit-sha> --no-edit
+
 git push origin revert/prd-<issue-number>-ticket-<N>
 gh pr create --title "Revert: PRD #<issue-number> Ticket N — <reason>" \
   --body "Reverting PRD #<issue-number>. Reason: <reason>"
@@ -42,19 +55,39 @@ gh pr create --title "Revert: PRD #<issue-number> Ticket N — <reason>" \
 
 Merge revert PRs in reverse dependency order (Ticket N first, Ticket 1 last). The last-merged ticket has no dependents, so it is safe to revert first.
 
+**Database migrations:** If any ticket added a database migration, `git revert` un-writes the migration file but does NOT roll back the database schema. For each migration file being reverted:
+
+1. Write a new down-migration that undoes the schema change (e.g. `DROP COLUMN` for an `ADD COLUMN`, `DROP TABLE` for a `CREATE TABLE`).
+2. Run the down-migration before merging the code revert PR.
+3. Add the down-migration file to the same revert PR so schema and code stay in sync.
+
+If a down-migration is risky (data loss), ask the user whether to proceed or defer the schema rollback to a future migration.
+
 ## Step 2 — Roll back domain-rules.yaml
 
 For each rule promoted to `status: active` by this PRD:
 
+First, create a GitHub issue to anchor the rollback (this issue number becomes the `retired_by_prd` reference — making it queryable like any other PRD reference):
+
+```bash
+gh issue create \
+  --title "Rollback: PRD #<issue-number> — <reason>" \
+  --body "Rolling back PRD #<issue-number>. Reason: <reason>. Revert PRs: <list>." \
+  --label "rollback"
+# Save the returned issue number as ROLLBACK_ISSUE
+```
+
+Then update rules using that issue number:
+
 - Change `status: active` → `status: retired`
-- Add: `retired_by: rollback-PRD-<issue-number>`
+- Add: `retired_by_prd: <ROLLBACK_ISSUE>` (integer, not a string — keeps the same format as `introduced_prd`)
 - Add: `retired_reason: "<why the rule was rolled back>"`
 
 For each rule that was superseded by this PRD (old rule set to `status: superseded`):
 
 - Change the old rule back to `status: active`
 - Remove `superseded_by` field
-- Change the new (replacing) rule to `status: retired`, `retired_by: rollback-PRD-<issue-number>`
+- Change the new (replacing) rule to `status: retired`, `retired_by_prd: <ROLLBACK_ISSUE>`
 
 Use Edit tool — never overwrite the file.
 
@@ -108,6 +141,23 @@ git add backend/src/domains/<name>/domain-rules.yaml
 git add backend/src/domains/<name>/AGENT_CONTEXT.md
 git add CLAUDE.md
 git commit -m "Rollback: PRD #<N> — <reason>"
+```
+
+## Step 6.5 — Data impact note
+
+**Code rollback does not undo data already written by the shipped PRD.** If the PRD applied business rules to real production data (loyalty points earned, prices calculated, records created under new logic), reverting the code does not fix that data.
+
+Explicitly ask the user:
+
+> "PRD #<N> has been rolled back in code and rules. Were any business operations processed under this PRD's rules in production? If yes, a data correction task is needed separately. Should I create a GitHub issue to track the data remediation?"
+
+If yes, create the issue:
+
+```bash
+gh issue create \
+  --title "Data remediation: rollback of PRD #<N>" \
+  --body "PRD #<N> was rolled back. Any data processed under its rules may need correction. Scope: <describe what data was affected>." \
+  --label "data-remediation"
 ```
 
 ## Step 7 — Confirm to user
