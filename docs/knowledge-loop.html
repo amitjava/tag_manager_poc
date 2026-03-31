@@ -1891,6 +1891,8 @@ pre {
           <div style="color:#4ade80;font-weight:600;margin-bottom:4px;"><a href="#" onclick="openSkillModal('break-into-tickets');return false;" style="color:#4ade80;text-decoration:none;border-bottom:1px dashed #4ade80;">/break-into-tickets</a></div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
             <div>Reads PRD issue → proposes a Task checkbox breakdown of the work</div>
+            <div>Maps dependencies between tickets — tickets that can run in parallel vs. tickets that require a prior merge</div>
+            <div style="padding-left:14px;color:#86efac;font-size:11px;font-family:monospace;">- [ ] Ticket 2: &lt;desc&gt; | domain: billing | requires: Ticket 1 merged</div>
             <div style="margin-top:6px;background:#0a3d20;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> Reviews ticket breakdown, adjusts scope if needed, confirms — checkboxes are added to PRD issue</div>
             <div style="margin-top:6px;color:#86efac;font-style:italic;">Each checkbox = one Claude window = one PR</div>
           </div>
@@ -1928,6 +1930,7 @@ pre {
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
             <div>CLAUDE.md — auto-loaded, has domain map + context-loading instructions</div>
             <div>Reads AGENT_CONTEXT.md — purpose, glossary, architecture patterns for this domain</div>
+            <div style="padding-left:14px;color:#c4b5fd;">Reads <code style="font-size:11px;">## Ticket handoffs</code> section — sees interfaces and decisions established by prior tickets in this PRD</div>
             <div>Reads domain-rules.yaml — all active and draft rules for this domain</div>
             <div>Reads PRD GitHub issue — acceptance criteria and which checkbox is this ticket's scope</div>
           </div>
@@ -1984,6 +1987,7 @@ pre {
         <div style="background:#1a0533;border:1px solid #7c3aed;border-radius:5px;padding:10px 14px;">
           <div style="color:#d8b4fe;font-weight:600;margin-bottom:4px;">Push → CI → PR</div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
+            <div>Appends handoff note to <code style="font-size:11px;">## Ticket handoffs</code> in AGENT_CONTEXT.md — interfaces created, design decisions, error types introduced</div>
             <div>Push branch → CI spec-alignment check runs — verifies rules.yaml matches test suite</div>
             <div>Open PR linked to the PRD issue</div>
             <div style="margin-top:6px;background:#12012e;border-left:2px solid #fbbf24;padding:5px 10px;border-radius:0 3px 3px 0;color:#fde68a;"><span style="color:#fbbf24;">👤</span> Reviews and approves PR → merge → checkbox ticked in PRD issue</div>
