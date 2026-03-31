@@ -545,6 +545,10 @@ pre {
     <div class="prog-num">PRD #8</div>
     <div class="prog-label">Blocked</div>
   </div>
+  <div id="prog-13" class="prog-step s5" onclick="goCh(13)">
+    <div class="prog-num">PRD #9</div>
+    <div class="prog-label">Supersede split</div>
+  </div>
   <div id="prog-9" class="prog-step" style="background:#1e293b;" onclick="goCh(9)">
     <div class="prog-num" style="color:#818cf8;">§</div>
     <div class="prog-label" style="color:#f1f5f9;">Methodology</div>
@@ -1835,6 +1839,38 @@ pre {
 
         <div style="text-align:center;color:#16a34a;font-size:16px;line-height:1.6;">↓</div>
 
+        <div style="background:#0c1a2e;border:1px solid #334155;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
+          <div style="color:#94a3b8;font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Overlap detected — which structural change?</div>
+          <table style="width:100%;font-size:11px;border-collapse:collapse;">
+            <thead>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <th style="color:#64748b;font-weight:600;padding:4px 8px 4px 0;text-align:left;">Situation</th>
+                <th style="color:#64748b;font-weight:600;padding:4px 8px;text-align:left;">Outcome</th>
+                <th style="color:#64748b;font-weight:600;padding:4px 0 4px 8px;text-align:left;">What changes in YAML</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="color:#cbd5e1;padding:5px 8px 5px 0;">New rule adds a scoped modifier on top — original formula unchanged for all</td>
+                <td style="color:#a78bfa;padding:5px 8px;white-space:nowrap;">Composition</td>
+                <td style="color:#cbd5e1;padding:5px 0 5px 8px;">New rule with <code style="color:#86efac;">composes_with</code>. Original untouched.</td>
+              </tr>
+              <tr style="border-bottom:1px solid #1e293b;">
+                <td style="color:#cbd5e1;padding:5px 8px 5px 0;">New scoped rule introduced — original formula still valid for remaining segment</td>
+                <td style="color:#38bdf8;padding:5px 8px;white-space:nowrap;">SCOPE-INFERRED</td>
+                <td style="color:#cbd5e1;padding:5px 0 5px 8px;">Original annotated with <code style="color:#86efac;">scope</code> + <code style="color:#86efac;">modified_prd</code>. New scoped rule added.</td>
+              </tr>
+              <tr>
+                <td style="color:#cbd5e1;padding:5px 8px 5px 0;">New scoped rules introduced — original formula no longer matches any segment</td>
+                <td style="color:#f97316;padding:5px 8px;white-space:nowrap;">Supersede split</td>
+                <td style="color:#cbd5e1;padding:5px 0 5px 8px;">Original marked <code style="color:#86efac;">superseded</code>. Two new scoped rules written as active.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="text-align:center;color:#16a34a;font-size:16px;line-height:1.6;">↓</div>
+
         <div style="background:#073a1f;border:1px solid #16a34a;border-radius:5px;padding:10px 14px;margin-bottom:8px;">
           <div style="color:#4ade80;font-weight:600;margin-bottom:4px;"><a href="#" onclick="openSkillModal('write-a-prd');return false;" style="color:#4ade80;text-decoration:none;border-bottom:1px dashed #4ade80;">/write-a-prd</a></div>
           <div style="color:#ffffff;font-size:12px;line-height:1.8;">
@@ -2176,7 +2212,7 @@ pre {
           <td class="code-cell">modified_prd</td>
           <td style="color:#94a3b8;font-size:0.82rem;">integer</td>
           <td style="color:#f59e0b;font-size:0.82rem;font-weight:600;">Set by validate-knowledge</td>
-          <td>PRD that caused a retroactive modification to this rule (e.g. scope annotation added by SCOPE-INFERRED). Without this, git blame on domain-rules.yaml cannot explain why a rule changed between PRDs. Never set manually.</td>
+          <td>PRD that caused a retroactive modification to this rule. Set exclusively during SCOPE-INFERRED — when validate-knowledge annotates an existing rule with <code>scope</code> + <code>scope_condition</code> because a later PRD introduced a scoped counterpart. Not set during Supersede (original is retired, not modified) or Composition (original is untouched). Without this, git blame on domain-rules.yaml cannot explain why a rule changed between PRDs. Never set manually.</td>
         </tr>
         <tr>
           <td class="code-cell">modified_by</td>
@@ -2888,7 +2924,7 @@ function closeSkillModal() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSkillModal(); });
 
-const TOTAL = 12;
+const TOTAL = 13;
 
 function goSkill(name) {
   goCh(12);
@@ -2915,6 +2951,178 @@ function goCh(n) {
 }
 
 document.addEventListener('DOMContentLoaded', () => { goCh(9); });
+
 </script>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CHAPTER 13 — PRD #9 SUPERSEDE SPLIT                     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="chapter" id="ch-13">
+
+  <div class="chapter-header" onclick="goCh(13)">
+    <div class="ch-num c5">PRD<br>#9</div>
+    <div>
+      <div class="ch-title">Earning restructure — supersede split, not scope annotation</div>
+      <div class="ch-desc">Standard customers will now earn at half the current rate. Premium customers at double. Both segments change formula — the original general rule can no longer be scope-annotated (SCOPE-INFERRED fails). The original must be superseded and replaced by two new scoped rules.</div>
+    </div>
+    <span class="ch-tag tag-update">Supersede split</span>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="chapter-body">
+
+  <div class="stories-box">
+    <h4>User stories proposed in this PRD</h4>
+    <div class="story">
+      <div class="story-n">1</div>
+      <div>As a standard customer, I want to earn 1 point for every $2 I spend so that earning reflects the updated program rate.</div>
+      <div class="story-rule">→ 1.1.2</div>
+    </div>
+    <div class="story">
+      <div class="story-n">2</div>
+      <div>As a premium customer, I want to earn 2 points for every $1 I spend so that my loyalty tier is meaningfully rewarded.</div>
+      <div class="story-rule">→ 1.1.3</div>
+    </div>
+  </div>
+
+  <div class="callout info"><strong>Why SCOPE-INFERRED fails here:</strong> In PRD #5 (ch-5), the original rule's formula was still valid for the non-VIP segment — only the boundary needed marking. Here, <em>both</em> segments change formula from the original (1pt/$1 → 1pt/$2 for standard, 1pt/$1 → 2pt/$1 for premium). There is no segment for which the original formula floor(order_total_cents/100) is still correct. Annotating the original with a scope would misrepresent it. The only valid path is supersede.</div>
+
+  <div class="state-row">
+    <div class="state-col before">
+      <div class="state-label">domain-rules.yaml — before PRD #9</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.1</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(order_total_cents / 100)"</span>
+    <span class="y-key">plain_english</span><span class="y-val">:</span> <span class="y-str">"1 pt per $1, rounded down"</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">1</span>
+    <span class="y-comment">    # no scope — applies to all customers</span></pre>
+    </div>
+    <div class="state-col after">
+      <div class="state-label">domain-rules.yaml — after PRD #9</div>
+      <pre><span class="y-key">rules</span><span class="y-val">:</span>
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.1</span>
+<span class="y-gone">    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">superseded</span>            <span class="y-comment"># was: active</span></span>
+<span class="y-new">    <span class="y-key">superseded_by</span><span class="y-val">:</span> <span class="y-str">"1.1.2, 1.1.3"</span>  <span class="y-comment"># split into two scoped rules</span></span>
+    <span class="y-key">formula</span><span class="y-val">:</span> <span class="y-str">"floor(order_total_cents / 100)"</span>
+    <span class="y-comment">    # formula preserved as history, no longer executed</span>
+
+<span class="y-new">  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.2</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">scope</span><span class="y-val">:</span>          <span class="y-str">standard</span>
+    <span class="y-key">scope_condition</span><span class="y-val">:</span> <span class="y-str">"customer.tier == 'standard'"</span>
+    <span class="y-key">formula</span><span class="y-val">:</span>       <span class="y-str">"floor(order_total_cents / 200)"</span>
+    <span class="y-key">plain_english</span><span class="y-val">:</span> <span class="y-str">"Standard customers earn 1pt per $2 spent, rounded down."</span>
+    <span class="y-key">why</span><span class="y-val">:</span>           <span class="y-str">"Program restructure — base rate halved for standard tier."</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">9</span>
+    <span class="y-key">supersedes</span><span class="y-val">:</span>    <span class="y-str">1.1.1</span>
+    <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #9 Story 1"</span>
+    <span class="y-key">test_cases</span><span class="y-val">:</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 2000, tier: "standard" }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 10 }</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 199, tier: "standard" }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 0 }</span>
+
+  - <span class="y-key">id</span><span class="y-val">:</span> <span class="y-flag">1.1.3</span>
+    <span class="y-key">status</span><span class="y-val">:</span> <span class="y-val">active</span>
+    <span class="y-key">scope</span><span class="y-val">:</span>          <span class="y-str">premium</span>
+    <span class="y-key">scope_condition</span><span class="y-val">:</span> <span class="y-str">"customer.tier == 'premium'"</span>
+    <span class="y-key">formula</span><span class="y-val">:</span>       <span class="y-str">"floor(order_total_cents / 50)"</span>
+    <span class="y-key">plain_english</span><span class="y-val">:</span> <span class="y-str">"Premium customers earn 2pt per $1 spent, rounded down."</span>
+    <span class="y-key">why</span><span class="y-val">:</span>           <span class="y-str">"Program restructure — premium tier gets 2x to reward loyalty."</span>
+    <span class="y-key">introduced_prd</span><span class="y-val">:</span> <span class="y-num">9</span>
+    <span class="y-key">supersedes</span><span class="y-val">:</span>    <span class="y-str">1.1.1</span>
+    <span class="y-key">user_story_ref</span><span class="y-val">:</span> <span class="y-str">"PRD #9 Story 2"</span>
+    <span class="y-key">test_cases</span><span class="y-val">:</span>
+      - <span class="y-key">input</span><span class="y-val">:</span>    <span class="y-val">{ order_total_cents: 2000, tier: "premium" }</span>
+        <span class="y-key">expected</span><span class="y-val">:</span> <span class="y-val">{ points_earned: 40 }</span></span></pre>
+    </div>
+  </div>
+
+  <div class="vk-wrap">
+    <div class="vk-header"><div class="dot" style="background:#f97316;"></div>validate-knowledge — PRD #9</div>
+    <div class="vk-body"><span class="vk-dim">▶ Incoming rules: 1.1.2 (scope: standard), 1.1.3 (scope: premium)</span>
+<span class="vk-dim">  action: add × 2</span>
+
+<span class="vk-section">Step 1 — cheap LLM text scan: domain-rules.yaml has 1 active rule (1.1.1)...</span>
+<span class="vk-indent vk-warn">⚠ OVERLAP — both incoming rules describe loyalty point earning per order. Same decision as 1.1.1.</span>
+
+<span class="vk-section">Step 2 — fetch PRD context...</span>
+<span class="vk-indent"><span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 1</span>  <span class="vk-dim">— source of 1.1.1</span>
+<span class="vk-indent">  Applies to: all customers. Formula: floor(order_total_cents/100). No scope restriction.</span>
+<span class="fetch-badge">📥 fetch prd</span><span class="vk-fetch">gh issue view 9</span>  <span class="vk-dim">— incoming PRD</span>
+<span class="vk-indent">  Standard: floor(order_total_cents/200). Premium: floor(order_total_cents/50).</span></span>
+
+<span class="vk-section">Step 3 — scope coverage check...</span>
+<span class="vk-indent vk-dim">standard + premium covers 100% of customers. Non-overlapping. ✓</span>
+
+<span class="vk-section">Step 4 — formula match check (can SCOPE-INFERRED be used?)...</span>
+<span class="vk-indent vk-dim">Original formula: floor(order_total_cents / 100)
+  Standard formula: floor(order_total_cents / 200)  ≠ original  ✗
+  Premium formula:  floor(order_total_cents / 50)   ≠ original  ✗
+  No segment preserves the original formula.
+  SCOPE-INFERRED requires at least one segment to retain the original formula unchanged.
+  SCOPE-INFERRED cannot be used.</span>
+
+<span class="vk-section">Step 5 — determine correct path...</span>
+<span class="vk-indent vk-dim">Both segments change formula. Both incoming rules declare supersedes: 1.1.1.
+  Only valid path: mark 1.1.1 superseded, write 1.1.2 and 1.1.3 as active.
+  modified_prd is NOT set on 1.1.1 — original is retired, not retroactively annotated.</span>
+
+<span class="vk-warn">⚠ validate-knowledge-DECLARED-WRITE (supersede) — human required.</span>
+<span class="vk-warn">  Reason: marking 1.1.1 as superseded is an irreversible status change on an existing rule.</span>
+<span class="vk-warn">  Human must confirm the earning restructure is intentional before 1.1.1 is retired.</span></div>
+  </div>
+
+  <div class="outcome human">
+    <div class="outcome-icons">❌ 👤</div>
+    <div class="outcome-body">
+      <div class="outcome-code">validate-knowledge-DECLARED-WRITE (supersede split) — human required</div>
+      <div class="outcome-text">SCOPE-INFERRED cannot be used because neither new scoped rule preserves the original formula. The original rule 1.1.1 must be retired. validate-knowledge proposes the supersede and waits for human confirmation before making any write.</div>
+      <div class="outcome-reason">Contrast with ch-5: in ch-5 the non-VIP segment kept the original formula — only a scope label was added. Here both segments break from the original — the original rule is genuinely obsolete and must be superseded, not annotated.</div>
+    </div>
+  </div>
+
+  <div class="diff-box">
+    <div class="diff-header"><span>❌ Human must confirm — proposed supersede of 1.1.1</span></div>
+    <div class="diff-body">
+      <div class="diff-side before">
+        <h5>1.1.1 as authored by PRD #1</h5>
+        <div class="diff-line-dim">status: active</div>
+        <div class="diff-line-dim">formula: floor(order_total_cents / 100)</div>
+        <div class="diff-line-dim">scope: (none)</div>
+        <div class="diff-line-dim">superseded_by: (none)</div>
+      </div>
+      <div class="diff-side after">
+        <h5>Proposed by validate-knowledge</h5>
+        <div class="diff-line-del">status: active</div>
+        <div class="diff-line-add">status: superseded</div>
+        <div class="diff-line-add">superseded_by: "1.1.2, 1.1.3"</div>
+        <div class="diff-line-dim">formula: preserved as history</div>
+        <div class="diff-line-dim">modified_prd: (not set — retired, not annotated)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcome auto" style="margin-top:0;">
+    <div class="outcome-icons">✅</div>
+    <div class="outcome-body">
+      <div class="outcome-code">Human confirmed — proceeding</div>
+      <div class="outcome-text">1.1.1 marked superseded with superseded_by: "1.1.2, 1.1.3". Note: modified_prd is NOT set — that field is reserved for SCOPE-INFERRED annotations only. 1.1.2 and 1.1.3 written as active with scope, scope_condition, supersedes: 1.1.1.</div>
+    </div>
+  </div>
+
+  <div class="md-box">
+    <h4>AGENT_CONTEXT.md — what changes</h4>
+    <p>1.1.1 row in the rule table moves to a "Superseded rules" section. Two new rows added: 1.1.2 (standard, 1pt/$2) and 1.1.3 (premium, 2pt/$1). A note added: "Earning is now segment-specific — always check customer.tier before applying earn formula."</p>
+  </div>
+
+    <div class="chapter-nav">
+      <button class="ch-nav-btn" onclick="goCh(8)">← PRD #8 — Blocked</button>
+      <span class="ch-nav-count">9 of 13</span>
+      <button class="ch-nav-btn" onclick="goCh(9)">§ Methodology →</button>
+    </div>
+  </div><!-- /chapter-body -->
+</div><!-- /chapter 13 -->
+
 </body>
 </html>
