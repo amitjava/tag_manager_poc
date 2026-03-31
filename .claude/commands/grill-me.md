@@ -84,8 +84,6 @@ For every significant workflow in scope:
 
 ---
 
----
-
 ## Refactor branches {#refactor-branches}
 
 ### Refactor Branch 1 — What is wrong now
@@ -182,7 +180,7 @@ If any branch is incomplete, return to it before saving the log. Do not mark gri
 
 ## Save grill-me log
 
-After all 5 branches are complete, save the full Q&A transcript before handing off.
+After all branches for your PRD type are complete, save the full Q&A transcript before handing off.
 
 1. Determine the PRD brief name — a short slug of the feature (e.g. `discount-and-tax`, `loyalty-earn-restructure`). Ask the user if unclear.
 2. Find the next file number: check `grill-me-docs/<prd-brief-name>/` for existing files (`grill-me-01.md`, `grill-me-02.md`, …). Use the next available number.

@@ -96,7 +96,13 @@ If CLAUDE.md doesn't exist yet, run `/initialize-knowledge-loop` first.
 
 ## Step 7 — Create a brownfield-import grill-me log
 
-Write a summary of the import session to `grill-me-docs/<domain-name>/brownfield-import.md`:
+Write a summary of the import session to `grill-me-docs/<domain-name>/brownfield-import.md`. Then add one line to `grill-me-docs/INDEX.md` (create if it doesn't exist):
+
+```
+| <YYYY-MM-DD> | <domain-name> | brownfield-import.md | brownfield-import | Extracted <N> rules from existing codebase |
+```
+
+The import summary itself:
 
 ```markdown
 # Brownfield Import — <domain-name>

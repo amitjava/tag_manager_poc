@@ -40,7 +40,7 @@ gh pr create --title "Revert: PRD #<issue-number> Ticket N — <reason>" \
   --body "Reverting PRD #<issue-number>. Reason: <reason>"
 ```
 
-Merge revert PRs in reverse dependency order (Ticket N last, Ticket 1 first).
+Merge revert PRs in reverse dependency order (Ticket N first, Ticket 1 last). The last-merged ticket has no dependents, so it is safe to revert first.
 
 ## Step 2 — Roll back domain-rules.yaml
 

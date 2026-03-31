@@ -120,7 +120,7 @@ If any found (and the referenced rule does exist) → escalate to **CHAIN-IMPACT
 
 ### Step 7 — Show diff and wait for approval
 
-For all auto paths (CLEAN, DECLARED-WRITE, INFERRED-WRITE), show exact diff before writing:
+For all auto paths (CLEAN, DECLARED-WRITE), show exact diff before writing:
 
 ```
 APPROVED — validate-knowledge-[OUTCOME]
