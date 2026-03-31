@@ -99,10 +99,9 @@ Use Edit tool on domain-rules.yaml — never overwrite the file.
 For the domain(s) involved, use Edit tool to update:
 
 - **Architecture patterns** — if new patterns were introduced
-- **Known debt** — if TDD surfaced debt
 - **File locations** — if new files were added
 - **Owned tables** — if schema changed
-- **Known debt** — review the `## Known debt` section. For each item that was resolved during this PRD's tickets, mark it resolved:
+- **Known debt** — review the `## Known debt` section. Mark items resolved during this PRD's tickets (TDD surfaced debt or explicit resolution). Format:
 
   ```
   - ~~[debt description]~~ ← resolved in PRD #N
