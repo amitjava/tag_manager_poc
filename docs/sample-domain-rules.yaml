@@ -22,13 +22,11 @@ rules:
       calculations (discount cap, tax base) derive from this value.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 1"
-    test_cases:
-      - input: { line_items: [{unit_price_cents: 1000, quantity: 2}, {unit_price_cents: 500, quantity: 1}] }
-        expected: { subtotal_cents: 2500 }
-      - input: { line_items: [] }
-        expected: { subtotal_cents: 0 }
-      - input: { line_items: [{unit_price_cents: 999, quantity: 1}] }
-        expected: { subtotal_cents: 999 }
+    test_cases: # filled by /tdd — input strings must appear verbatim in __tests__/
+      - input: "calculates subtotal for two line items"
+        expected: "subtotal_cents: 2500"
+      - input: "returns 0 for empty line items"
+        expected: "subtotal_cents: 0"
 
   # ── Discount ─────────────────────────────────────────────────────────────
   - id: 2.2.1
@@ -49,15 +47,13 @@ rules:
       prevents negative taxable amounts without special-casing downstream.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 2"
-    test_cases:
-      - input: { subtotal_cents: 2500, coupon: {type: percent, value: 0.20} }
-        expected: { discount_cents: 500 }
-      - input: { subtotal_cents: 2500, coupon: {type: fixed, value_cents: 1000} }
-        expected: { discount_cents: 1000 }
-      - input: { subtotal_cents: 500, coupon: {type: fixed, value_cents: 1000} }
-        expected: { discount_cents: 500 }
-      - input: { subtotal_cents: 2500, coupon: null }
-        expected: { discount_cents: 0 }
+    test_cases: # filled by /tdd — input strings must appear verbatim in __tests__/
+      - input: "applies percent coupon discount"
+        expected: "discount_cents: 500"
+      - input: "caps fixed coupon at subtotal"
+        expected: "discount_cents: 500"
+      - input: "returns 0 discount when no coupon"
+        expected: "discount_cents: 0"
 
   # ── Tax ──────────────────────────────────────────────────────────────────
   - id: 2.3.1
@@ -75,13 +71,11 @@ rules:
       application code for now.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 3"
-    test_cases:
-      - input: { taxable_cents: 2000, tax_rate: 0.08 }
-        expected: { tax_cents: 160 }
-      - input: { taxable_cents: 2499, tax_rate: 0.08 }
-        expected: { tax_cents: 199 }
-      - input: { taxable_cents: 0, tax_rate: 0.08 }
-        expected: { tax_cents: 0 }
+    test_cases: # filled by /tdd — input strings must appear verbatim in __tests__/
+      - input: "calculates tax with floor rounding"
+        expected: "tax_cents: 199"
+      - input: "returns 0 tax when taxable amount is 0"
+        expected: "tax_cents: 0"
 
   # ── Order Total ───────────────────────────────────────────────────────────
   - id: 2.4.1
@@ -98,8 +92,8 @@ rules:
       API call.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 4"
-    test_cases:
-      - input: { subtotal_cents: 2500, discount_cents: 500, tax_cents: 160 }
-        expected: { total_cents: 2160 }
-      - input: { subtotal_cents: 1000, discount_cents: 0, tax_cents: 80 }
-        expected: { total_cents: 1080 }
+    test_cases: # filled by /tdd — input strings must appear verbatim in __tests__/
+      - input: "computes final order total from subtotal, discount, and tax"
+        expected: "total_cents: 2160"
+      - input: "total equals subtotal plus tax when no discount"
+        expected: "total_cents: 1080"
