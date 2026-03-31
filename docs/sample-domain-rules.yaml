@@ -22,11 +22,7 @@ rules:
       calculations (discount cap, tax base) derive from this value.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 1"
-    test_cases: # filled by /tdd — input strings must appear verbatim in __tests__/
-      - input: "calculates subtotal for two line items"
-        expected: "subtotal_cents: 2500"
-      - input: "returns 0 for empty line items"
-        expected: "subtotal_cents: 0"
+    test_cases: [] # filled by /tdd after RED→GREEN — each entry is the it() description string
 
   # ── Discount ─────────────────────────────────────────────────────────────
   - id: 2.2.1
@@ -47,13 +43,7 @@ rules:
       prevents negative taxable amounts without special-casing downstream.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 2"
-    test_cases: # filled by /tdd — input strings must appear verbatim in __tests__/
-      - input: "applies percent coupon discount"
-        expected: "discount_cents: 500"
-      - input: "caps fixed coupon at subtotal"
-        expected: "discount_cents: 500"
-      - input: "returns 0 discount when no coupon"
-        expected: "discount_cents: 0"
+    test_cases: [] # filled by /tdd after RED→GREEN — each entry is the it() description string
 
   # ── Tax ──────────────────────────────────────────────────────────────────
   - id: 2.3.1
@@ -71,11 +61,7 @@ rules:
       application code for now.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 3"
-    test_cases: # filled by /tdd — input strings must appear verbatim in __tests__/
-      - input: "calculates tax with floor rounding"
-        expected: "tax_cents: 199"
-      - input: "returns 0 tax when taxable amount is 0"
-        expected: "tax_cents: 0"
+    test_cases: [] # filled by /tdd after RED→GREEN — each entry is the it() description string
 
   # ── Order Total ───────────────────────────────────────────────────────────
   - id: 2.4.1
@@ -92,8 +78,4 @@ rules:
       API call.
     introduced_prd: 7
     user_story_ref: "PRD #7 Story 4"
-    test_cases: # filled by /tdd — input strings must appear verbatim in __tests__/
-      - input: "computes final order total from subtotal, discount, and tax"
-        expected: "total_cents: 2160"
-      - input: "total equals subtotal plus tax when no discount"
-        expected: "total_cents: 1080"
+    test_cases: [] # filled by /tdd after RED→GREEN — each entry is the it() description string
